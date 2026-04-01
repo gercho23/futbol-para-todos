@@ -186,14 +186,10 @@
       flex: 1;
       justify-content: center;
     }
-    .player-title .dot {
-      width: 8px; height: 8px;
-      background: var(--red);
-      border-radius: 50%;
-      animation: pulse 1.4s ease-in-out infinite;
-      flex-shrink: 0;
-    }
     .live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       font-size: 10px;
       font-weight: 800;
       letter-spacing: 1px;
@@ -202,7 +198,14 @@
       border: 1px solid rgba(239,68,68,0.35);
       color: var(--red);
       border-radius: 20px;
-      padding: 2px 9px;
+      padding: 3px 10px 3px 8px;
+      flex-shrink: 0;
+    }
+    .live-pill .dot {
+      width: 7px; height: 7px;
+      background: var(--red);
+      border-radius: 50%;
+      animation: pulse 1.4s ease-in-out infinite;
       flex-shrink: 0;
     }
     .btn-back {
@@ -248,6 +251,40 @@
       display: block;
     }
     .player-screen video { background: #000; outline: none; }
+    /* Anti-popup click shield — absorbs the first click that would trigger popups */
+    .popup-shield {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      cursor: pointer;
+      background: transparent;
+    }
+    .popup-shield.armed {
+      display: block;
+    }
+    .popup-shield.disarmed {
+      display: none;
+    }
+    /* Toast-style popup warning */
+    .popup-blocked-toast {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(239,68,68,0.15);
+      border: 1px solid rgba(239,68,68,0.4);
+      color: #fca5a5;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 7px 16px;
+      border-radius: 20px;
+      white-space: nowrap;
+      z-index: 20;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .popup-blocked-toast.show { opacity: 1; }
     .player-controls {
       background: var(--card);
       border-top: 1px solid var(--border);
@@ -1138,14 +1175,16 @@
         Volver
       </button>
       <div class="player-title">
-        <div class="dot"></div>
         <span id="player-channel-name">Canal</span>
-        <span class="live-pill">EN VIVO</span>
+        <span class="live-pill"><span class="dot"></span>EN VIVO</span>
       </div>
       <button class="btn-close" onclick="closePlayer()">✕ Cerrar</button>
     </div>
 
     <div class="player-screen" id="player-wrapper">
+      <!-- Anti-popup shield: absorbs the first click on the iframe -->
+      <div class="popup-shield armed" id="popup-shield" onclick="disarmShield(event)"></div>
+      <div class="popup-blocked-toast" id="popup-toast">🛡️ Clic registrado — reproduciendo sin popup</div>
       <iframe
         id="stream-iframe"
         src=""
@@ -1901,7 +1940,60 @@
     return { url: `${BASE_URL}${sourceKey}.php?stream=${streamId}`, type: 'iframe' };
   }
 
+  // ===== ANTI-POPUP SYSTEM =====
+  (function() {
+    // Track whether a popup was recently triggered by our own UI
+    window._ownClick = false;
+    document.addEventListener('click', () => { window._ownClick = true; setTimeout(() => { window._ownClick = false; }, 500); }, true);
+
+    // Override window.open — only block popups NOT triggered by direct user click on our UI
+    const _origOpen = window.open;
+    window.open = function(url, target, features) {
+      // If the active element is the iframe, the click came from the stream → block
+      if (document.activeElement && document.activeElement.id === 'stream-iframe') return null;
+      // If the page lost focus to iframe just before this call → block
+      if (window._iframeFocused) return null;
+      // Otherwise let it through (e.g. YouTube external link)
+      return _origOpen.call(window, url, target, features);
+    };
+
+    // Detect when iframe steals focus (stream is about to fire popup)
+    window._iframeFocused = false;
+    window.addEventListener('blur', function() {
+      if (!window._playerActive) return;
+      window._iframeFocused = true;
+      // Close any popup that opened as a new window/tab within 300ms
+      setTimeout(() => { window._iframeFocused = false; }, 800);
+    });
+  })();
+
+  // Disarm shield on first click — lets the click reach the iframe for play
+  let _shieldTimer;
+  function disarmShield(e) {
+    e.stopPropagation();
+    const shield = document.getElementById('popup-shield');
+    const toast  = document.getElementById('popup-toast');
+    if (!shield) return;
+    shield.classList.remove('armed');
+    shield.classList.add('disarmed');
+    // Show toast briefly
+    if (toast) { toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2000); }
+    // Re-arm after 6s to catch delayed popup attempts
+    clearTimeout(_shieldTimer);
+    _shieldTimer = setTimeout(() => {
+      shield.classList.add('armed');
+      shield.classList.remove('disarmed');
+    }, 6000);
+  }
+
+  function rearmShield() {
+    const shield = document.getElementById('popup-shield');
+    if (shield) { shield.classList.add('armed'); shield.classList.remove('disarmed'); }
+  }
+
   function loadSource(source) {
+    rearmShield();
+    window._playerActive = true;
     const iframe = document.getElementById('stream-iframe');
     const video  = document.getElementById('stream-video');
 
@@ -1942,7 +2034,7 @@
     document.getElementById('src-3').classList.remove('active');
 
     // Update player
-    document.getElementById('player-channel-name').textContent = '🔴 ' + name;
+    document.getElementById('player-channel-name').textContent = name;
     loadSource(getSource(streamId, 'global1'));
 
     // Show player
@@ -1961,6 +2053,8 @@
   }
 
   function closePlayer() {
+    window._playerActive = false;
+    rearmShield();
     document.getElementById('player-section').classList.remove('visible');
     document.getElementById('stream-iframe').src = '';
     const video = document.getElementById('stream-video');
@@ -2509,20 +2603,16 @@
     // Argentine competition data (static/curated — football-data doesn't cover LPF free)
     const ARG_MATCHES = [
       // Próximos partidos Liga Profesional — Fecha 8 (semana 5-6 abril 2026)
-      { date:'2026-04-05', time:'15:00', home:'Racing Club',     away:'Talleres',         comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
-      { date:'2026-04-05', time:'17:15', home:'River Plate',     away:'Huracán',          comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
-      { date:'2026-04-05', time:'19:30', home:'Boca Juniors',    away:'San Lorenzo',      comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
-      { date:'2026-04-06', time:'15:00', home:'Independiente',   away:'Vélez Sársfield',  comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
-      { date:'2026-04-06', time:'17:15', home:'Lanús',           away:'Estudiantes (LP)', comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
+      { date:'2026-04-05', time:'15:00', home:'Racing Club',     away:'Talleres',           comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
+      { date:'2026-04-05', time:'17:15', home:'River Plate',     away:'Huracán',            comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
+      { date:'2026-04-05', time:'19:30', home:'Boca Juniors',    away:'San Lorenzo',        comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
+      { date:'2026-04-06', time:'15:00', home:'Independiente',   away:'Vélez Sársfield',    comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
+      { date:'2026-04-06', time:'17:15', home:'Lanús',           away:'Estudiantes (LP)',   comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
       { date:'2026-04-06', time:'19:30', home:'Rosario Central', away:'Defensa y Justicia', comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
-      // Copa Libertadores Fase de Grupos — 8 y 9 abril
-      { date:'2026-04-08', time:'21:30', home:'River Plate',     away:'Flamengo',         comp:'Copa Libertadores', flag:'🏆', status:'SCHEDULED' },
-      { date:'2026-04-08', time:'19:00', home:'Boca Juniors',    away:'Nacional (URU)',   comp:'Copa Libertadores', flag:'🏆', status:'SCHEDULED' },
-      { date:'2026-04-09', time:'21:30', home:'Racing Club',     away:'Atlético Mineiro', comp:'Copa Libertadores', flag:'🏆', status:'SCHEDULED' },
       // Selección Argentina — Mundial 2026
-      { date:'2026-06-16', time:'22:00', home:'Argentina',       away:'Argelia',          comp:'Mundial 2026', flag:'🌍', status:'SCHEDULED' },
-      { date:'2026-06-22', time:'14:00', home:'Argentina',       away:'Austria',          comp:'Mundial 2026', flag:'🌍', status:'SCHEDULED' },
-      { date:'2026-06-28', time:'23:00', home:'Argentina',       away:'Jordania',         comp:'Mundial 2026', flag:'🌍', status:'SCHEDULED' },
+      { date:'2026-06-16', time:'22:00', home:'Argentina', away:'Argelia',  comp:'Mundial 2026', flag:'🌍', status:'SCHEDULED' },
+      { date:'2026-06-22', time:'14:00', home:'Argentina', away:'Austria',  comp:'Mundial 2026', flag:'🌍', status:'SCHEDULED' },
+      { date:'2026-06-28', time:'23:00', home:'Argentina', away:'Jordania', comp:'Mundial 2026', flag:'🌍', status:'SCHEDULED' },
     ];
 
     function fmtDateLabel(dateStr) {
@@ -2618,9 +2708,15 @@
     }
 
     function matchScore(m) {
+      // football-data.org format
       const hs = m.score?.fullTime?.home ?? m.score?.halfTime?.home;
       const as = m.score?.fullTime?.away ?? m.score?.halfTime?.away;
       if (hs !== undefined && as !== undefined) return `${hs} - ${as}`;
+      // TheSportsDB format
+      if (m.scoreHome !== null && m.scoreHome !== undefined &&
+          m.scoreAway !== null && m.scoreAway !== undefined) {
+        return `${m.scoreHome} - ${m.scoreAway}`;
+      }
       return '';
     }
 
@@ -2769,10 +2865,9 @@
     };
 
     async function fetchAgenda() {
-      // Get today + next 7 days
       const today = new Date();
       const dates = [];
-      for (let i = 0; i < 7; i++) {
+      for (let i = 0; i < 20; i++) {
         const d = new Date(today);
         d.setDate(today.getDate() + i);
         dates.push(d.toISOString().slice(0,10));
@@ -2780,6 +2875,7 @@
       const dateFrom = dates[0];
       const dateTo   = dates[dates.length - 1];
 
+      // --- European leagues via football-data.org (free, no key needed) ---
       let apiMatches = [];
       try {
         const fetches = COMPETITIONS.map(comp =>
@@ -2796,13 +2892,47 @@
         await Promise.allSettled(fetches);
       } catch(_) {}
 
-      // Filter ARG static matches to the same window
+      // --- Copa Argentina via TheSportsDB (free, ID 4500, key 123) ---
+      // eventsnextleague returns next 15 fixtures; eventsseason can fetch by round
+      let copaArgMatches = [];
+      try {
+        const res = await Promise.race([
+          fetch('https://www.thesportsdb.com/api/v1/json/123/eventsnextleague.php?id=4500'),
+          new Promise((_, rej) => setTimeout(() => rej(), 5000))
+        ]);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.events) {
+            json.events.forEach(e => {
+              const dateStr = e.dateEvent; // YYYY-MM-DD
+              if (dateStr >= dateFrom && dateStr <= dateTo) {
+                copaArgMatches.push({
+                  date:   dateStr,
+                  time:   e.strTime ? e.strTime.slice(0,5) : '00:00',
+                  home:   e.strHomeTeam,
+                  away:   e.strAwayTeam,
+                  comp:   'Copa Argentina',
+                  flag:   '🏅',
+                  status: e.strStatus === 'Match Finished' ? 'FINISHED'
+                        : (e.strStatus === 'In Play' || e.strStatus === 'HT') ? 'IN_PLAY'
+                        : 'SCHEDULED',
+                  scoreHome: e.intHomeScore,
+                  scoreAway: e.intAwayScore,
+                  venue: e.strVenue || '',
+                });
+              }
+            });
+          }
+        }
+      } catch(_) {}
+
+      // --- Static Argentine data (Liga Profesional + Mundial, filtered to window) ---
       const argFiltered = ARG_MATCHES.filter(m => m.date >= dateFrom && m.date <= dateTo);
 
-      // Merge and deduplicate (prefer API data)
-      const allMatches = [...apiMatches, ...argFiltered];
+      // Merge all sources
+      const allMatches = [...apiMatches, ...copaArgMatches, ...argFiltered];
 
-      // Sort: live first, then by date/time
+      // Sort: live first, then chronologically
       allMatches.sort((a, b) => {
         const order = { 'IN_PLAY':0, 'PAUSED':1, 'live':0, 'SCHEDULED':2, 'TIMED':2, 'FINISHED':3 };
         const sa = order[a.status] ?? 2, sb = order[b.status] ?? 2;
