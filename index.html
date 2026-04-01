@@ -870,6 +870,143 @@
       .cd-num { font-size: 20px; }
       .cd-unit { min-width: 48px; padding: 8px 10px; }
     }
+    /* ===== AGENDA DE PARTIDOS ===== */
+    .agenda-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 32px;
+      position: relative;
+      z-index: 2;
+    }
+    .agenda-section-title {
+      font-size: 13px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.2px;
+      color: var(--text-muted); margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .agenda-section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+    /* Loading / empty */
+    .agenda-loading {
+      display: flex; align-items: center; gap: 10px;
+      color: var(--text-muted); font-size: 13px;
+      padding: 20px 0;
+    }
+    .agenda-spinner {
+      display: inline-block; width: 14px; height: 14px;
+      border: 2px solid var(--border); border-top-color: var(--green);
+      border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .agenda-empty { color: var(--text-muted); font-size: 13px; padding: 20px 0; text-align: center; }
+    /* Day groups */
+    .agenda-day {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 8px;
+      transition: border-color 0.2s;
+    }
+    .agenda-day:has(.agenda-match.live) { border-color: rgba(239,68,68,0.4); }
+    .agenda-day-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 18px;
+      cursor: pointer; user-select: none;
+      background: linear-gradient(90deg, rgba(34,197,94,0.08) 0%, transparent 55%);
+      transition: background 0.2s;
+    }
+    .agenda-day-header:hover { background: linear-gradient(90deg, rgba(34,197,94,0.15) 0%, transparent 55%); }
+    .agenda-day-left { display: flex; align-items: center; gap: 10px; }
+    .agenda-day-label {
+      font-size: 13px; font-weight: 800; color: var(--green);
+    }
+    .agenda-day-meta { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+    .agenda-day-count {
+      font-size: 11px; font-weight: 700;
+      background: rgba(34,197,94,0.12); color: var(--green);
+      border: 1px solid rgba(34,197,94,0.2);
+      border-radius: 20px; padding: 2px 8px;
+    }
+    .agenda-day-arrow {
+      color: var(--text-muted); font-size: 11px;
+      transition: transform 0.25s, color 0.2s; flex-shrink: 0;
+    }
+    .agenda-day.open .agenda-day-arrow { transform: rotate(180deg); color: var(--green); }
+    .agenda-day-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(.4,0,.2,1);
+    }
+    .agenda-day.open .agenda-day-body { max-height: 4000px; }
+    /* Match rows */
+    .agenda-match-row {
+      border-top: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    .agenda-match-row:hover { background: var(--card-hover); }
+    .agenda-match-summary {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 18px; cursor: pointer; user-select: none;
+    }
+    .agenda-match-time {
+      font-size: 13px; font-weight: 800;
+      color: var(--green); white-space: nowrap;
+      min-width: 50px; font-variant-numeric: tabular-nums;
+    }
+    .agenda-match-live-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--red); flex-shrink: 0;
+      animation: pulse 1.4s ease-in-out infinite;
+      display: none;
+    }
+    .agenda-match.live .agenda-match-live-dot { display: block; }
+    .agenda-match-flag { font-size: 16px; flex-shrink: 0; }
+    .agenda-match-title {
+      flex: 1; font-size: 13px; font-weight: 700; line-height: 1.4;
+    }
+    .agenda-match-score {
+      font-size: 14px; font-weight: 900;
+      color: var(--green); white-space: nowrap;
+      background: rgba(34,197,94,0.1);
+      border: 1px solid rgba(34,197,94,0.2);
+      border-radius: 6px; padding: 2px 8px;
+      display: none;
+    }
+    .agenda-match.live .agenda-match-score,
+    .agenda-match.finished .agenda-match-score { display: block; }
+    .agenda-match.live .agenda-match-score { color: var(--red); background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.25); }
+    .agenda-expand-arrow {
+      color: var(--text-muted); font-size: 11px;
+      transition: transform 0.22s, color 0.2s; flex-shrink: 0;
+    }
+    .agenda-match.open .agenda-expand-arrow { transform: rotate(180deg); color: var(--green); }
+    /* Channels dropdown */
+    .agenda-channels {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.28s ease;
+      background: rgba(0,0,0,0.25);
+    }
+    .agenda-match.open .agenda-channels { max-height: 600px; }
+    .agenda-channel-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 18px 9px 82px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .agenda-channel-item:hover { background: var(--card-hover); }
+    .agenda-channel-item-name {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 600; color: var(--text);
+    }
+    .agenda-channel-item-name::before {
+      content: '▶'; font-size: 8px; color: var(--green);
+    }
+    .agenda-quality-badge {
+      font-size: 11px; font-weight: 700;
+      background: rgba(34,197,94,0.1); color: var(--green);
+      border: 1px solid rgba(34,197,94,0.22);
+      border-radius: 20px; padding: 2px 9px; white-space: nowrap;
+    }
     /* ===== SCROLL TO TOP ===== */
     #scroll-top {
       position: fixed;
@@ -946,7 +1083,7 @@
     <span style="font-size:16px;font-weight:800;color:var(--text);letter-spacing:-0.3px;">Futbol Para Todos</span>
   </div>
   <h1>Todos los partidos,<br><span>en un solo lugar</span></h1>
-  <p>En Fútbol para Todos TV podés disfrutar en vivo y gratis los partidos más emocionantes del fútbol argentino 2026. Además, accedé a canales en streaming con la Copa Libertadores, Champions League y mucho más.</p>
+  <p>Elegí el canal que quieras y mirá el fútbol en vivo de forma gratuita.</p>
 </div>
 
 <!-- PLAYER SECTION (hidden by default) -->
@@ -970,7 +1107,8 @@
       src=""
       allowfullscreen
       scrolling="no"
-      allow="autoplay; encrypted-media; fullscreen"
+      allow="autoplay; encrypted-media; fullscreen; picture-in-picture; accelerometer; gyroscope"
+      referrerpolicy="no-referrer-when-downgrade"
     ></iframe>
     <video
       id="stream-video"
@@ -1016,6 +1154,18 @@
       ⛶ Pantalla Completa
     </button>
   </div>
+</div>
+
+<!-- AGENDA DE PARTIDOS -->
+<div class="agenda-section" id="agenda-section">
+  <div class="agenda-section-title">📅 Agenda de partidos</div>
+  <div id="agenda-loading" class="agenda-loading">
+    <span class="agenda-spinner"></span> Cargando partidos...
+  </div>
+  <div id="agenda-empty" class="agenda-empty" style="display:none">
+    No hay partidos programados para hoy ni los próximos días.
+  </div>
+  <div id="agenda-list"></div>
 </div>
 
 <!-- FEATURED CHANNELS -->
@@ -1313,6 +1463,7 @@
     laliga:   'https://commons.wikimedia.org/wiki/Special:FilePath/LaLiga_TV_Hypermotion_2023_Logo.svg',
     tigo:     'https://commons.wikimedia.org/wiki/Special:FilePath/Tigo_Sports_2025.png',
     futv:     'https://commons.wikimedia.org/wiki/Special:FilePath/Logo_de_FUTV.svg',
+    tn:       'https://commons.wikimedia.org/wiki/Special:FilePath/TN_todo_noticias_logo.svg',
   };
 
   const channels = [
@@ -1344,6 +1495,12 @@
       ]
     },
     { id:'tv_publica',      name:'TV Pública',        icon:'TV', color:'#2c5282', region:'arg',    logo: LOGOS.tvpublica },
+    { id:'tn',              name:'TN Todo Noticias',  icon:'TN', color:'#1a2744', region:'arg',    logo: LOGOS.tn,
+      customSources: [
+        { url: 'https://www.youtube.com/embed/cb12KmMMDJA?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=https://futbol-para-todos-chi.vercel.app', type: 'iframe' },
+        { url: 'https://www.youtube.com/embed/cb12KmMMDJA?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=https://futbol-para-todos-chi.vercel.app', type: 'iframe' },
+      ]
+    },
     { id:'liga1max',        name:'Liga 1 MAX',        icon:'L1', color:'#c05621', region:'arg',    logo: LOGOS.liga1 },
     { id:'tntsportschile',  name:'TNT Sports CL',     icon:'TC', color:'#d69e2e', region:'int',    logo: LOGOS.tnt },
 
@@ -1504,7 +1661,11 @@
     const iframe = document.getElementById('stream-iframe');
     const video  = document.getElementById('stream-video');
 
-    if (source.type === 'hls') {
+    if (source.type === 'external') {
+      // Abre en nueva pestaña (ej: YouTube con embedding bloqueado)
+      window.open(source.url, '_blank', 'noopener');
+      return;
+    } else if (source.type === 'hls') {
       iframe.style.display = 'none';
       iframe.src = '';
       video.style.display = 'block';
@@ -1640,8 +1801,16 @@
 
   // ===== GO HOME (logo click, works from anywhere) =====
   function scrollToSection(id) {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (id === 'inicio') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      const el = document.getElementById(id);
+      if (el) {
+        const offset = 72; // altura del header sticky
+        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    }
     // Update active nav button
     const map = { 'inicio': 'navbtn-inicio', 'featured-section': 'navbtn-canales', 'tabs-section-anchor': 'navbtn-buscar', 'faq-section': 'navbtn-faq' };
     document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
@@ -1650,7 +1819,7 @@
   }
 
   function goHome() {
-    scrollToSection('inicio');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     closeArgPage();
   }
 
@@ -1662,6 +1831,7 @@
     document.querySelector('footer').style.display = 'none';
     document.querySelector('.featured-section').style.display = 'none';
     document.querySelector('.faq-section').style.display = 'none';
+    document.getElementById('agenda-section').style.display = 'none';
     document.getElementById('arg-page').classList.add('visible');
     window.scrollTo({ top: 0, behavior: 'smooth' });
     loadLigaStandings();
@@ -1674,6 +1844,7 @@
     document.querySelector('footer').style.display = '';
     document.querySelector('.featured-section').style.display = '';
     document.querySelector('.faq-section').style.display = '';
+    document.getElementById('agenda-section').style.display = '';
     document.getElementById('arg-page').classList.remove('visible');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -1835,6 +2006,355 @@
     ligaLoaded = true;
   }
 
+
+  // ===== AGENDA DE PARTIDOS (accordion por día) =====
+  (function() {
+
+    // Mapeo: nombre de competición → canales disponibles en la app
+    const COMP_CHANNELS = {
+      'Primera División': [
+        { id:'espnpremium', name:'ESPN Premium', q:'1080p' },
+        { id:'tntsports',   name:'TNT Sports AR', q:'1080p' },
+        { id:'dsports',     name:'DSports',        q:'720p'  },
+        { id:'tycsports',   name:'TyC Sports',     q:'720p'  },
+      ],
+      'Liga Profesional': [
+        { id:'espnpremium', name:'ESPN Premium', q:'1080p' },
+        { id:'tntsports',   name:'TNT Sports AR', q:'1080p' },
+        { id:'dsports',     name:'DSports',        q:'720p'  },
+        { id:'tycsports',   name:'TyC Sports',     q:'720p'  },
+      ],
+      'Copa Argentina': [
+        { id:'tycsports',   name:'TyC Sports',     q:'1080p' },
+        { id:'dsports',     name:'DSports',        q:'720p'  },
+      ],
+      'Champions League': [
+        { id:'tntsports',   name:'TNT Sports AR', q:'1080p' },
+        { id:'espnpremium', name:'ESPN Premium',   q:'720p'  },
+        { id:'fox1ar',      name:'Fox Sports 1',   q:'720p'  },
+      ],
+      'Europa League': [
+        { id:'espnpremium', name:'ESPN Premium',  q:'1080p' },
+        { id:'fox1ar',      name:'Fox Sports 1',  q:'720p'  },
+      ],
+      'Copa Libertadores': [
+        { id:'espnpremium', name:'ESPN Premium',  q:'1080p' },
+        { id:'tntsports',   name:'TNT Sports AR', q:'1080p' },
+        { id:'fox1ar',      name:'Fox Sports 1',  q:'720p'  },
+      ],
+      'Copa Sudamericana': [
+        { id:'espnpremium', name:'ESPN Premium',  q:'1080p' },
+        { id:'tntsports',   name:'TNT Sports AR', q:'720p'  },
+      ],
+      'Premier League': [
+        { id:'espnpremium', name:'ESPN Premium',  q:'1080p' },
+        { id:'dsports',     name:'DSports',        q:'720p'  },
+      ],
+      'La Liga': [
+        { id:'espnpremium', name:'ESPN Premium',  q:'1080p' },
+        { id:'dsports',     name:'DSports',        q:'720p'  },
+        { id:'dsports2',    name:'DSports 2',      q:'720p'  },
+      ],
+      'Bundesliga': [
+        { id:'fox1ar',  name:'Fox Sports 1', q:'1080p' },
+        { id:'fox2ar',  name:'Fox Sports 2', q:'720p'  },
+      ],
+      'Serie A': [
+        { id:'espnpremium', name:'ESPN Premium', q:'1080p' },
+        { id:'fox1ar',      name:'Fox Sports 1', q:'720p'  },
+      ],
+      'Ligue 1': [
+        { id:'dsports',  name:'DSports',   q:'720p' },
+        { id:'dsports2', name:'DSports 2', q:'720p' },
+      ],
+      'default': [
+        { id:'espnpremium', name:'ESPN Premium',  q:'720p' },
+        { id:'tycsports',   name:'TyC Sports',    q:'720p' },
+      ],
+    };
+
+    function getChannels(compName) {
+      for (const key of Object.keys(COMP_CHANNELS)) {
+        if (key !== 'default' && compName && compName.toLowerCase().includes(key.toLowerCase()))
+          return COMP_CHANNELS[key];
+      }
+      return COMP_CHANNELS['default'];
+    }
+
+    // Competitions to fetch from football-data.org
+    const COMPETITIONS = [
+      { id: 2021, name: 'Premier League',     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+      { id: 2014, name: 'La Liga',            flag: '🇪🇸' },
+      { id: 2002, name: 'Bundesliga',         flag: '🇩🇪' },
+      { id: 2019, name: 'Serie A',            flag: '🇮🇹' },
+      { id: 2015, name: 'Ligue 1',            flag: '🇫🇷' },
+      { id: 2001, name: 'Champions League',   flag: '🏆' },
+      { id: 2018, name: 'Europa League',      flag: '🏆' },
+      { id: 2000, name: 'Mundial 2026',       flag: '🌍' },
+    ];
+
+    // Argentine competition data (static/curated — football-data doesn't cover LPF free)
+    const ARG_MATCHES = [
+      // Próximos partidos Liga Profesional — Fecha 8 (semana 5-6 abril 2026)
+      { date:'2026-04-05', time:'15:00', home:'Racing Club',     away:'Talleres',         comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
+      { date:'2026-04-05', time:'17:15', home:'River Plate',     away:'Huracán',          comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
+      { date:'2026-04-05', time:'19:30', home:'Boca Juniors',    away:'San Lorenzo',      comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
+      { date:'2026-04-06', time:'15:00', home:'Independiente',   away:'Vélez Sársfield',  comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
+      { date:'2026-04-06', time:'17:15', home:'Lanús',           away:'Estudiantes (LP)', comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
+      { date:'2026-04-06', time:'19:30', home:'Rosario Central', away:'Defensa y Justicia', comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
+      // Copa Libertadores Fase de Grupos — 8 y 9 abril
+      { date:'2026-04-08', time:'21:30', home:'River Plate',     away:'Flamengo',         comp:'Copa Libertadores', flag:'🏆', status:'SCHEDULED' },
+      { date:'2026-04-08', time:'19:00', home:'Boca Juniors',    away:'Nacional (URU)',   comp:'Copa Libertadores', flag:'🏆', status:'SCHEDULED' },
+      { date:'2026-04-09', time:'21:30', home:'Racing Club',     away:'Atlético Mineiro', comp:'Copa Libertadores', flag:'🏆', status:'SCHEDULED' },
+      // Selección Argentina — Mundial 2026
+      { date:'2026-06-16', time:'22:00', home:'Argentina',       away:'Argelia',          comp:'Mundial 2026', flag:'🌍', status:'SCHEDULED' },
+      { date:'2026-06-22', time:'14:00', home:'Argentina',       away:'Austria',          comp:'Mundial 2026', flag:'🌍', status:'SCHEDULED' },
+      { date:'2026-06-28', time:'23:00', home:'Argentina',       away:'Jordania',         comp:'Mundial 2026', flag:'🌍', status:'SCHEDULED' },
+    ];
+
+    function fmtDateLabel(dateStr) {
+      const [y, m, d] = dateStr.split('-').map(Number);
+      const dt = new Date(y, m - 1, d);
+      const today = new Date(); today.setHours(0,0,0,0);
+      const diff = Math.round((dt - today) / 86400000);
+      const weekday = dt.toLocaleDateString('es-AR', { weekday:'long' });
+      const dateLabel = dt.toLocaleDateString('es-AR', { day:'numeric', month:'long' });
+      const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+      if (diff === 0) return `Hoy — ${cap(weekday)} ${dateLabel}`;
+      if (diff === 1) return `Mañana — ${cap(weekday)} ${dateLabel}`;
+      return `${cap(weekday)} ${dateLabel}`;
+    }
+
+    function fmtTime(utcStr) {
+      const d = new Date(utcStr);
+      return d.toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit' });
+    }
+
+    function matchCompName(m) {
+      return m.competition?.name || m.comp || '—';
+    }
+
+    function matchFlag(m, apiComps) {
+      if (m.flag) return m.flag;
+      const c = apiComps?.find(c => c.id === m.competition?.id);
+      return c?.flag || '⚽';
+    }
+
+    function matchStatus(m) {
+      const s = m.status;
+      if (s === 'FINISHED')  return 'finished';
+      if (s === 'IN_PLAY' || s === 'PAUSED') return 'live';
+      return '';
+    }
+
+    function matchTitle(m) {
+      const home = m.homeTeam?.shortName || m.homeTeam?.name || m.home || '?';
+      const away = m.awayTeam?.shortName || m.awayTeam?.name || m.away || '?';
+      return `${home} vs ${away}`;
+    }
+
+    function matchScore(m) {
+      const hs = m.score?.fullTime?.home ?? m.score?.halfTime?.home;
+      const as = m.score?.fullTime?.away ?? m.score?.halfTime?.away;
+      if (hs !== undefined && as !== undefined) return `${hs} - ${as}`;
+      return '';
+    }
+
+    function matchDateKey(m) {
+      if (m.date) return m.date; // Argentine static
+      return m.utcDate ? m.utcDate.slice(0, 10) : '?';
+    }
+
+    function matchTimeStr(m) {
+      if (m.time) return m.time;
+      if (m.utcDate) return fmtTime(m.utcDate);
+      return '--:--';
+    }
+
+    let openDays = new Set([0]); // first day open by default
+    let openMatches = new Set();
+
+    function toggleDay(dayIdx) {
+      if (openDays.has(dayIdx)) openDays.delete(dayIdx);
+      else openDays.add(dayIdx);
+      renderDom(window._agendaData || []);
+    }
+
+    function toggleMatch(matchId) {
+      if (openMatches.has(matchId)) openMatches.delete(matchId);
+      else openMatches.add(matchId);
+      renderDom(window._agendaData || []);
+    }
+
+    function renderDom(allMatches) {
+      const loadEl  = document.getElementById('agenda-loading');
+      const emptyEl = document.getElementById('agenda-empty');
+      const listEl  = document.getElementById('agenda-list');
+      loadEl.style.display = 'none';
+
+      if (!allMatches.length) {
+        emptyEl.style.display = 'block';
+        listEl.innerHTML = '';
+        return;
+      }
+      emptyEl.style.display = 'none';
+
+      // Group by date
+      const byDay = {};
+      allMatches.forEach(m => {
+        const dk = matchDateKey(m);
+        if (!byDay[dk]) byDay[dk] = [];
+        byDay[dk].push(m);
+      });
+
+      const sortedDays = Object.keys(byDay).sort();
+      listEl.innerHTML = sortedDays.map((dk, dayIdx) => {
+        const matches = byDay[dk];
+        const isOpen = openDays.has(dayIdx);
+        const hasLive = matches.some(m => matchStatus(m) === 'live');
+        const countLabel = `${matches.length} partido${matches.length !== 1 ? 's' : ''}`;
+
+        const matchesHtml = matches.map((m, mi) => {
+          const uid = `${dayIdx}-${mi}`;
+          const status = matchStatus(m);
+          const score = matchScore(m);
+          const compName = matchCompName(m);
+          const channels = getChannels(compName);
+          const isMatchOpen = openMatches.has(uid);
+          const flag = matchFlag(m, COMPETITIONS);
+
+          const channelsHtml = channels.map(ch =>
+            `<div class="agenda-channel-item" onclick="playChannel('${ch.id}','${ch.name}')">
+              <div class="agenda-channel-item-name">${ch.name}</div>
+              <div class="agenda-quality-badge">${ch.q}</div>
+            </div>`
+          ).join('');
+
+          return `
+            <div class="agenda-match-row agenda-match ${status}" id="amrow-${uid}">
+              <div class="agenda-match-summary" onclick="window._agendaToggleMatch('${uid}')">
+                <div class="agenda-match-time">${matchTimeStr(m)}</div>
+                <div class="agenda-match-live-dot"></div>
+                <div class="agenda-match-flag">${flag}</div>
+                <div class="agenda-match-title">
+                  <div>${matchTitle(m)}</div>
+                  <div style="font-size:10px;font-weight:600;color:var(--text-muted);margin-top:2px;text-transform:uppercase;letter-spacing:0.8px">${compName}</div>
+                </div>
+                ${score ? `<div class="agenda-match-score">${score}</div>` : ''}
+                <div class="agenda-expand-arrow">▼</div>
+              </div>
+              <div class="agenda-channels ${isMatchOpen ? 'open' : ''}" style="${isMatchOpen ? 'max-height:600px' : ''}">
+                ${channelsHtml}
+              </div>
+            </div>`;
+        }).join('');
+
+        return `
+          <div class="agenda-day ${isOpen ? 'open' : ''}" id="aday-${dayIdx}">
+            <div class="agenda-day-header" onclick="window._agendaToggleDay(${dayIdx})">
+              <div class="agenda-day-left">
+                ${hasLive ? '<span style="width:8px;height:8px;border-radius:50%;background:var(--red);animation:pulse 1.4s infinite;flex-shrink:0;display:inline-block"></span>' : ''}
+                <span class="agenda-day-label">${fmtDateLabel(dk)}</span>
+                <span class="agenda-day-count">${countLabel}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <span class="agenda-day-meta">${matches.map(m => matchFlag(m, COMPETITIONS)).filter((v,i,a) => a.indexOf(v)===i).join(' ')}</span>
+                <span class="agenda-day-arrow">▼</span>
+              </div>
+            </div>
+            <div class="agenda-day-body" style="${isOpen ? 'max-height:4000px' : ''}">
+              ${matchesHtml}
+            </div>
+          </div>`;
+      }).join('');
+
+      // Re-apply open state for matches (CSS class needed after re-render)
+      openMatches.forEach(uid => {
+        const row = document.getElementById(`amrow-${uid}`);
+        if (row) row.classList.add('open');
+      });
+    }
+
+    window._agendaToggleDay = function(dayIdx) {
+      if (openDays.has(dayIdx)) openDays.delete(dayIdx);
+      else openDays.add(dayIdx);
+      const el = document.getElementById('aday-' + dayIdx);
+      if (!el) return;
+      if (openDays.has(dayIdx)) {
+        el.classList.add('open');
+        el.querySelector('.agenda-day-body').style.maxHeight = '4000px';
+      } else {
+        el.classList.remove('open');
+        el.querySelector('.agenda-day-body').style.maxHeight = '0';
+      }
+    };
+
+    window._agendaToggleMatch = function(uid) {
+      const row = document.getElementById('amrow-' + uid);
+      if (!row) return;
+      const channels = row.querySelector('.agenda-channels');
+      if (openMatches.has(uid)) {
+        openMatches.delete(uid);
+        row.classList.remove('open');
+        channels.style.maxHeight = '0';
+      } else {
+        openMatches.add(uid);
+        row.classList.add('open');
+        channels.style.maxHeight = '600px';
+      }
+    };
+
+    async function fetchAgenda() {
+      // Get today + next 7 days
+      const today = new Date();
+      const dates = [];
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(today);
+        d.setDate(today.getDate() + i);
+        dates.push(d.toISOString().slice(0,10));
+      }
+      const dateFrom = dates[0];
+      const dateTo   = dates[dates.length - 1];
+
+      let apiMatches = [];
+      try {
+        const fetches = COMPETITIONS.map(comp =>
+          fetch(`https://api.football-data.org/v4/competitions/${comp.id}/matches?dateFrom=${dateFrom}&dateTo=${dateTo}`)
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+              if (data?.matches) {
+                data.matches.forEach(m => { m.competition = { id: comp.id, name: comp.name }; m.flag = comp.flag; });
+                apiMatches.push(...data.matches);
+              }
+            })
+            .catch(() => null)
+        );
+        await Promise.allSettled(fetches);
+      } catch(_) {}
+
+      // Filter ARG static matches to the same window
+      const argFiltered = ARG_MATCHES.filter(m => m.date >= dateFrom && m.date <= dateTo);
+
+      // Merge and deduplicate (prefer API data)
+      const allMatches = [...apiMatches, ...argFiltered];
+
+      // Sort: live first, then by date/time
+      allMatches.sort((a, b) => {
+        const order = { 'IN_PLAY':0, 'PAUSED':1, 'live':0, 'SCHEDULED':2, 'TIMED':2, 'FINISHED':3 };
+        const sa = order[a.status] ?? 2, sb = order[b.status] ?? 2;
+        if (sa !== sb) return sa - sb;
+        const da = a.utcDate || `${a.date}T${a.time || '00:00'}:00`;
+        const db = b.utcDate || `${b.date}T${b.time || '00:00'}:00`;
+        return da.localeCompare(db);
+      });
+
+      window._agendaData = allMatches;
+      renderDom(allMatches);
+    }
+
+    fetchAgenda();
+    setInterval(fetchAgenda, 60000);
+  })();
 
   // ===== ANIMATED BACKGROUND + PARTICLES + CURSOR =====
   (function() {
