@@ -157,79 +157,107 @@
       margin: 0 auto;
     }
     #player-section.visible { display: block; }
-    .player-header {
+
+    /* ── Single unified card ── */
+    .player-card {
+      background: var(--surface);
+      border: 1px solid var(--green);
+      border-radius: var(--radius);
+      box-shadow: 0 0 0 1px rgba(34,197,94,0.12),
+                  0 0 40px rgba(0,0,0,0.6),
+                  0 0 80px var(--green-glow);
+      overflow: hidden;
+    }
+
+    /* Top bar */
+    .player-topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
+      padding: 10px 14px;
       gap: 10px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
     }
     .player-title {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 18px;
+      font-size: 15px;
       font-weight: 700;
+      flex: 1;
+      justify-content: center;
     }
     .player-title .dot {
       width: 8px; height: 8px;
       background: var(--red);
       border-radius: 50%;
       animation: pulse 1.4s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    .live-pill {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: rgba(239,68,68,0.15);
+      border: 1px solid rgba(239,68,68,0.35);
+      color: var(--red);
+      border-radius: 20px;
+      padding: 2px 9px;
+      flex-shrink: 0;
     }
     .btn-back {
       display: flex;
       align-items: center;
       gap: 7px;
-      background: var(--card);
+      background: transparent;
       border: 1px solid var(--border);
-      color: var(--text);
+      color: var(--text-muted);
       border-radius: var(--radius-sm);
-      padding: 8px 16px;
+      padding: 6px 12px;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       transition: all 0.2s;
+      flex-shrink: 0;
     }
-    .btn-back:hover { background: var(--card-hover); border-color: var(--green); color: var(--green); }
+    .btn-back:hover { border-color: var(--green); color: var(--green); }
     .btn-back svg { flex-shrink: 0; }
     .btn-close {
-      background: rgba(239,68,68,0.15);
-      border: 1px solid rgba(239,68,68,0.3);
+      background: rgba(239,68,68,0.12);
+      border: 1px solid rgba(239,68,68,0.28);
       color: var(--red);
       border-radius: var(--radius-sm);
-      padding: 6px 14px;
+      padding: 6px 12px;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       transition: all 0.2s;
+      flex-shrink: 0;
     }
     .btn-close:hover { background: rgba(239,68,68,0.25); }
-    .player-wrapper {
+
+    /* Screen */
+    .player-screen {
       position: relative;
       width: 100%;
       background: #000;
-      border-radius: var(--radius);
-      overflow: hidden;
-      border: 1px solid var(--border);
-      box-shadow: 0 0 40px rgba(0,0,0,0.6), 0 0 80px var(--green-glow);
     }
-    .player-wrapper iframe,
-    .player-wrapper video {
+    .player-screen iframe,
+    .player-screen video {
       width: 100%;
       aspect-ratio: 16/9;
       border: none;
       display: block;
     }
-    .player-wrapper video { background: #000; outline: none; }
-    /* Player Controls Bar */
+    .player-screen video { background: #000; outline: none; }
+
+    /* Controls bar */
     .player-controls {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-top: none;
-      border-radius: 0 0 var(--radius) var(--radius);
-      padding: 12px 16px;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      padding: 10px 14px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -239,7 +267,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      background: var(--card);
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       padding: 4px 8px;
@@ -265,20 +293,7 @@
     }
     .ctrl-btn:hover { background: var(--green-glow); color: var(--green); }
     .ctrl-btn.active { background: var(--green); color: #000; }
-    .ctrl-select {
-      background: transparent;
-      border: none;
-      color: var(--text);
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      outline: none;
-      padding: 2px 4px;
-    }
-    .ctrl-select option { background: #1a2a1a; }
-    .ctrl-divider {
-      flex: 1;
-    }
+    .ctrl-divider { flex: 1; }
     .btn-fullscreen {
       background: var(--green);
       color: #000;
@@ -1119,72 +1134,63 @@
 
 <!-- PLAYER SECTION (hidden by default) -->
 <div id="player-section">
-  <div class="player-header">
-    <button class="btn-back" onclick="closePlayer()">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-        <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      Volver a los canales
-    </button>
-    <div class="player-title">
-      <div class="dot"></div>
-      <span id="player-channel-name">Canal</span>
+  <div class="player-card" id="player-card">
+
+    <!-- Top bar: nav + title + close -->
+    <div class="player-topbar">
+      <button class="btn-back" onclick="closePlayer()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Volver
+      </button>
+      <div class="player-title">
+        <div class="dot"></div>
+        <span id="player-channel-name">Canal</span>
+        <span class="live-pill">EN VIVO</span>
+      </div>
+      <button class="btn-close" onclick="closePlayer()">✕ Cerrar</button>
     </div>
-    <button class="btn-close" onclick="closePlayer()">✕ Cerrar</button>
-  </div>
-  <div class="player-wrapper" id="player-wrapper">
-    <iframe
-      id="stream-iframe"
-      src=""
-      allowfullscreen
-      scrolling="no"
-      allow="autoplay; encrypted-media; fullscreen; picture-in-picture; accelerometer; gyroscope"
-      referrerpolicy="no-referrer-when-downgrade"
-    ></iframe>
-    <video
-      id="stream-video"
-      controls
-      autoplay
-      playsinline
-      style="display:none"
-    ></video>
-  </div>
-  <div class="player-controls">
-    <!-- Velocidad -->
-    <div class="ctrl-group">
-      <span class="ctrl-label">⚡ Velocidad</span>
-      <button class="ctrl-btn" onclick="setSpeed('0.5')">0.5x</button>
-      <button class="ctrl-btn active" id="speed-1x" onclick="setSpeed('1')">1x</button>
-      <button class="ctrl-btn" onclick="setSpeed('1.5')">1.5x</button>
-      <button class="ctrl-btn" onclick="setSpeed('2')">2x</button>
+
+    <!-- Video -->
+    <div class="player-screen" id="player-wrapper">
+      <iframe
+        id="stream-iframe"
+        src=""
+        allowfullscreen
+        scrolling="no"
+        allow="autoplay; encrypted-media; fullscreen; picture-in-picture; accelerometer; gyroscope"
+        referrerpolicy="no-referrer-when-downgrade"
+      ></iframe>
+      <video
+        id="stream-video"
+        controls
+        autoplay
+        playsinline
+        style="display:none"
+      ></video>
     </div>
-    <!-- Calidad -->
-    <div class="ctrl-group">
-      <span class="ctrl-label">🎬 Calidad</span>
-      <select class="ctrl-select" id="quality-select" onchange="switchQuality(this.value)">
-        <option value="auto">Auto</option>
-        <option value="1080">1080p</option>
-        <option value="720">720p</option>
-        <option value="480">480p</option>
-        <option value="360">360p</option>
-      </select>
+
+    <!-- Bottom controls -->
+    <div class="player-controls">
+      <!-- Fuente alternativa -->
+      <div class="ctrl-group">
+        <span class="ctrl-label">📡 Fuente</span>
+        <button class="ctrl-btn active" id="src-1" onclick="switchSource('global1')">1</button>
+        <button class="ctrl-btn" id="src-2" onclick="switchSource('global2')">2</button>
+        <button class="ctrl-btn" id="src-3" onclick="switchSource('skylive')">3</button>
+      </div>
+      <div class="ctrl-divider"></div>
+      <!-- Sync -->
+      <button class="btn-sync" onclick="syncLive()">
+        ⟳ Sincronizar
+      </button>
+      <!-- Fullscreen: clicks the iframe's native fullscreen button -->
+      <button class="btn-fullscreen" onclick="goFullscreen()">
+        ⛶ Pantalla Completa
+      </button>
     </div>
-    <!-- Fuente alternativa -->
-    <div class="ctrl-group">
-      <span class="ctrl-label">📡 Fuente</span>
-      <button class="ctrl-btn active" id="src-1" onclick="switchSource('global1')">1</button>
-      <button class="ctrl-btn" id="src-2" onclick="switchSource('global2')">2</button>
-      <button class="ctrl-btn" id="src-3" onclick="switchSource('skylive')">3</button>
-    </div>
-    <div class="ctrl-divider"></div>
-    <!-- Sync -->
-    <button class="btn-sync" onclick="syncLive()">
-      ⟳ Sincronizar
-    </button>
-    <!-- Fullscreen -->
-    <button class="btn-fullscreen" onclick="goFullscreen()">
-      ⛶ Pantalla Completa
-    </button>
+
   </div>
 </div>
 
@@ -1970,21 +1976,25 @@
   }
 
   function goFullscreen() {
-    const wrapper = document.getElementById('player-wrapper');
-    if (wrapper.requestFullscreen) wrapper.requestFullscreen();
-    else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
-    else if (wrapper.mozRequestFullScreen) wrapper.mozRequestFullScreen();
-  }
+    const iframe = document.getElementById('stream-iframe');
+    const video  = document.getElementById('stream-video');
 
-  function setSpeed(val) {
-    // Can't control iframe content speed directly, so we show feedback
-    document.querySelectorAll('.ctrl-btn[onclick^="setSpeed"]').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
-    showToast(`⚡ Velocidad: ${val}x`);
-  }
+    // For HLS video element — use standard fullscreen API
+    if (video && video.style.display !== 'none') {
+      if (video.requestFullscreen)            video.requestFullscreen();
+      else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+      else if (video.mozRequestFullScreen)    video.mozRequestFullScreen();
+      return;
+    }
 
-  function switchQuality(val) {
-    showToast(`🎬 Calidad seleccionada: ${val === 'auto' ? 'Auto' : val + 'p'}`);
+    // For iframe streams — request fullscreen on the iframe element itself.
+    // This makes the browser present the iframe content full-screen, which
+    // surfaces the player's own native controls (including its volume/fullscreen).
+    if (iframe) {
+      if (iframe.requestFullscreen)            iframe.requestFullscreen();
+      else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
+      else if (iframe.mozRequestFullScreen)    iframe.mozRequestFullScreen();
+    }
   }
 
   // ===== TOAST NOTIFICATION =====
