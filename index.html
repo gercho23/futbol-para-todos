@@ -655,33 +655,42 @@
     .next-match-countdown.soon { color: var(--yellow); animation: pulse 1.4s ease-in-out infinite; }
 
     /* ===== ARGENTINA PAGE ===== */
+    /* Color celeste AFA — sobreescribe el verde solo dentro de #arg-page */
     #arg-page {
+      --arg: #74AADB;
+      --arg-dark: #4e8fc7;
+      --arg-glow: rgba(116,170,219,0.18);
       display: none;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 24px 48px;
       animation: fadeIn 0.3s ease;
     }
     #arg-page.visible { display: block; }
-    #arg-page .arg-back {
-      margin-top: 40px;
-    }
-    .arg-hero {
-      margin-top: 16px;
-    }
     @keyframes fadeIn { from { opacity:0; transform:translateY(10px);} to { opacity:1; transform:none; } }
 
+    /* Hero ocupa full width, sin margen arriba */
     .arg-hero {
       text-align: center;
-      padding: 40px 0 32px;
-      background: radial-gradient(ellipse at 50% 0%, rgba(34,197,94,0.1) 0%, transparent 70%);
-      border-radius: var(--radius);
-      margin-bottom: 32px;
+      padding: 56px 24px 40px;
+      background: linear-gradient(180deg, rgba(116,170,219,0.18) 0%, rgba(116,170,219,0.06) 55%, transparent 100%);
+      margin-bottom: 0;
+      position: relative;
     }
-    .arg-flag { font-size: 52px; margin-bottom: 8px; }
+    /* Botón flotante arriba a la izquierda, ENCIMA del degradé */
+    .arg-back-wrapper {
+      position: absolute;
+      top: 18px;
+      left: 24px;
+    }
+    .arg-flag { font-size: 52px; margin-bottom: 10px; }
     .arg-hero h2 { font-size: clamp(22px,5vw,38px); font-weight: 900; letter-spacing: -1px; margin-bottom: 6px; }
-    .arg-hero h2 span { color: var(--green); }
+    .arg-hero h2 span { color: var(--arg); }
     .arg-hero p { color: var(--text-muted); font-size: 15px; }
+
+    /* Contenido interior con max-width */
+    .arg-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
 
     /* Countdown big */
     .big-countdown {
@@ -699,9 +708,7 @@
     .big-countdown-left { display: flex; flex-direction: column; gap: 4px; }
     .big-countdown-match { font-size: 20px; font-weight: 800; }
     .big-countdown-meta { font-size: 13px; color: var(--text-muted); }
-    .big-countdown-timer {
-      display: flex; gap: 12px;
-    }
+    .big-countdown-timer { display: flex; gap: 12px; }
     .cd-unit {
       display: flex; flex-direction: column; align-items: center; gap: 2px;
       background: var(--surface);
@@ -712,7 +719,7 @@
     }
     .cd-num {
       font-size: 26px; font-weight: 900; line-height: 1;
-      color: var(--green); font-variant-numeric: tabular-nums;
+      color: var(--arg); font-variant-numeric: tabular-nums;
     }
     .cd-label { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; }
 
@@ -723,9 +730,7 @@
       margin-bottom: 16px;
       display: flex; align-items: center; gap: 8px;
     }
-    .section-title::after {
-      content: ''; flex: 1; height: 1px; background: var(--border);
-    }
+    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
     /* Fixture */
     .fixture-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
@@ -738,21 +743,16 @@
       flex-wrap: wrap; gap: 10px;
       transition: border-color 0.2s;
     }
-    .fixture-card.next-up { border-color: var(--green); box-shadow: 0 0 16px var(--green-glow); }
+    #arg-page .fixture-card.next-up { border-color: var(--arg); box-shadow: 0 0 16px var(--arg-glow); }
     .fixture-card-left { display: flex; flex-direction: column; gap: 3px; }
     .fixture-date { font-size: 12px; color: var(--text-muted); font-weight: 600; }
     .fixture-teams { font-size: 16px; font-weight: 800; }
     .fixture-teams .vs { color: var(--text-muted); font-weight: 400; margin: 0 6px; font-size: 13px; }
     .fixture-right { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
     .fixture-venue { font-size: 12px; color: var(--text-muted); }
-    .fixture-time { font-size: 13px; font-weight: 700; color: var(--green); }
-    .fixture-badge {
-      font-size: 10px; font-weight: 700; background: var(--green); color: #000;
-      border-radius: 20px; padding: 2px 8px; text-transform: uppercase; letter-spacing: 0.5px;
-    }
-    .result-badge {
-      font-size: 13px; font-weight: 800; color: var(--green);
-    }
+    #arg-page .fixture-time { font-size: 13px; font-weight: 700; color: var(--arg); }
+    #arg-page .fixture-badge { font-size: 10px; font-weight: 700; background: var(--arg); color: #000; border-radius: 20px; padding: 2px 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    #arg-page .result-badge { font-size: 13px; font-weight: 800; color: var(--arg); }
 
     /* Formation */
     .formation-wrap { margin-bottom: 32px; }
@@ -761,36 +761,24 @@
       border-radius: var(--radius);
       border: 1px solid var(--border);
       padding: 20px 16px;
-      position: relative;
-      overflow: hidden;
-      margin-bottom: 12px;
+      position: relative; overflow: hidden; margin-bottom: 12px;
     }
     .formation-field::before {
-      content: '';
-      position: absolute; top: 50%; left: 50%;
+      content: ''; position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       width: 120px; height: 120px;
-      border: 2px solid rgba(255,255,255,0.15);
-      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.15); border-radius: 50%;
     }
     .formation-field::after {
-      content: '';
-      position: absolute; top: 0; left: 50%;
+      content: ''; position: absolute; top: 0; left: 50%;
       transform: translateX(-50%);
       width: 60%; height: 100%;
       border-left: 2px solid rgba(255,255,255,0.08);
       border-right: 2px solid rgba(255,255,255,0.08);
     }
-    .formation-row {
-      display: flex; justify-content: center; gap: 8px;
-      margin-bottom: 14px; position: relative; z-index: 1;
-    }
+    .formation-row { display: flex; justify-content: center; gap: 8px; margin-bottom: 14px; position: relative; z-index: 1; }
     .formation-row:last-child { margin-bottom: 0; }
-    .player-dot {
-      display: flex; flex-direction: column; align-items: center; gap: 4px;
-      cursor: default;
-      width: 64px;
-    }
+    .player-dot { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: default; width: 64px; }
     .player-circle {
       width: 48px; height: 48px; border-radius: 50%;
       background: rgba(255,255,255,0.12);
@@ -805,64 +793,89 @@
       text-align: center; white-space: nowrap; text-shadow: 0 1px 3px rgba(0,0,0,0.8);
       max-width: 64px; overflow: hidden; text-overflow: ellipsis;
     }
-    .formation-label {
-      text-align: center; font-size: 12px; color: var(--text-muted);
-      font-weight: 600; margin-top: 8px;
-    }
+    .formation-label { text-align: center; font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 8px; }
 
-    /* News */
-    .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 12px; margin-bottom: 32px; }
-    .news-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 16px;
-      cursor: pointer; transition: all 0.2s;
-      text-decoration: none; color: inherit; display: block;
-    }
-    .news-card:hover { background: var(--card-hover); border-color: var(--green); transform: translateY(-2px); }
-    .news-tag { font-size: 10px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-    .news-title { font-size: 14px; font-weight: 700; line-height: 1.4; margin-bottom: 6px; }
-    .news-meta { font-size: 11px; color: var(--text-muted); }
-
-    /* Highlights */
-    .highlights-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 12px; margin-bottom: 32px; }
-    .highlight-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius); overflow: hidden;
-      cursor: pointer; transition: all 0.2s;
-      text-decoration: none; color: inherit;
-    }
-    .highlight-card:hover { border-color: var(--green); transform: translateY(-2px); box-shadow: 0 8px 24px var(--green-glow); }
-    .highlight-thumb {
-      width: 100%; aspect-ratio: 16/9;
-      background: var(--surface);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 36px; position: relative;
-    }
-    .highlight-play {
-      position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      background: rgba(0,0,0,0.35);
-    }
-    .highlight-play-btn {
-      width: 48px; height: 48px; border-radius: 50%;
-      background: var(--green); display: flex; align-items: center; justify-content: center;
-      font-size: 18px; box-shadow: 0 0 20px var(--green-glow);
-      transition: transform 0.15s;
-    }
-    .highlight-card:hover .highlight-play-btn { transform: scale(1.1); }
-    .highlight-info { padding: 12px 14px; }
-    .highlight-title { font-size: 13px; font-weight: 700; line-height: 1.4; margin-bottom: 4px; }
-    .highlight-sub { font-size: 11px; color: var(--text-muted); }
+    /* News / Highlights (por si se usan) */
+    .news-card:hover { background: var(--card-hover); border-color: var(--arg); transform: translateY(-2px); }
+    #arg-page .news-tag { color: var(--arg); }
+    .highlight-card:hover { border-color: var(--arg); transform: translateY(-2px); box-shadow: 0 8px 24px var(--arg-glow); }
+    #arg-page .highlight-play-btn { background: var(--arg); box-shadow: 0 0 20px var(--arg-glow); }
 
     /* Back btn */
     .arg-back {
       display: inline-flex; align-items: center; gap: 8px;
-      background: var(--card); border: 1px solid var(--border);
+      background: rgba(10,14,10,0.75); border: 1px solid var(--border);
       color: var(--text); border-radius: var(--radius-sm);
       padding: 9px 18px; cursor: pointer; font-size: 13px; font-weight: 700;
-      transition: all 0.2s; margin-bottom: 28px;
+      transition: all 0.2s; backdrop-filter: blur(8px);
     }
-    .arg-back:hover { background: var(--card-hover); border-color: var(--green); color: var(--green); }
+    .arg-back:hover { background: var(--card-hover); border-color: var(--arg); color: var(--arg); }
+
+    /* ===== MUNDIAL 2026 GROUPS ===== */
+    .mundial-tabs {
+      display: flex; gap: 4px;
+      overflow-x: auto; scrollbar-width: none;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    .mundial-tabs::-webkit-scrollbar { display: none; }
+    .mundial-tab {
+      background: transparent; border: none;
+      color: var(--text-muted); padding: 8px 14px;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      border-bottom: 2px solid transparent; white-space: nowrap;
+      transition: all 0.2s; margin-bottom: -1px;
+    }
+    .mundial-tab:hover { color: var(--text); }
+    .mundial-tab.active { color: var(--arg); border-bottom-color: var(--arg); }
+    .mundial-panel { display: none; }
+    .mundial-panel.active { display: block; }
+
+    /* Group grid */
+    .groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; margin-bottom: 32px; }
+    .group-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .group-card-header {
+      background: linear-gradient(90deg, rgba(116,170,219,0.12) 0%, transparent 60%);
+      padding: 10px 16px;
+      font-size: 12px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--arg);
+      border-bottom: 1px solid var(--border);
+    }
+    .group-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .group-table th {
+      padding: 6px 8px; text-align: center;
+      color: var(--text-muted); font-weight: 700; font-size: 10px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+    .group-table th:first-child { text-align: left; padding-left: 16px; }
+    .group-table td {
+      padding: 8px 8px; text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-variant-numeric: tabular-nums;
+    }
+    .group-table td:first-child { text-align: left; padding-left: 16px; font-weight: 700; }
+    .group-table tr:last-child td { border-bottom: none; }
+    .group-table tr.qualify td:first-child { border-left: 3px solid var(--arg); }
+    .group-table tr.arg-row td { background: rgba(116,170,219,0.08); }
+    .g-pos { color: var(--text-muted); font-size: 11px; margin-right: 6px; }
+    .g-pts { color: var(--arg); font-weight: 900; }
+
+    /* Partidos del Mundial */
+    .mundial-matches { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px; }
+    .mundial-match-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 12px 18px;
+      display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+      transition: border-color 0.2s;
+    }
+    .mundial-match-card.arg-match { border-color: rgba(116,170,219,0.4); }
+    .mundial-match-date { font-size: 11px; color: var(--text-muted); font-weight: 700; min-width: 80px; white-space: nowrap; }
+    .mundial-match-teams { flex: 1; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+    .mundial-match-vs { color: var(--text-muted); font-size: 11px; font-weight: 400; }
+    .mundial-match-group { font-size: 10px; font-weight: 700; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 2px 8px; white-space: nowrap; }
+    .mundial-match-time { font-size: 13px; font-weight: 800; color: var(--arg); white-space: nowrap; }
+    .mundial-match-card.arg-match .mundial-match-time { color: var(--yellow); }
 
     @media (max-width: 600px) {
       .big-countdown { flex-direction: column; }
@@ -1062,6 +1075,7 @@
   </div>
   <nav class="nav-links">
     <button class="nav-link active" id="navbtn-inicio" onclick="scrollToSection('inicio')">🏠 Inicio</button>
+    <button class="nav-link" id="navbtn-agenda" onclick="scrollToSection('agenda-section')">📅 Agenda de partidos</button>
     <button class="nav-link" id="navbtn-canales" onclick="scrollToSection('featured-section')">⭐ Canales Principales</button>
     <button class="nav-link" id="navbtn-buscar" onclick="scrollToSection('tabs-section-anchor')">🔍 Buscar canales</button>
     <button class="nav-link" id="navbtn-faq" onclick="scrollToSection('faq-section')">❓ Preguntas Frecuentes</button>
@@ -1321,19 +1335,22 @@
 </footer>
 <div id="arg-page">
 
-  <button class="arg-back" onclick="closeArgPage()">
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-      <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    Volver al inicio
-  </button>
-
-  <!-- Hero -->
+  <!-- Hero full-width con botón encima del degradé -->
   <div class="arg-hero">
+    <div class="arg-back-wrapper">
+      <button class="arg-back" onclick="closeArgPage()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Volver al inicio
+      </button>
+    </div>
     <div class="arg-flag">🇦🇷</div>
     <h2>Selección <span>Argentina</span></h2>
     <p>Todo lo que tenés que saber del campeón del mundo en el Mundial 2026</p>
   </div>
+
+  <div class="arg-inner">
 
   <!-- Big countdown -->
   <div class="big-countdown">
@@ -1350,7 +1367,7 @@
   </div>
 
   <!-- Fixture Grupo J -->
-  <div class="section-title">📅 Fixture — Grupo J</div>
+  <div class="section-title">📅 Fixture — Grupo J · Argentina</div>
   <div class="fixture-list">
     <div class="fixture-card">
       <div class="fixture-card-left">
@@ -1395,6 +1412,69 @@
     </div>
   </div>
 
+  <!-- ===== MUNDIAL 2026 ===== -->
+  <div class="section-title">🌍 FIFA World Cup 2026 — EE.UU, México y Canadá</div>
+
+  <div class="mundial-tabs">
+    <button class="mundial-tab active" onclick="switchMundialTab('grupos', this)">🗂️ Grupos</button>
+    <button class="mundial-tab" onclick="switchMundialTab('partidos', this)">📅 Próximos partidos</button>
+    <button class="mundial-tab" onclick="switchMundialTab('info', this)">ℹ️ Info & Sedes</button>
+  </div>
+
+  <!-- PANEL: GRUPOS -->
+  <div class="mundial-panel active" id="mundial-grupos">
+    <div class="groups-grid" id="mundial-groups-grid"></div>
+  </div>
+
+  <!-- PANEL: PRÓXIMOS PARTIDOS -->
+  <div class="mundial-panel" id="mundial-partidos">
+    <div class="mundial-matches" id="mundial-matches-list"></div>
+  </div>
+
+  <!-- PANEL: INFO -->
+  <div class="mundial-panel" id="mundial-info">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:32px">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--arg);margin-bottom:10px">📌 Datos clave</div>
+        <div style="font-size:13px;color:var(--text-muted);line-height:2">
+          📅 <b style="color:var(--text)">11 Jun – 19 Jul 2026</b><br>
+          🌎 <b style="color:var(--text)">EE.UU · México · Canadá</b><br>
+          🏟️ <b style="color:var(--text)">16 estadios</b><br>
+          ⚽ <b style="color:var(--text)">48 selecciones</b><br>
+          🎮 <b style="color:var(--text)">104 partidos</b><br>
+          🏆 <b style="color:var(--text)">Final: MetLife Stadium, NJ</b>
+        </div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--arg);margin-bottom:10px">🏟️ Sedes Argentina</div>
+        <div style="font-size:13px;color:var(--text-muted);line-height:2.1">
+          🏟️ <b style="color:var(--text)">Arrowhead Stadium</b> — Kansas City<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size:11px">vs Argelia · 16 Jun</span><br>
+          🏟️ <b style="color:var(--text)">AT&T Stadium</b> — Dallas<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size:11px">vs Austria · 22 Jun · vs Jordania · 28 Jun</span>
+        </div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--arg);margin-bottom:10px">🇦🇷 Grupo J</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(116,170,219,0.1);border-radius:8px;padding:8px 10px;border:1px solid rgba(116,170,219,0.25)">🇦🇷 <b>Argentina</b> <span style="margin-left:auto;font-size:10px;color:var(--arg);font-weight:700">CAMPEÓN</span></div>
+          <div style="display:flex;align-items:center;gap:8px;background:var(--surface);border-radius:8px;padding:8px 10px">🇩🇿 <b>Argelia</b></div>
+          <div style="display:flex;align-items:center;gap:8px;background:var(--surface);border-radius:8px;padding:8px 10px">🇦🇹 <b>Austria</b></div>
+          <div style="display:flex;align-items:center;gap:8px;background:var(--surface);border-radius:8px;padding:8px 10px">🇯🇴 <b>Jordania</b></div>
+        </div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--arg);margin-bottom:10px">📺 TV en Argentina</div>
+        <div style="font-size:13px;color:var(--text-muted);line-height:2">
+          📡 <b style="color:var(--text)">Telefe</b> (abierta) · todos los partidos<br>
+          📡 <b style="color:var(--text)">TyC Sports</b> · todos los partidos<br>
+          📡 <b style="color:var(--text)">TV Pública</b> · seleccionados<br>
+          📡 <b style="color:var(--text)">ESPN / Fox Sports</b> · cable
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Formación -->
   <div class="section-title">👕 Formación — último partido (vs Zambia 5-0)</div>
   <div class="formation-wrap">
@@ -1435,6 +1515,7 @@
     </div>
   </div>
 
+  </div><!-- /.arg-inner -->
 </div>
 
 <script>
@@ -1812,7 +1893,7 @@
       }
     }
     // Update active nav button
-    const map = { 'inicio': 'navbtn-inicio', 'featured-section': 'navbtn-canales', 'tabs-section-anchor': 'navbtn-buscar', 'faq-section': 'navbtn-faq' };
+    const map = { 'inicio': 'navbtn-inicio', 'agenda-section': 'navbtn-agenda', 'featured-section': 'navbtn-canales', 'tabs-section-anchor': 'navbtn-buscar', 'faq-section': 'navbtn-faq' };
     document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
     const btnId = map[id];
     if (btnId) document.getElementById(btnId)?.classList.add('active');
@@ -1835,6 +1916,7 @@
     document.getElementById('arg-page').classList.add('visible');
     window.scrollTo({ top: 0, behavior: 'smooth' });
     loadLigaStandings();
+    initMundial();
   }
 
   function closeArgPage() {
@@ -1867,7 +1949,8 @@
         const hd = Math.floor(diff / 864e5);
         const hh = Math.floor((diff % 864e5) / 36e5);
         const hm = Math.floor((diff % 36e5) / 6e4);
-        hEl.textContent = hd > 0 ? `${hd}d ${hh}h ${hm}m` : `${hh}h ${hm}m`;
+        const hs = Math.floor((diff % 6e4) / 1e3);
+        hEl.textContent = hd > 0 ? `${hd}d ${hh}h ${hm}m ${String(hs).padStart(2,'0')}s` : `${hh}h ${hm}m ${String(hs).padStart(2,'0')}s`;
         if (hd === 0 && hh < 3) hEl.classList.add('soon');
       }
     }
@@ -1891,6 +1974,161 @@
 
   updateCountdowns();
   setInterval(updateCountdowns, 1000);
+
+  // ===== MUNDIAL 2026 =====
+  function switchMundialTab(tab, btn) {
+    document.querySelectorAll('.mundial-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.mundial-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('mundial-' + tab).classList.add('active');
+  }
+
+  // Datos de los 12 grupos del Mundial 2026 (48 equipos, fase de grupos)
+  const MUNDIAL_GROUPS = [
+    { name:'Grupo A', teams:[
+      { flag:'🇺🇸', name:'EE.UU',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇸🇦', name:'Arabia S.', pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇦🇺', name:'Australia', pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇵🇾', name:'Paraguay',  pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo B', teams:[
+      { flag:'🇲🇽', name:'México',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇪🇨', name:'Ecuador',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇷🇸', name:'Serbia',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇳🇿', name:'Nueva Zel.',pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo C', teams:[
+      { flag:'🇦🇷', name:'Argentina', pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0, isArg:true },
+      { flag:'🇩🇿', name:'Argelia',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇦🇹', name:'Austria',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇯🇴', name:'Jordania',  pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo D', teams:[
+      { flag:'🇫🇷', name:'Francia',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇩🇰', name:'Dinamarca', pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇿🇦', name:'Sud. África',pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇨🇺', name:'Cuba',      pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo E', teams:[
+      { flag:'🇩🇪', name:'Alemania',  pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇯🇵', name:'Japón',     pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇨🇴', name:'Colombia',  pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇹🇳', name:'Túnez',     pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo F', teams:[
+      { flag:'🇧🇷', name:'Brasil',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇵🇦', name:'Panamá',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇸🇪', name:'Suecia',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇩🇯', name:'Yibuti',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo G', teams:[
+      { flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', name:'Inglaterra', pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇳🇱', name:'Holanda',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇱🇷', name:'Liberia',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇹🇿', name:'Tanzania',  pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo H', teams:[
+      { flag:'🇵🇹', name:'Portugal',  pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇧🇪', name:'Bélgica',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇰🇷', name:'Corea S.',  pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇮🇱', name:'Israel',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo I', teams:[
+      { flag:'🇪🇸', name:'España',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇨🇦', name:'Canadá',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇲🇦', name:'Marruecos', pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇨🇷', name:'Costa Rica',pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo J', teams:[
+      { flag:'🇦🇷', name:'Argentina', pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0, isArg:true },
+      { flag:'🇩🇿', name:'Argelia',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇦🇹', name:'Austria',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇯🇴', name:'Jordania',  pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo K', teams:[
+      { flag:'🇺🇾', name:'Uruguay',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇨🇭', name:'Suiza',     pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇬🇭', name:'Ghana',     pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇹🇭', name:'Tailandia', pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo L', teams:[
+      { flag:'🇮🇹', name:'Italia',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇳🇬', name:'Nigeria',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇳🇴', name:'Noruega',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇮🇷', name:'Irán',      pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+  ];
+
+  // Partidos destacados del Mundial (fase de grupos, semana inaugural + ARG)
+  const MUNDIAL_MATCHES_DATA = [
+    // Apertura
+    { date:'11 Jun', home:'🇲🇽 México',    away:'🇪🇨 Ecuador',   group:'Grupo B', time:'22:00', venue:'Estadio Azteca', arg:false },
+    { date:'12 Jun', home:'🇺🇸 EE.UU',     away:'🇸🇦 Arabia S.', group:'Grupo A', time:'21:00', venue:'SoFi Stadium',   arg:false },
+    { date:'13 Jun', home:'🇧🇷 Brasil',     away:'🇵🇦 Panamá',    group:'Grupo F', time:'20:00', venue:'Rose Bowl',      arg:false },
+    { date:'13 Jun', home:'🇩🇪 Alemania',   away:'🇯🇵 Japón',     group:'Grupo E', time:'22:00', venue:'MetLife Stadium',arg:false },
+    { date:'14 Jun', home:'🇫🇷 Francia',    away:'🇩🇰 Dinamarca', group:'Grupo D', time:'19:00', venue:'Cowboys Stadium',arg:false },
+    { date:'14 Jun', home:'🇪🇸 España',     away:'🇨🇦 Canadá',    group:'Grupo I', time:'22:00', venue:'Hard Rock',      arg:false },
+    // ARG
+    { date:'16 Jun', home:'🇦🇷 Argentina',  away:'🇩🇿 Argelia',   group:'Grupo J', time:'22:00', venue:'Arrowhead, KC',  arg:true  },
+    { date:'17 Jun', home:'🇵🇹 Portugal',   away:'🇧🇪 Bélgica',   group:'Grupo H', time:'20:00', venue:'Levi\'s Stadium', arg:false },
+    { date:'18 Jun', home:'🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra', away:'🇳🇱 Holanda',  group:'Grupo G', time:'22:00', venue:'Lincoln Financial',arg:false },
+    { date:'22 Jun', home:'🇦🇷 Argentina',  away:'🇦🇹 Austria',   group:'Grupo J', time:'14:00', venue:'AT&T, Dallas',    arg:true  },
+    { date:'28 Jun', home:'🇦🇷 Argentina',  away:'🇯🇴 Jordania',  group:'Grupo J', time:'23:00', venue:'AT&T, Dallas',    arg:true  },
+  ];
+
+  function renderMundialGroups() {
+    const grid = document.getElementById('mundial-groups-grid');
+    if (!grid) return;
+    grid.innerHTML = MUNDIAL_GROUPS.map(g => `
+      <div class="group-card">
+        <div class="group-card-header">${g.name}</div>
+        <table class="group-table">
+          <thead><tr>
+            <th>Equipo</th>
+            <th title="Jugados">PJ</th>
+            <th title="Ganados">G</th>
+            <th title="Empates">E</th>
+            <th title="Perdidos">P</th>
+            <th title="Diferencia de gol">DG</th>
+            <th title="Puntos">Pts</th>
+          </tr></thead>
+          <tbody>
+            ${g.teams.map((t, i) => `
+              <tr class="${i < 2 ? 'qualify' : ''}${t.isArg ? ' arg-row' : ''}">
+                <td><span class="g-pos">${i+1}</span>${t.flag} ${t.name}</td>
+                <td>${t.pj}</td><td>${t.g}</td><td>${t.e}</td><td>${t.p}</td>
+                <td>${t.gf - t.gc}</td>
+                <td class="g-pts">${t.pts}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    `).join('');
+  }
+
+  function renderMundialMatches() {
+    const list = document.getElementById('mundial-matches-list');
+    if (!list) return;
+    list.innerHTML = MUNDIAL_MATCHES_DATA.map(m => `
+      <div class="mundial-match-card${m.arg ? ' arg-match' : ''}">
+        <div class="mundial-match-date">📅 ${m.date}</div>
+        <div class="mundial-match-teams">
+          <span>${m.home}</span>
+          <span class="mundial-match-vs">vs</span>
+          <span>${m.away}</span>
+        </div>
+        <div class="mundial-match-group">${m.group}</div>
+        <div class="mundial-match-time">${m.time} ARG</div>
+      </div>
+    `).join('');
+  }
+
+  // Init mundial on showArgPage call
+  const _origShowArgPage = window.showArgPage || null;
+  function initMundial() {
+    renderMundialGroups();
+    renderMundialMatches();
+  }
 
   // ===== SCROLL TO TOP BUTTON =====
   const scrollTopBtn = document.getElementById('scroll-top');
@@ -1958,7 +2196,7 @@
       const isRiver = t.team.toLowerCase().includes('river');
       const highlight = isRiver ? 'style="background:rgba(255,255,255,0.04)"' : '';
       const badge = pos <= 6
-        ? `<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle" title="Copa Libertadores"></span>`
+        ? `<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--arg);margin-right:6px;vertical-align:middle" title="Copa Libertadores"></span>`
         : pos >= table.length - 1
         ? `<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--red);margin-right:6px;vertical-align:middle" title="Descenso"></span>`
         : '';
@@ -1972,7 +2210,7 @@
         <td style="text-align:center;font-size:12px;color:var(--text-muted);padding:8px 4px">${t.e}</td>
         <td style="text-align:center;font-size:12px;color:var(--text-muted);padding:8px 4px">${t.p}</td>
         <td style="text-align:center;font-size:12px;color:var(--text-muted);padding:8px 4px">${gdStr}</td>
-        <td style="text-align:center;font-size:14px;font-weight:900;color:var(--green);padding:8px 6px">${t.pts}</td>
+        <td style="text-align:center;font-size:14px;font-weight:900;color:var(--arg);padding:8px 6px">${t.pts}</td>
       </tr>`;
     }).join('');
 
@@ -1994,7 +2232,7 @@
           <tbody>${rows}</tbody>
         </table>
         <div style="display:flex;gap:16px;margin-top:10px;font-size:11px;color:var(--text-muted);align-items:center;flex-wrap:wrap">
-          <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:4px;vertical-align:middle"></span>Copa Libertadores</span>
+          <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--arg);margin-right:4px;vertical-align:middle"></span>Copa Libertadores</span>
           <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:4px;vertical-align:middle"></span>Descenso</span>
           <span style="margin-left:auto;font-size:10px;opacity:0.7">📅 ${source}</span>
         </div>
@@ -2150,7 +2388,58 @@
     function matchTitle(m) {
       const home = m.homeTeam?.shortName || m.homeTeam?.name || m.home || '?';
       const away = m.awayTeam?.shortName || m.awayTeam?.name || m.away || '?';
-      return `${home} vs ${away}`;
+      const homeBadge = teamBadge(m, 'home');
+      const awayBadge = teamBadge(m, 'away');
+      return `<span style="display:inline-flex;align-items:center;gap:5px">${homeBadge}<span>${home}</span></span> <span style="color:var(--text-muted);font-weight:400;font-size:11px">vs</span> <span style="display:inline-flex;align-items:center;gap:5px">${awayBadge}<span>${away}</span></span>`;
+    }
+
+    // Mapa de escudos livianos (SVG/PNG desde fuentes públicas)
+    const TEAM_BADGES = {
+      // Liga Profesional Argentina
+      'River Plate':        'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/River_Plate_logo.svg/32px-River_Plate_logo.svg.png',
+      'Boca Juniors':       'https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Boca_Juniors_logo.svg/32px-Boca_Juniors_logo.svg.png',
+      'Racing Club':        'https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Racing_Club_de_Avellaneda_logo.svg/32px-Racing_Club_de_Avellaneda_logo.svg.png',
+      'Independiente':      'https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Club_Atlético_Independiente_logo.svg/32px-Club_Atlético_Independiente_logo.svg.png',
+      'San Lorenzo':        'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/San_Lorenzo_de_Almagro_logo.svg/32px-San_Lorenzo_de_Almagro_logo.svg.png',
+      'Huracán':            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Huracan_logo.svg/32px-Huracan_logo.svg.png',
+      'Vélez Sársfield':    'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Vélez_Sársfield_logo.svg/32px-Vélez_Sársfield_logo.svg.png',
+      'Estudiantes (LP)':   'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Estudiantes_de_la_plata_logo.svg/32px-Estudiantes_de_la_plata_logo.svg.png',
+      'Lanús':              'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Club_Atlético_Lanús_logo.svg/32px-Club_Atlético_Lanús_logo.svg.png',
+      'Rosario Central':    'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Rosario_Central_logo.svg/32px-Rosario_Central_logo.svg.png',
+      'Defensa y Justicia': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Defensa_y_Justicia.svg/32px-Defensa_y_Justicia.svg.png',
+      'Talleres (C)':       'https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Talleres_%28Córdoba%29_logo.svg/32px-Talleres_%28Córdoba%29_logo.svg.png',
+      'Tigre':              'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Club_Atletico_Tigre.svg/32px-Club_Atletico_Tigre.svg.png',
+      'Argentinos Jrs':     'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Argentinos_Juniors_logo.svg/32px-Argentinos_Juniors_logo.svg.png',
+      'Newells Old Boys':   'https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Newell%27s_Old_Boys_logo.svg/32px-Newell%27s_Old_Boys_logo.svg.png',
+      'Banfield':           'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Club_Atlético_Banfield_logo.svg/32px-Club_Atlético_Banfield_logo.svg.png',
+      'Platense':           'https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Club_Atletico_Platense.svg/32px-Club_Atletico_Platense.svg.png',
+      'Unión (SF)':         'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Unión_de_Santa_Fe_logo.svg/32px-Unión_de_Santa_Fe_logo.svg.png',
+      'Godoy Cruz':         'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Godoy_Cruz_Antonio_Tomba_logo.svg/32px-Godoy_Cruz_Antonio_Tomba_logo.svg.png',
+      'Barracas Central':   'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Barracas_Central_logo.svg/32px-Barracas_Central_logo.svg.png',
+      // Selección
+      'Argentina':          'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Argentina_national_football_team_crest.svg/32px-Argentina_national_football_team_crest.svg.png',
+      'Argelia':            'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Flag_of_Algeria.svg/32px-Flag_of_Algeria.svg.png',
+      'Austria':            'https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Flag_of_Austria.svg/32px-Flag_of_Austria.svg.png',
+      'Jordania':           'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Flag_of_Jordan.svg/32px-Flag_of_Jordan.svg.png',
+      // Copa Libertadores / internacional
+      'Flamengo':           'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Flamengo_braz_logo.svg/32px-Flamengo_braz_logo.svg.png',
+      'Nacional (URU)':     'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Nacional_logo.svg/32px-Nacional_logo.svg.png',
+      'Atlético Mineiro':   'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Atletico_mineiro_galo.svg/32px-Atletico_mineiro_galo.svg.png',
+    };
+
+    function teamBadge(m, side) {
+      // Para partidos de API que traen crest
+      const teamObj = side === 'home' ? m.homeTeam : m.awayTeam;
+      if (teamObj?.crest) {
+        return `<img src="${teamObj.crest}" alt="" width="16" height="16" style="object-fit:contain;flex-shrink:0;border-radius:2px" loading="lazy" onerror="this.style.display='none'">`;
+      }
+      // Para partidos estáticos argentinos
+      const name = side === 'home' ? (m.home || '') : (m.away || '');
+      const url = TEAM_BADGES[name];
+      if (url) {
+        return `<img src="${url}" alt="" width="16" height="16" style="object-fit:contain;flex-shrink:0;border-radius:2px" loading="lazy" onerror="this.style.display='none'">`;
+      }
+      return '';
     }
 
     function matchScore(m) {
