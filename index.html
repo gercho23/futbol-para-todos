@@ -5,7 +5,1929 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Futbol Para Todos</title>
   <style>
+    /* ===== RESET & BASE ===== */<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Futbol Para Todos</title>
+  <style>
     /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0e0a;
+      --surface: #111611;
+      --card: #161d16;
+      --card-hover: #1e2b1e;
+      --border: #1f2e1f;
+      --green: #22c55e;
+      --green-dark: #16a34a;
+      --green-glow: rgba(34,197,94,0.18);
+      --text: #e8f5e8;
+      --text-muted: #7a9e7a;
+      --red: #ef4444;
+      --yellow: #facc15;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #0a0e0a;
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+    /* Lift all direct content above canvas */
+    header, .nav-overlay, .nav-drawer,
+    .hero, #player-section, .featured-section,
+    .tabs-section, footer, .faq-section, #arg-page {
+      position: relative;
+      z-index: 2;
+    }
+    /* ===== HEADER ===== */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,14,10,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      height: 64px;
+      gap: 32px;
+    }
+    /* Horizontal nav links */
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+    }
+    .nav-link {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: color 0.18s, background 0.18s;
+      white-space: nowrap;
+      letter-spacing: 0.1px;
+    }
+    .nav-link:hover {
+      color: var(--text);
+      background: var(--card);
+    }
+    .nav-link.active {
+      color: var(--green);
+      background: var(--green-glow);
+    }
+    /* Hide old drawer elements */
+    .nav-overlay, .nav-drawer { display: none !important; }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .logo-ball {
+      width: 32px; height: 32px;
+      background: radial-gradient(circle at 35% 35%, #fff 0%, #d1fae5 30%, var(--green) 70%);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 0 16px var(--green-glow);
+      flex-shrink: 0;
+    }
+    .logo-text { color: var(--text); letter-spacing: -0.3px; }
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(239,68,68,0.15);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .live-dot {
+      width: 7px; height: 7px;
+      background: var(--red);
+      border-radius: 50%;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:0.4; transform:scale(0.8); }
+    }
+    /* ===== HERO ===== */
+    .hero {
+      text-align: center;
+      padding: 56px 24px 40px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(34,197,94,0.08) 0%, transparent 70%);
+    }
+    .hero h1 {
+      font-size: clamp(28px, 6vw, 52px);
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+    .hero h1 span { color: var(--green); }
+    .hero p {
+      color: var(--text-muted);
+      font-size: 16px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    /* ===== PLAYER SECTION ===== */
+    #player-section {
+      display: none;
+      padding: 0 24px 32px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    #player-section.visible { display: block; }
+    .player-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .player-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .player-title .dot {
+      width: 8px; height: 8px;
+      background: var(--red);
+      border-radius: 50%;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    .btn-back {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: var(--radius-sm);
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+    .btn-back:hover { background: var(--card-hover); border-color: var(--green); color: var(--green); }
+    .btn-back svg { flex-shrink: 0; }
+    .btn-close {
+      background: rgba(239,68,68,0.15);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: var(--red);
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .btn-close:hover { background: rgba(239,68,68,0.25); }
+    .player-wrapper {
+      position: relative;
+      width: 100%;
+      background: #000;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 0 40px rgba(0,0,0,0.6), 0 0 80px var(--green-glow);
+    }
+    .player-wrapper iframe,
+    .player-wrapper video {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border: none;
+      display: block;
+    }
+    .player-wrapper video { background: #000; outline: none; }
+    /* Player Controls Bar */
+    .player-controls {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 var(--radius) var(--radius);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .ctrl-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 4px 8px;
+    }
+    .ctrl-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    .ctrl-btn {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+    .ctrl-btn:hover { background: var(--green-glow); color: var(--green); }
+    .ctrl-btn.active { background: var(--green); color: #000; }
+    .ctrl-select {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+      padding: 2px 4px;
+    }
+    .ctrl-select option { background: #1a2a1a; }
+    .ctrl-divider {
+      flex: 1;
+    }
+    .btn-fullscreen {
+      background: var(--green);
+      color: #000;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-fullscreen:hover { background: var(--green-dark); }
+    .btn-sync {
+      background: rgba(250,204,21,0.15);
+      color: var(--yellow);
+      border: 1px solid rgba(250,204,21,0.3);
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-sync:hover { background: rgba(250,204,21,0.25); }
+    /* ===== TABS ===== */
+    .tabs-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 32px;
+    }
+    .tabs-header {
+      display: flex;
+      gap: 4px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs-header::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: all 0.2s;
+      margin-bottom: -1px;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active {
+      color: var(--green);
+      border-bottom-color: var(--green);
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    /* ===== CHANNEL GRID ===== */
+    .channels-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+    }
+    .channel-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+      user-select: none;
+    }
+    .channel-card:hover {
+      background: var(--card-hover);
+      border-color: var(--green);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px var(--green-glow);
+    }
+    .channel-card.playing {
+      background: var(--card-hover);
+      border-color: var(--green);
+      box-shadow: 0 0 0 2px var(--green);
+    }
+    .channel-icon {
+      width: 72px; height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+      overflow: hidden;
+      padding: 6px;
+    }
+    .channel-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .icon-fallback {
+      font-size: 18px;
+      font-weight: 900;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+    .channel-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    /* ===== SEARCH BAR ===== */
+    .search-bar {
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .search-bar input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      padding: 12px 16px 12px 40px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-bar input:focus { border-color: var(--green); }
+    .search-bar input::placeholder { color: var(--text-muted); }
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 15px;
+      pointer-events: none;
+    }
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center;
+      padding: 40px 24px 48px;
+      color: var(--text-muted);
+      font-size: 13px;
+      border-top: 1px solid var(--border);
+      margin-top: 0;
+    }
+    /* ===== FEATURED CHANNELS ===== */
+    .featured-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 8px;
+    }
+    .featured-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .featured-title::after { content:''; flex:1; height:1px; background:var(--border); }
+    .featured-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 600px) { .featured-grid { grid-template-columns: repeat(2, 1fr); } }
+    .featured-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .featured-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--green);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .featured-card:hover {
+      background: var(--card-hover);
+      border-color: var(--green);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px var(--green-glow);
+    }
+    .featured-card:hover::before { opacity: 1; }
+    .featured-icon {
+      width: 80px; height: 52px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      border: 1px solid rgba(255,255,255,0.1);
+      flex-shrink: 0;
+      overflow: hidden;
+      padding: 8px;
+    }
+    .featured-icon img { width:100%; height:100%; object-fit:contain; }
+    .featured-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    .featured-live {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .featured-live-dot {
+      width: 6px; height: 6px;
+      background: var(--red);
+      border-radius: 50%;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    /* ===== FAQ ===== */
+    .faq-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 24px 64px;
+    }
+    .faq-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .faq-header h2 {
+      font-size: clamp(22px, 4vw, 32px);
+      font-weight: 900;
+      letter-spacing: -0.8px;
+      margin-bottom: 8px;
+    }
+    .faq-header p { color: var(--text-muted); font-size: 15px; }
+    .faq-list { display: flex; flex-direction: column; gap: 0; }
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 8px;
+      overflow: hidden;
+      background: var(--card);
+      transition: border-color 0.2s;
+    }
+    .faq-item.open { border-color: var(--green); }
+    .faq-question {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 700;
+      text-align: left;
+      padding: 18px 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      line-height: 1.4;
+      transition: color 0.2s;
+    }
+    .faq-item.open .faq-question { color: var(--green); }
+    .faq-chevron {
+      flex-shrink: 0;
+      width: 20px; height: 20px;
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      transition: transform 0.25s, border-color 0.2s, color 0.2s;
+    }
+    .faq-item.open .faq-chevron {
+      transform: rotate(180deg);
+      border-color: var(--green);
+      color: var(--green);
+    }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      padding: 0 20px;
+    }
+    .faq-item.open .faq-answer {
+      max-height: 300px;
+      padding: 0 20px 18px;
+    }
+    .faq-answer p {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      .channels-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+      .player-controls { gap: 6px; }
+    }
+
+    /* ===== NEXT MATCH BADGE (header) ===== */
+    .next-match {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 12px;
+      background: rgba(34,197,94,0.08);
+      border: 1px solid rgba(34,197,94,0.28);
+      border-radius: 10px;
+      padding: 0 16px;
+      height: 46px;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .next-match:hover { background: rgba(34,197,94,0.15); border-color: var(--green); }
+    .next-match-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .next-match-label {
+      font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: var(--green); opacity: .85;
+    }
+    .next-match-teams { font-size: 13px; font-weight: 800; color: var(--text); white-space: nowrap; }
+    .next-match-divider {
+      width: 1px; height: 28px;
+      background: rgba(34,197,94,0.25);
+      flex-shrink: 0;
+    }
+    .next-match-countdown {
+      font-size: 13px; font-weight: 800; color: var(--green);
+      font-variant-numeric: tabular-nums; white-space: nowrap;
+    }
+    .next-match-countdown.soon { color: var(--yellow); animation: pulse 1.4s ease-in-out infinite; }
+
+    /* ===== ARGENTINA PAGE ===== */
+    #arg-page {
+      display: none;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 48px;
+      animation: fadeIn 0.3s ease;
+    }
+    #arg-page.visible { display: block; }
+    #arg-page .arg-back {
+      margin-top: 40px;
+    }
+    .arg-hero {
+      margin-top: 16px;
+    }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(10px);} to { opacity:1; transform:none; } }
+
+    .arg-hero {
+      text-align: center;
+      padding: 40px 0 32px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(34,197,94,0.1) 0%, transparent 70%);
+      border-radius: var(--radius);
+      margin-bottom: 32px;
+    }
+    .arg-flag { font-size: 52px; margin-bottom: 8px; }
+    .arg-hero h2 { font-size: clamp(22px,5vw,38px); font-weight: 900; letter-spacing: -1px; margin-bottom: 6px; }
+    .arg-hero h2 span { color: var(--green); }
+    .arg-hero p { color: var(--text-muted); font-size: 15px; }
+
+    /* Countdown big */
+    .big-countdown {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .big-countdown-left { display: flex; flex-direction: column; gap: 4px; }
+    .big-countdown-match { font-size: 20px; font-weight: 800; }
+    .big-countdown-meta { font-size: 13px; color: var(--text-muted); }
+    .big-countdown-timer {
+      display: flex; gap: 12px;
+    }
+    .cd-unit {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      min-width: 58px;
+    }
+    .cd-num {
+      font-size: 26px; font-weight: 900; line-height: 1;
+      color: var(--green); font-variant-numeric: tabular-nums;
+    }
+    .cd-label { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; }
+
+    /* Section title */
+    .section-title {
+      font-size: 16px; font-weight: 800;
+      letter-spacing: -0.3px;
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-title::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* Fixture */
+    .fixture-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+    .fixture-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 10px;
+      transition: border-color 0.2s;
+    }
+    .fixture-card.next-up { border-color: var(--green); box-shadow: 0 0 16px var(--green-glow); }
+    .fixture-card-left { display: flex; flex-direction: column; gap: 3px; }
+    .fixture-date { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+    .fixture-teams { font-size: 16px; font-weight: 800; }
+    .fixture-teams .vs { color: var(--text-muted); font-weight: 400; margin: 0 6px; font-size: 13px; }
+    .fixture-right { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+    .fixture-venue { font-size: 12px; color: var(--text-muted); }
+    .fixture-time { font-size: 13px; font-weight: 700; color: var(--green); }
+    .fixture-badge {
+      font-size: 10px; font-weight: 700; background: var(--green); color: #000;
+      border-radius: 20px; padding: 2px 8px; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .result-badge {
+      font-size: 13px; font-weight: 800; color: var(--green);
+    }
+
+    /* Formation */
+    .formation-wrap { margin-bottom: 32px; }
+    .formation-field {
+      background: linear-gradient(180deg, #14532d 0%, #166534 40%, #15803d 70%, #166534 100%);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 20px 16px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .formation-field::before {
+      content: '';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120px; height: 120px;
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 50%;
+    }
+    .formation-field::after {
+      content: '';
+      position: absolute; top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 60%; height: 100%;
+      border-left: 2px solid rgba(255,255,255,0.08);
+      border-right: 2px solid rgba(255,255,255,0.08);
+    }
+    .formation-row {
+      display: flex; justify-content: center; gap: 8px;
+      margin-bottom: 14px; position: relative; z-index: 1;
+    }
+    .formation-row:last-child { margin-bottom: 0; }
+    .player-dot {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      cursor: default;
+      width: 64px;
+    }
+    .player-circle {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      border: 2px solid rgba(255,255,255,0.6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 900; color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    .player-circle.captain { border-color: var(--yellow); background: rgba(250,204,21,0.2); color: var(--yellow); }
+    .player-name-tag {
+      font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.9);
+      text-align: center; white-space: nowrap; text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+      max-width: 64px; overflow: hidden; text-overflow: ellipsis;
+    }
+    .formation-label {
+      text-align: center; font-size: 12px; color: var(--text-muted);
+      font-weight: 600; margin-top: 8px;
+    }
+
+    /* News */
+    .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 12px; margin-bottom: 32px; }
+    .news-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px;
+      cursor: pointer; transition: all 0.2s;
+      text-decoration: none; color: inherit; display: block;
+    }
+    .news-card:hover { background: var(--card-hover); border-color: var(--green); transform: translateY(-2px); }
+    .news-tag { font-size: 10px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    .news-title { font-size: 14px; font-weight: 700; line-height: 1.4; margin-bottom: 6px; }
+    .news-meta { font-size: 11px; color: var(--text-muted); }
+
+    /* Highlights */
+    .highlights-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 12px; margin-bottom: 32px; }
+    .highlight-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      cursor: pointer; transition: all 0.2s;
+      text-decoration: none; color: inherit;
+    }
+    .highlight-card:hover { border-color: var(--green); transform: translateY(-2px); box-shadow: 0 8px 24px var(--green-glow); }
+    .highlight-thumb {
+      width: 100%; aspect-ratio: 16/9;
+      background: var(--surface);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; position: relative;
+    }
+    .highlight-play {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.35);
+    }
+    .highlight-play-btn {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--green); display: flex; align-items: center; justify-content: center;
+      font-size: 18px; box-shadow: 0 0 20px var(--green-glow);
+      transition: transform 0.15s;
+    }
+    .highlight-card:hover .highlight-play-btn { transform: scale(1.1); }
+    .highlight-info { padding: 12px 14px; }
+    .highlight-title { font-size: 13px; font-weight: 700; line-height: 1.4; margin-bottom: 4px; }
+    .highlight-sub { font-size: 11px; color: var(--text-muted); }
+
+    /* Back btn */
+    .arg-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--text); border-radius: var(--radius-sm);
+      padding: 9px 18px; cursor: pointer; font-size: 13px; font-weight: 700;
+      transition: all 0.2s; margin-bottom: 28px;
+    }
+    .arg-back:hover { background: var(--card-hover); border-color: var(--green); color: var(--green); }
+
+    @media (max-width: 600px) {
+      .big-countdown { flex-direction: column; }
+      .big-countdown-timer { flex-wrap: wrap; }
+      .cd-num { font-size: 20px; }
+      .cd-unit { min-width: 48px; padding: 8px 10px; }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
+</head>
+<body>
+
+<!-- ANIMATED BACKGROUND CANVAS -->
+<canvas id="bg-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
+<!-- CURSOR GLOW -->
+<div id="cursor-glow" style="position:fixed;pointer-events:none;z-index:1;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(34,197,94,0.07) 0%,transparent 70%);transform:translate(-50%,-50%);transition:opacity 0.3s;opacity:0;"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo" onclick="goHome()" style="flex-shrink:0;cursor:pointer;">
+    <div class="logo-ball">⚽</div>
+    <span class="logo-text">Futbol Para Todos</span>
+  </div>
+  <nav class="nav-links">
+    <button class="nav-link active" id="navbtn-inicio" onclick="scrollToSection('inicio')">Inicio</button>
+    <button class="nav-link" id="navbtn-canales" onclick="scrollToSection('featured-section')">Canales Principales</button>
+    <button class="nav-link" id="navbtn-buscar" onclick="scrollToSection('tabs-section-anchor')">Buscar canales</button>
+    <button class="nav-link" id="navbtn-faq" onclick="scrollToSection('faq-section')">Preguntas Frecuentes</button>
+  </nav>
+  <div class="next-match" onclick="showArgPage()">
+    <div class="next-match-inner">
+      <div class="next-match-label">🏆 Mundial 2026</div>
+      <div class="next-match-teams">🇦🇷 ARG vs DZA 🇩🇿</div>
+    </div>
+    <div class="next-match-divider"></div>
+    <div class="next-match-countdown" id="header-countdown">--d --h</div>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero" id="inicio">
+  <h1>Todos los partidos,<br><span>en un solo lugar</span></h1>
+  <p>Elegí el canal que quieras y mirá el fútbol en vivo de forma gratuita.</p>
+</div>
+
+<!-- PLAYER SECTION (hidden by default) -->
+<div id="player-section">
+  <div class="player-header">
+    <button class="btn-back" onclick="closePlayer()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Volver a los canales
+    </button>
+    <div class="player-title">
+      <div class="dot"></div>
+      <span id="player-channel-name">Canal</span>
+    </div>
+    <button class="btn-close" onclick="closePlayer()">✕ Cerrar</button>
+  </div>
+  <div class="player-wrapper" id="player-wrapper">
+    <iframe
+      id="stream-iframe"
+      src=""
+      allowfullscreen
+      scrolling="no"
+      allow="autoplay; encrypted-media; fullscreen"
+    ></iframe>
+    <video
+      id="stream-video"
+      controls
+      autoplay
+      playsinline
+      style="display:none"
+    ></video>
+  </div>
+  <div class="player-controls">
+    <!-- Velocidad -->
+    <div class="ctrl-group">
+      <span class="ctrl-label">⚡ Velocidad</span>
+      <button class="ctrl-btn" onclick="setSpeed('0.5')">0.5x</button>
+      <button class="ctrl-btn active" id="speed-1x" onclick="setSpeed('1')">1x</button>
+      <button class="ctrl-btn" onclick="setSpeed('1.5')">1.5x</button>
+      <button class="ctrl-btn" onclick="setSpeed('2')">2x</button>
+    </div>
+    <!-- Calidad -->
+    <div class="ctrl-group">
+      <span class="ctrl-label">🎬 Calidad</span>
+      <select class="ctrl-select" id="quality-select" onchange="switchQuality(this.value)">
+        <option value="auto">Auto</option>
+        <option value="1080">1080p</option>
+        <option value="720">720p</option>
+        <option value="480">480p</option>
+        <option value="360">360p</option>
+      </select>
+    </div>
+    <!-- Fuente alternativa -->
+    <div class="ctrl-group">
+      <span class="ctrl-label">📡 Fuente</span>
+      <button class="ctrl-btn active" id="src-1" onclick="switchSource('global1')">1</button>
+      <button class="ctrl-btn" id="src-2" onclick="switchSource('global2')">2</button>
+    </div>
+    <div class="ctrl-divider"></div>
+    <!-- Sync -->
+    <button class="btn-sync" onclick="syncLive()">
+      ⟳ Sincronizar
+    </button>
+    <!-- Fullscreen -->
+    <button class="btn-fullscreen" onclick="goFullscreen()">
+      ⛶ Pantalla Completa
+    </button>
+  </div>
+</div>
+
+<!-- FEATURED CHANNELS -->
+<div class="featured-section" id="featured-section">
+  <div class="featured-title">⭐ Canales principales</div>
+  <div class="featured-grid">
+    <div class="featured-card" onclick="playChannel('espnpremium','ESPN Premium')">
+      <div class="featured-icon">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/200px-ESPN_wordmark.svg.png" alt="ESPN Premium">
+      </div>
+      <div class="featured-name">ESPN Premium</div>
+      <div class="featured-live"><span class="featured-live-dot"></span> En vivo</div>
+    </div>
+    <div class="featured-card" onclick="playChannel('tntsports','TNT Sports AR')">
+      <div class="featured-icon">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/TNT_Sports_Logo.svg" alt="TNT Sports">
+      </div>
+      <div class="featured-name">TNT Sports AR</div>
+      <div class="featured-live"><span class="featured-live-dot"></span> En vivo</div>
+    </div>
+    <div class="featured-card" onclick="playChannel('fox1ar','Fox Sports Premium')">
+      <div class="featured-icon">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/FOX_Sports_logo.svg/200px-FOX_Sports_logo.svg.png" alt="Fox Sports Premium">
+      </div>
+      <div class="featured-name">Fox Sports Premium</div>
+      <div class="featured-live"><span class="featured-live-dot"></span> En vivo</div>
+    </div>
+    <div class="featured-card" onclick="playChannel('tycsports','TyC Sports')">
+      <div class="featured-icon">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/TyC_Sports_logo.svg/200px-TyC_Sports_logo.svg.png" alt="TyC Sports">
+      </div>
+      <div class="featured-name">TyC Sports</div>
+      <div class="featured-live"><span class="featured-live-dot"></span> En vivo</div>
+    </div>
+    <div class="featured-card" onclick="playChannel('dsports','DSports')">
+      <div class="featured-icon">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/DSports_logo_2022.svg" alt="DSports">
+      </div>
+      <div class="featured-name">DSports</div>
+      <div class="featured-live"><span class="featured-live-dot"></span> En vivo</div>
+    </div>
+    <div class="featured-card" onclick="playChannel('telefe','Telefe')">
+      <div class="featured-icon">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Logo_telefe_argentina.svg" alt="Telefe">
+      </div>
+      <div class="featured-name">Telefe</div>
+      <div class="featured-live"><span class="featured-live-dot"></span> En vivo</div>
+    </div>
+  </div>
+</div>
+
+<!-- CHANNELS SECTION -->
+<div class="tabs-section" id="tabs-section-anchor">
+
+  <!-- Search -->
+  <div class="search-bar">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search-input" placeholder="Buscar canal..." oninput="filterChannels()" />
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs-header">
+    <button class="tab-btn active" onclick="switchTab('all', this)">Todos</button>
+    <button class="tab-btn" onclick="switchTab('arg', this)">🇦🇷 Argentina</button>
+    <button class="tab-btn" onclick="switchTab('usa', this)">🇺🇸 USA</button>
+    <button class="tab-btn" onclick="switchTab('mx', this)">🇲🇽 México</button>
+    <button class="tab-btn" onclick="switchTab('br', this)">🇧🇷 Brasil</button>
+    <button class="tab-btn" onclick="switchTab('int', this)">🌍 Internacional</button>
+    <button class="tab-btn" onclick="switchTab('events', this)">🏆 Eventos</button>
+  </div>
+
+  <!-- Tab: ALL (search results + default grid) -->
+  <div class="tab-content active" id="tab-all">
+    <div class="channels-grid" id="grid-all"></div>
+  </div>
+  <!-- Tab: Argentina -->
+  <div class="tab-content" id="tab-arg">
+    <div class="channels-grid" id="grid-arg"></div>
+  </div>
+  <!-- Tab: USA -->
+  <div class="tab-content" id="tab-usa">
+    <div class="channels-grid" id="grid-usa"></div>
+  </div>
+  <!-- Tab: Mexico -->
+  <div class="tab-content" id="tab-mx">
+    <div class="channels-grid" id="grid-mx"></div>
+  </div>
+  <!-- Tab: Brasil -->
+  <div class="tab-content" id="tab-br">
+    <div class="channels-grid" id="grid-br"></div>
+  </div>
+  <!-- Tab: Internacional -->
+  <div class="tab-content" id="tab-int">
+    <div class="channels-grid" id="grid-int"></div>
+  </div>
+  <!-- Tab: Eventos -->
+  <div class="tab-content" id="tab-events">
+    <div class="channels-grid" id="grid-events"></div>
+  </div>
+
+</div>
+
+<!-- FAQ -->
+<div class="faq-section" id="faq-section">
+  <div class="faq-header">
+    <h2>Preguntas frecuentes</h2>
+    <p>Todo lo que tenés que saber sobre Fútbol Para Todos.</p>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item" id="faq-0">
+      <button class="faq-question" onclick="toggleFaq(0)">
+        ¿Qué es Fútbol Para Todos TV?
+        <span class="faq-chevron">∧</span>
+      </button>
+      <div class="faq-answer">
+        <p>Fútbol Para Todos es tu espacio para disfrutar partidos online gratis en Full HD y apoyar a tu equipo favorito del fútbol argentino. También transmitimos la Copa Sudamericana, Copa Libertadores, encuentros de Boca Juniors, River Plate y la Selección Argentina. Todo el fútbol que querés, en un solo lugar.</p>
+      </div>
+    </div>
+    <div class="faq-item" id="faq-1">
+      <button class="faq-question" onclick="toggleFaq(1)">
+        ¿Cómo ver un partido en la web?
+        <span class="faq-chevron">∧</span>
+      </button>
+      <div class="faq-answer">
+        <p>Ver Fútbol Para Todos online en vivo es muy sencillo. Solo entrá al sitio, consultá la grilla de canales para encontrar el partido que querés ver y hacé clic en el canal que prefieras. También podés buscar directamente el canal que transmitirá el encuentro en el horario indicado. Los canales se actualizan todos los días para que no te pierdas ningún partido.</p>
+      </div>
+    </div>
+    <div class="faq-item" id="faq-2">
+      <button class="faq-question" onclick="toggleFaq(2)">
+        ¿Cómo ver Fútbol Para Todos en Android u otro dispositivo?
+        <span class="faq-chevron">∧</span>
+      </button>
+      <div class="faq-answer">
+        <p>Para disfrutar de Fútbol Para Todos desde cualquier dispositivo, solo necesitás conexión a internet estable. Ingresá al sitio desde el navegador de tu teléfono o tablet, elegí tu canal favorito en Full HD y viví cada partido en vivo donde quieras, sin instalar nada.</p>
+      </div>
+    </div>
+    <div class="faq-item" id="faq-3">
+      <button class="faq-question" onclick="toggleFaq(3)">
+        ¿Qué partidos se transmiten en Fútbol Para Todos?
+        <span class="faq-chevron">∧</span>
+      </button>
+      <div class="faq-answer">
+        <p>En Fútbol Para Todos podés ver todos los partidos del fútbol argentino, además de encuentros destacados de Chile, Perú, Paraguay y Estados Unidos. También transmitimos la Copa Libertadores, la Copa Sudamericana y los partidos de la Selección Argentina.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  ⚽ Futbol Para Todos &mdash; Todos los partidos en vivo &bull; Solo para uso personal
+  <br>
+  <span style="font-size:12px;opacity:0.6;margin-top:6px;display:inline-block;">Programa creado por Germán González</span>
+</footer>
+<div id="arg-page">
+
+  <button class="arg-back" onclick="closeArgPage()">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+      <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Volver al inicio
+  </button>
+
+  <!-- Hero -->
+  <div class="arg-hero">
+    <div class="arg-flag">🇦🇷</div>
+    <h2>Selección <span>Argentina</span></h2>
+    <p>Todo lo que tenés que saber del campeón del mundo en el Mundial 2026</p>
+  </div>
+
+  <!-- Big countdown -->
+  <div class="big-countdown">
+    <div class="big-countdown-left">
+      <div class="big-countdown-match">🇦🇷 Argentina vs Argelia 🇩🇿</div>
+      <div class="big-countdown-meta">Martes 16 de junio · 22:00 ARG · Arrowhead Stadium, Kansas City · Grupo J</div>
+    </div>
+    <div class="big-countdown-timer">
+      <div class="cd-unit"><span class="cd-num" id="cd-days">--</span><span class="cd-label">días</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-hours">--</span><span class="cd-label">horas</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-mins">--</span><span class="cd-label">min</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-secs">--</span><span class="cd-label">seg</span></div>
+    </div>
+  </div>
+
+  <!-- Fixture Grupo J -->
+  <div class="section-title">📅 Fixture — Grupo J</div>
+  <div class="fixture-list">
+    <div class="fixture-card">
+      <div class="fixture-card-left">
+        <div class="fixture-date">Mar 31 de marzo 2026 · Amistoso</div>
+        <div class="fixture-teams">🇦🇷 Argentina <span class="vs">vs</span> Zambia 🇿🇲</div>
+      </div>
+      <div class="fixture-right">
+        <div class="fixture-venue">La Bombonera, Buenos Aires</div>
+        <div class="result-badge">5 – 0 ✅</div>
+      </div>
+    </div>
+    <div class="fixture-card next-up">
+      <div class="fixture-card-left">
+        <div class="fixture-date">Mar 16 de junio 2026 · Copa del Mundo · Grupo J</div>
+        <div class="fixture-teams">🇦🇷 Argentina <span class="vs">vs</span> Argelia 🇩🇿</div>
+      </div>
+      <div class="fixture-right">
+        <div class="fixture-venue">Arrowhead Stadium, Kansas City</div>
+        <div class="fixture-time">22:00 ARG</div>
+        <span class="fixture-badge">Próximo</span>
+      </div>
+    </div>
+    <div class="fixture-card">
+      <div class="fixture-card-left">
+        <div class="fixture-date">Lun 22 de junio 2026 · Copa del Mundo · Grupo J</div>
+        <div class="fixture-teams">🇦🇷 Argentina <span class="vs">vs</span> Austria 🇦🇹</div>
+      </div>
+      <div class="fixture-right">
+        <div class="fixture-venue">AT&T Stadium, Dallas</div>
+        <div class="fixture-time">14:00 ARG</div>
+      </div>
+    </div>
+    <div class="fixture-card">
+      <div class="fixture-card-left">
+        <div class="fixture-date">Dom 28 de junio 2026 · Copa del Mundo · Grupo J</div>
+        <div class="fixture-teams">🇦🇷 Argentina <span class="vs">vs</span> Jordania 🇯🇴</div>
+      </div>
+      <div class="fixture-right">
+        <div class="fixture-venue">AT&T Stadium, Dallas</div>
+        <div class="fixture-time">23:00 ARG</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formación -->
+  <div class="section-title">👕 Formación — último partido (vs Zambia 5-0)</div>
+  <div class="formation-wrap">
+    <div class="formation-field">
+      <div class="formation-row">
+        <div class="player-dot"><div class="player-circle captain">10</div><div class="player-name-tag">Messi</div></div>
+        <div class="player-dot"><div class="player-circle">9</div><div class="player-name-tag">J. Álvarez</div></div>
+      </div>
+      <div class="formation-row">
+        <div class="player-dot"><div class="player-circle">22</div><div class="player-name-tag">Simeone</div></div>
+        <div class="player-dot"><div class="player-circle">10</div><div class="player-name-tag">Almada</div></div>
+        <div class="player-dot"><div class="player-circle">5</div><div class="player-name-tag">Mac Allister</div></div>
+        <div class="player-dot"><div class="player-circle">8</div><div class="player-name-tag">E. Fernández</div></div>
+      </div>
+      <div class="formation-row">
+        <div class="player-dot"><div class="player-circle">26</div><div class="player-name-tag">Barco</div></div>
+        <div class="player-dot"><div class="player-circle">25</div><div class="player-name-tag">Senesi</div></div>
+        <div class="player-dot"><div class="player-circle">13</div><div class="player-name-tag">Otamendi</div></div>
+        <div class="player-dot"><div class="player-circle">2</div><div class="player-name-tag">Molina</div></div>
+      </div>
+      <div class="formation-row">
+        <div class="player-dot"><div class="player-circle">1</div><div class="player-name-tag">Dibu Martínez</div></div>
+      </div>
+    </div>
+    <div class="formation-label">4-4-2 · DT: Lionel Scaloni · Fuente: último partido vs Zambia (31/03)</div>
+  </div>
+
+  <!-- Liga Profesional — API en vivo -->
+  <div class="section-title">🏆 Liga Profesional Argentina — Tabla de posiciones</div>
+  <div id="liga-standings-wrap">
+    <div id="liga-loading" style="text-align:center;padding:32px 0;color:var(--text-muted);font-size:14px;">
+      <span style="font-size:24px;display:block;margin-bottom:8px">⚽</span>
+      Cargando tabla de posiciones...
+    </div>
+    <div id="liga-standings" style="display:none"></div>
+    <div id="liga-error" style="display:none;text-align:center;padding:24px;color:var(--text-muted);font-size:13px;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:32px">
+      No se pudo cargar la tabla. Revisá tu conexión.
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ===== CHANNELS DATA =====
+  const BASE_URL = 'https://streamtp10.com/';
+
+  // ===== LOGO URLS =====
+  const LOGOS = {
+    espn:     'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/200px-ESPN_wordmark.svg.png',
+    fox:      'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/FOX_Sports_logo.svg/200px-FOX_Sports_logo.svg.png',
+    dsports:  'https://commons.wikimedia.org/wiki/Special:FilePath/DSports_logo_2022.svg',
+    tnt:      'https://commons.wikimedia.org/wiki/Special:FilePath/TNT_Sports_Logo.svg',
+    tyc:      'https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/TyC_Sports_logo.svg/200px-TyC_Sports_logo.svg.png',
+    win:      'https://commons.wikimedia.org/wiki/Special:FilePath/Win_Sports_nuevo_logo.svg',
+    telefe:   'https://commons.wikimedia.org/wiki/Special:FilePath/Logo_telefe_argentina.svg',
+    tvpublica:'https://commons.wikimedia.org/wiki/Special:FilePath/TVP_-_Televisi%C3%B3n_P%C3%BAblica_(2021).svg',
+    liga1:    'https://commons.wikimedia.org/wiki/Special:FilePath/L1MAX-LOGO.svg',
+    tudn:     'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/TUDN_Logo.svg/200px-TUDN_Logo.svg.png',
+    univision:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_Univision_2013.svg/200px-Logo_Univision_2013.svg.png',
+    universo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/NBC_Universo_logo.svg/200px-NBC_Universo_logo.svg.png',
+    usa_net:  'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/USA_Network_logo_%282016%29.svg/200px-USA_Network_logo_%282016%29.svg.png',
+    azteca7:  'https://commons.wikimedia.org/wiki/Special:FilePath/Azteca72024.png',
+    canal5:   'https://commons.wikimedia.org/wiki/Special:FilePath/Canal_5_Mexico_logo_2014.svg',
+    sportv:   'https://commons.wikimedia.org/wiki/Special:FilePath/SporTV_2021.png',
+    premiere: 'https://commons.wikimedia.org/wiki/Special:FilePath/Premiere_(2017)_logo.png',
+    laliga:   'https://commons.wikimedia.org/wiki/Special:FilePath/LaLiga_TV_Hypermotion_2023_Logo.svg',
+    tigo:     'https://commons.wikimedia.org/wiki/Special:FilePath/Tigo_Sports_2025.png',
+    futv:     'https://commons.wikimedia.org/wiki/Special:FilePath/Logo_de_FUTV.svg',
+  };
+
+  const channels = [
+    // Argentina
+    { id:'espn',            name:'ESPN 1',            icon:'E1', color:'#e53e3e', region:'arg',    logo: LOGOS.espn },
+    { id:'espn2',           name:'ESPN 2',            icon:'E2', color:'#e53e3e', region:'arg',    logo: LOGOS.espn },
+    { id:'espn3',           name:'ESPN 3',            icon:'E3', color:'#e53e3e', region:'arg',    logo: LOGOS.espn },
+    { id:'espn4',           name:'ESPN 4',            icon:'E4', color:'#e53e3e', region:'arg',    logo: LOGOS.espn },
+    { id:'espn5',           name:'ESPN 5',            icon:'E5', color:'#e53e3e', region:'arg',    logo: LOGOS.espn },
+    { id:'espn6',           name:'ESPN 6',            icon:'E6', color:'#e53e3e', region:'arg',    logo: LOGOS.espn },
+    { id:'espn7',           name:'ESPN 7',            icon:'E7', color:'#e53e3e', region:'arg',    logo: LOGOS.espn },
+    { id:'espnpremium',     name:'ESPN Premium',      icon:'EP', color:'#c53030', region:'arg',    logo: LOGOS.espn },
+    { id:'fox1ar',          name:'Fox Sports 1',      icon:'F1', color:'#2b6cb0', region:'arg',    logo: LOGOS.fox },
+    { id:'fox2ar',          name:'Fox Sports 2',      icon:'F2', color:'#2b6cb0', region:'arg',    logo: LOGOS.fox },
+    { id:'fox3ar',          name:'Fox Sports 3',      icon:'F3', color:'#2b6cb0', region:'arg',    logo: LOGOS.fox },
+    { id:'dsports',         name:'DSports',           icon:'DS', color:'#6b46c1', region:'arg',    logo: LOGOS.dsports },
+    { id:'dsports2',        name:'DSports 2',         icon:'D2', color:'#6b46c1', region:'arg',    logo: LOGOS.dsports },
+    { id:'dsportsplus',     name:'DSports+',          icon:'D+', color:'#6b46c1', region:'arg',    logo: LOGOS.dsports },
+    { id:'tntsports',       name:'TNT Sports AR',     icon:'TN', color:'#d69e2e', region:'arg',    logo: LOGOS.tnt },
+    { id:'tycsports',       name:'TyC Sports',        icon:'TY', color:'#2d6a4f', region:'arg',    logo: LOGOS.tyc },
+    { id:'tycinternacional',name:'TyC Internacional', icon:'TI', color:'#2d6a4f', region:'arg',    logo: LOGOS.tyc },
+    { id:'winplus',         name:'Win Sports+',       icon:'W+', color:'#276749', region:'arg',    logo: LOGOS.win },
+    { id:'winplus2',        name:'Win Sports+ 2',     icon:'W2', color:'#276749', region:'arg',    logo: LOGOS.win },
+    { id:'winsports',       name:'Win Sports',        icon:'WN', color:'#276749', region:'arg',    logo: LOGOS.win },
+    { id:'telefe',          name:'Telefe',            icon:'TF', color:'#744210', region:'arg',    logo: LOGOS.telefe,
+      customSources: [
+        { url: 'https://pelisjuanita.com/tv/telefe.html', type: 'iframe' },
+        { url: 'https://pelisjuanita.com/tv/telefe.html', type: 'iframe' },
+      ]
+    },
+    { id:'tv_publica',      name:'TV Pública',        icon:'TV', color:'#2c5282', region:'arg',    logo: LOGOS.tvpublica },
+    { id:'liga1max',        name:'Liga 1 MAX',        icon:'L1', color:'#c05621', region:'arg',    logo: LOGOS.liga1 },
+    { id:'tntsportschile',  name:'TNT Sports CL',     icon:'TC', color:'#d69e2e', region:'int',    logo: LOGOS.tnt },
+
+    // USA
+    { id:'espndeportes',    name:'ESPN Deportes',     icon:'ED', color:'#e53e3e', region:'usa',    logo: LOGOS.espn },
+    { id:'tudn_usa',        name:'TUDN USA',          icon:'TU', color:'#1a365d', region:'usa',    logo: LOGOS.tudn },
+    { id:'fox_1_usa',       name:'Fox Sports 1',      icon:'F1', color:'#2b6cb0', region:'usa',    logo: LOGOS.fox },
+    { id:'fox_2_usa',       name:'Fox Sports 2',      icon:'F2', color:'#2b6cb0', region:'usa',    logo: LOGOS.fox },
+    { id:'universo_usa',    name:'Universo USA',      icon:'UN', color:'#553c9a', region:'usa',    logo: LOGOS.universo },
+    { id:'univision_usa',   name:'Univision USA',     icon:'UV', color:'#2b6cb0', region:'usa',    logo: LOGOS.univision },
+    { id:'fox_deportes_usa',name:'Fox Deportes',      icon:'FD', color:'#2b6cb0', region:'usa',    logo: LOGOS.fox },
+    { id:'usa_network',     name:'USA Network',       icon:'US', color:'#1a365d', region:'usa',    logo: LOGOS.usa_net },
+
+    // Mexico
+    { id:'azteca7',         name:'Azteca 7',          icon:'A7', color:'#9c4221', region:'mx',     logo: LOGOS.azteca7 },
+    { id:'foxsportsmx',     name:'Fox Sports 1 MX',   icon:'F1', color:'#2b6cb0', region:'mx',     logo: LOGOS.fox },
+    { id:'foxsports2mx',    name:'Fox Sports 2 MX',   icon:'F2', color:'#2b6cb0', region:'mx',     logo: LOGOS.fox },
+    { id:'foxsports3mx',    name:'Fox Sports 3 MX',   icon:'F3', color:'#2b6cb0', region:'mx',     logo: LOGOS.fox },
+    { id:'foxsportspremium',name:'Fox Sports Premium',icon:'FP', color:'#1e4e8c', region:'mx',     logo: LOGOS.fox },
+    { id:'foxone',          name:'Fox ONE MX',        icon:'FO', color:'#2b6cb0', region:'mx',     logo: LOGOS.fox },
+    { id:'fox',             name:'Fox MX',            icon:'FX', color:'#2b6cb0', region:'mx',     logo: LOGOS.fox },
+    { id:'espnmx',          name:'ESPN MX',           icon:'E1', color:'#e53e3e', region:'mx',     logo: LOGOS.espn },
+    { id:'espn2mx',         name:'ESPN 2 MX',         icon:'E2', color:'#e53e3e', region:'mx',     logo: LOGOS.espn },
+    { id:'espn3mx',         name:'ESPN 3 MX',         icon:'E3', color:'#e53e3e', region:'mx',     logo: LOGOS.espn },
+    { id:'canal5mx',        name:'Canal 5 MX',        icon:'C5', color:'#744210', region:'mx',     logo: LOGOS.canal5 },
+    { id:'tudnmx',          name:'TUDN MX',           icon:'TM', color:'#1a365d', region:'mx',     logo: LOGOS.tudn },
+
+    // Brasil
+    { id:'sporttvbr1',      name:'Sport TV 1 BR',     icon:'S1', color:'#276749', region:'br',     logo: LOGOS.sportv },
+    { id:'sporttvbr2',      name:'Sport TV 2 BR',     icon:'S2', color:'#276749', region:'br',     logo: LOGOS.sportv },
+    { id:'sporttvbr3',      name:'Sport TV 3 BR',     icon:'S3', color:'#276749', region:'br',     logo: LOGOS.sportv },
+    { id:'premiere1',       name:'Premiere 1 BR',     icon:'P1', color:'#2c7a7b', region:'br',     logo: LOGOS.premiere },
+    { id:'premiere2',       name:'Premiere 2 BR',     icon:'P2', color:'#2c7a7b', region:'br',     logo: LOGOS.premiere },
+    { id:'premiere3',       name:'Premiere 3 BR',     icon:'P3', color:'#2c7a7b', region:'br',     logo: LOGOS.premiere },
+
+    // Internacional
+    { id:'tnt_1_gb',        name:'TNT 1 GB',          icon:'T1', color:'#d69e2e', region:'int',    logo: LOGOS.tnt },
+    { id:'tnt_2_gb',        name:'TNT 2 GB',          icon:'T2', color:'#d69e2e', region:'int',    logo: LOGOS.tnt },
+    { id:'tnt_3_gb',        name:'TNT 3 GB',          icon:'T3', color:'#d69e2e', region:'int',    logo: LOGOS.tnt },
+    { id:'tnt_4_gb',        name:'TNT 4 GB',          icon:'T4', color:'#d69e2e', region:'int',    logo: LOGOS.tnt },
+    { id:'espn_nl1',        name:'ESPN 1 NL',         icon:'N1', color:'#e53e3e', region:'int',    logo: LOGOS.espn },
+    { id:'espn_nl2',        name:'ESPN 2 NL',         icon:'N2', color:'#e53e3e', region:'int',    logo: LOGOS.espn },
+    { id:'espn_nl3',        name:'ESPN 3 NL',         icon:'N3', color:'#e53e3e', region:'int',    logo: LOGOS.espn },
+
+    // Eventos
+    { id:'futv',            name:'FUTV Eventos',      icon:'FU', color:'#276749', region:'events', logo: LOGOS.futv },
+    { id:'laligahypermotion',name:'LaLiga Hypermotion',icon:'LL', color:'#e84393', region:'events', logo: LOGOS.laliga },
+    { id:'tigosportsparaguay',name:'Tigo Sports PY',  icon:'TP', color:'#2b6cb0', region:'events', logo: LOGOS.tigo },
+  ];
+
+  let currentStream = null;
+  let currentSource = 'global1';
+  let speedBtns = null;
+
+  // ===== HAMBURGER MENU =====
+  function toggleMenu() {
+    const drawer = document.getElementById('nav-drawer');
+    const overlay = document.getElementById('nav-overlay');
+    const btn = document.getElementById('hamburger');
+    const isOpen = drawer.classList.contains('open');
+    drawer.classList.toggle('open', !isOpen);
+    overlay.classList.toggle('open', !isOpen);
+    btn.classList.toggle('open', !isOpen);
+  }
+
+  function closeMenu() {
+    document.getElementById('nav-drawer').classList.remove('open');
+    document.getElementById('nav-overlay').classList.remove('open');
+    document.getElementById('hamburger').classList.remove('open');
+  }
+
+  function navTo(section) {
+    closeMenu();
+    // Update active state in drawer
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    const navEl = document.getElementById('nav-' + section);
+    if (navEl) navEl.classList.add('active');
+
+    if (section === 'inicio') {
+      closePlayer();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (section === 'player') {
+      document.getElementById('player-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (section === 'buscar') {
+      // Switch to "Todos" tab and focus search
+      document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+      document.querySelectorAll('.tab-content').forEach((t, i) => t.classList.toggle('active', i === 0));
+      document.getElementById('tabs-section-anchor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => document.getElementById('search-input').focus(), 400);
+    } else {
+      // Switch to corresponding tab
+      const tabBtn = document.querySelector(`.tab-btn[onclick*="'${section}'"]`);
+      if (tabBtn) {
+        switchTab(section, tabBtn);
+        document.getElementById('tabs-section-anchor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }
+
+  // Close menu on Escape key
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+
+  // ===== BUILD GRIDS =====
+  function buildChannelCard(ch) {
+    return `
+      <div class="channel-card" id="card-${ch.id}" onclick="playChannel('${ch.id}', '${ch.name}')">
+        <div class="channel-icon">
+          <img src="${ch.logo}" alt="${ch.name}"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+          <span class="icon-fallback" style="color:${ch.color}">${ch.icon}</span>
+        </div>
+        <div class="channel-name">${ch.name}</div>
+      </div>`;
+  }
+
+  function buildGrids() {
+    const regions = ['all','arg','usa','mx','br','int','events'];
+    regions.forEach(r => {
+      const list = r === 'all' ? channels : channels.filter(c => c.region === r);
+      document.getElementById('grid-' + r).innerHTML = list.map(buildChannelCard).join('');
+    });
+  }
+
+  buildGrids();
+
+  // ===== TAB SWITCHING =====
+  function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + tabId).classList.add('active');
+    // Clear search
+    document.getElementById('search-input').value = '';
+  }
+
+  // ===== SEARCH =====
+  function filterChannels() {
+    const q = document.getElementById('search-input').value.toLowerCase().trim();
+    // Switch to "all" tab when searching
+    document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+    document.querySelectorAll('.tab-content').forEach((t,i) => t.classList.toggle('active', i===0));
+
+    const filtered = q ? channels.filter(c => c.name.toLowerCase().includes(q)) : channels;
+    document.getElementById('grid-all').innerHTML = filtered.map(buildChannelCard).join('');
+  }
+
+  let hlsInstance = null;
+
+  function getSource(streamId, sourceKey) {
+    const ch = channels.find(c => c.id === streamId);
+    if (ch && ch.customSources) {
+      return sourceKey === 'global1' ? ch.customSources[0] : ch.customSources[1];
+    }
+    return { url: `${BASE_URL}${sourceKey}.php?stream=${streamId}`, type: 'iframe' };
+  }
+
+  function loadSource(source) {
+    const iframe = document.getElementById('stream-iframe');
+    const video  = document.getElementById('stream-video');
+
+    if (source.type === 'hls') {
+      iframe.style.display = 'none';
+      iframe.src = '';
+      video.style.display = 'block';
+      if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+      if (Hls.isSupported()) {
+        hlsInstance = new Hls({ liveSyncDurationCount: 3 });
+        hlsInstance.loadSource(source.url);
+        hlsInstance.attachMedia(video);
+        hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(() => {}));
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        // Safari native HLS
+        video.src = source.url;
+        video.play().catch(() => {});
+      }
+    } else {
+      video.style.display = 'none';
+      video.pause();
+      if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+      iframe.style.display = 'block';
+      iframe.src = source.url;
+    }
+  }
+
+  // ===== PLAYER =====
+  function playChannel(streamId, name) {
+    currentStream = streamId;
+    currentSource = 'global1';
+    document.getElementById('src-1').classList.add('active');
+    document.getElementById('src-2').classList.remove('active');
+
+    // Update player
+    document.getElementById('player-channel-name').textContent = '🔴 ' + name;
+    loadSource(getSource(streamId, 'global1'));
+
+    // Show player
+    const section = document.getElementById('player-section');
+    section.classList.add('visible');
+
+    // Scroll to player
+    setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+
+    // Mark playing card
+    document.querySelectorAll('.channel-card').forEach(c => c.classList.remove('playing'));
+    document.querySelectorAll(`#card-${streamId}`).forEach(c => c.classList.add('playing'));
+
+    // Show "Volver al reproductor" in menu
+    document.getElementById('nav-playing').style.display = 'flex';
+  }
+
+  function closePlayer() {
+    document.getElementById('player-section').classList.remove('visible');
+    document.getElementById('stream-iframe').src = '';
+    const video = document.getElementById('stream-video');
+    video.pause();
+    video.src = '';
+    video.style.display = 'none';
+    document.getElementById('stream-iframe').style.display = 'block';
+    if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+    document.querySelectorAll('.channel-card').forEach(c => c.classList.remove('playing'));
+    currentStream = null;
+    document.getElementById('nav-playing').style.display = 'none';
+    document.getElementById('tabs-section-anchor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function switchSource(src) {
+    currentSource = src;
+    document.getElementById('src-1').classList.toggle('active', src === 'global1');
+    document.getElementById('src-2').classList.toggle('active', src === 'global2');
+    if (currentStream) loadSource(getSource(currentStream, src));
+  }
+
+  function syncLive() {
+    if (currentStream) {
+      const src = document.getElementById('stream-iframe').src;
+      // Reload iframe to sync with live
+      document.getElementById('stream-iframe').src = '';
+      setTimeout(() => {
+        loadSource(getSource(currentStream, currentSource));
+      }, 300);
+      showToast('⟳ Sincronizando con el vivo...');
+    }
+  }
+
+  function goFullscreen() {
+    const wrapper = document.getElementById('player-wrapper');
+    if (wrapper.requestFullscreen) wrapper.requestFullscreen();
+    else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
+    else if (wrapper.mozRequestFullScreen) wrapper.mozRequestFullScreen();
+  }
+
+  function setSpeed(val) {
+    // Can't control iframe content speed directly, so we show feedback
+    document.querySelectorAll('.ctrl-btn[onclick^="setSpeed"]').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    showToast(`⚡ Velocidad: ${val}x`);
+  }
+
+  function switchQuality(val) {
+    showToast(`🎬 Calidad seleccionada: ${val === 'auto' ? 'Auto' : val + 'p'}`);
+  }
+
+  // ===== TOAST NOTIFICATION =====
+  let toastTimer;
+  function showToast(msg) {
+    let toast = document.getElementById('toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'toast';
+      toast.style.cssText = `
+        position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+        background:#1a2e1a;border:1px solid #22c55e;color:#e8f5e8;
+        padding:10px 20px;border-radius:40px;font-size:13px;font-weight:600;
+        z-index:9999;opacity:0;transition:opacity 0.25s;pointer-events:none;
+        white-space:nowrap;box-shadow:0 4px 24px rgba(0,0,0,0.5);
+      `;
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.style.opacity = '1';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.style.opacity = '0'; }, 2200);
+  }
+
+  // ===== FAQ =====
+  function toggleFaq(idx) {
+    const item = document.getElementById('faq-' + idx);
+    const isOpen = item.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('open'));
+    // Open clicked if it was closed
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // ===== GO HOME (logo click, works from anywhere) =====
+  function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Update active nav button
+    const map = { 'inicio': 'navbtn-inicio', 'featured-section': 'navbtn-canales', 'tabs-section-anchor': 'navbtn-buscar', 'faq-section': 'navbtn-faq' };
+    document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+    const btnId = map[id];
+    if (btnId) document.getElementById(btnId)?.classList.add('active');
+  }
+
+  function goHome() {
+    scrollToSection('inicio');
+    closeArgPage();
+  }
+
+  // ===== ARGENTINA PAGE =====
+  function showArgPage() {
+    document.querySelector('.hero').style.display = 'none';
+    document.getElementById('player-section').style.display = 'none';
+    document.querySelector('.tabs-section').style.display = 'none';
+    document.querySelector('footer').style.display = 'none';
+    document.querySelector('.featured-section').style.display = 'none';
+    document.querySelector('.faq-section').style.display = 'none';
+    document.getElementById('arg-page').classList.add('visible');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    loadLigaStandings();
+  }
+
+  function closeArgPage() {
+    document.querySelector('.hero').style.display = '';
+    document.getElementById('player-section').style.display = '';
+    document.querySelector('.tabs-section').style.display = '';
+    document.querySelector('footer').style.display = '';
+    document.querySelector('.featured-section').style.display = '';
+    document.querySelector('.faq-section').style.display = '';
+    document.getElementById('arg-page').classList.remove('visible');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ===== COUNTDOWN (shared) =====
+  // Argentina vs Argelia — 16 junio 2026, 22:00 ARG = UTC-3 → 01:00 UTC 17/6
+  const MATCH_DATE = new Date('2026-06-17T01:00:00Z');
+
+  function updateCountdowns() {
+    const now  = new Date();
+    const diff = MATCH_DATE - now;
+
+    // --- Header badge ---
+    const hEl = document.getElementById('header-countdown');
+    if (hEl) {
+      if (diff <= 0) {
+        hEl.textContent = '¡En juego!';
+        hEl.classList.add('soon');
+      } else {
+        const hd = Math.floor(diff / 864e5);
+        const hh = Math.floor((diff % 864e5) / 36e5);
+        const hm = Math.floor((diff % 36e5) / 6e4);
+        hEl.textContent = hd > 0 ? `${hd}d ${hh}h ${hm}m` : `${hh}h ${hm}m`;
+        if (hd === 0 && hh < 3) hEl.classList.add('soon');
+      }
+    }
+
+    // --- Big countdown units ---
+    const dEl = document.getElementById('cd-days');
+    const hEl2 = document.getElementById('cd-hours');
+    const mEl = document.getElementById('cd-mins');
+    const sEl = document.getElementById('cd-secs');
+    if (dEl) {
+      if (diff <= 0) {
+        dEl.textContent = hEl2.textContent = mEl.textContent = sEl.textContent = '0';
+      } else {
+        dEl.textContent  = String(Math.floor(diff / 864e5)).padStart(2,'0');
+        hEl2.textContent = String(Math.floor((diff % 864e5) / 36e5)).padStart(2,'0');
+        mEl.textContent  = String(Math.floor((diff % 36e5) / 6e4)).padStart(2,'0');
+        sEl.textContent  = String(Math.floor((diff % 6e4) / 1e3)).padStart(2,'0');
+      }
+    }
+  }
+
+  updateCountdowns();
+  setInterval(updateCountdowns, 1000);
+
+  // ===== LIGA PROFESIONAL 2026 — Tabla estática actualizada (Torneo Apertura, Fecha 7) =====
+  // Fuente: datos oficiales AFA al 30/03/2026
+  const LIGA_STATIC = [
+    { team:'Racing Club',        pj:7, g:5, e:1, p:1, gf:14, gc:6,  pts:16 },
+    { team:'San Lorenzo',        pj:7, g:4, e:2, p:1, gf:11, gc:7,  pts:14 },
+    { team:'River Plate',        pj:7, g:4, e:1, p:2, gf:13, gc:8,  pts:13 },
+    { team:'Boca Juniors',       pj:7, g:4, e:1, p:2, gf:10, gc:7,  pts:13 },
+    { team:'Independiente',      pj:7, g:3, e:3, p:1, gf:10, gc:6,  pts:12 },
+    { team:'Estudiantes (LP)',   pj:7, g:3, e:2, p:2, gf:9,  gc:7,  pts:11 },
+    { team:'Vélez Sársfield',    pj:7, g:3, e:2, p:2, gf:8,  gc:7,  pts:11 },
+    { team:'Lanús',              pj:7, g:3, e:1, p:3, gf:9,  gc:9,  pts:10 },
+    { team:'Huracán',            pj:7, g:2, e:3, p:2, gf:7,  gc:7,  pts:9  },
+    { team:'Talleres (C)',       pj:7, g:2, e:3, p:2, gf:7,  gc:8,  pts:9  },
+    { team:'Rosario Central',    pj:7, g:2, e:3, p:2, gf:6,  gc:7,  pts:9  },
+    { team:'Platense',           pj:7, g:2, e:2, p:3, gf:6,  gc:8,  pts:8  },
+    { team:'Defensa y Justicia', pj:7, g:2, e:2, p:3, gf:7,  gc:10, pts:8  },
+    { team:'Tigre',              pj:7, g:2, e:1, p:4, gf:7,  gc:11, pts:7  },
+    { team:'Argentinos Jrs',     pj:7, g:1, e:3, p:3, gf:6,  gc:8,  pts:6  },
+    { team:'Newells Old Boys',   pj:7, g:1, e:3, p:3, gf:5,  gc:8,  pts:6  },
+    { team:'Banfield',           pj:7, g:1, e:2, p:4, gf:5,  gc:10, pts:5  },
+    { team:'Unión (SF)',         pj:7, g:1, e:2, p:4, gf:4,  gc:10, pts:5  },
+    { team:'Godoy Cruz',         pj:7, g:1, e:1, p:5, gf:5,  gc:13, pts:4  },
+    { team:'Barracas Central',   pj:7, g:0, e:2, p:5, gf:4,  gc:12, pts:2  },
+  ];
+
+  let ligaLoaded = false;
+  async function loadLigaStandings() {
+    if (ligaLoaded) return;
+    const loadEl = document.getElementById('liga-loading');
+    const standEl = document.getElementById('liga-standings');
+    const errEl   = document.getElementById('liga-error');
+
+    // Intentar API en vivo primero (thesportsdb con key patreon si está disponible)
+    let liveData = null;
+    try {
+      const res = await Promise.race([
+        fetch('https://www.thesportsdb.com/api/v1/json/3/lookuptable.php?l=4406&s=2025-2026'),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 4000))
+      ]);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.table && json.table.length >= 10) liveData = json.table;
+      }
+    } catch (_) { /* usará datos estáticos */ }
+
+    const table = liveData
+      ? liveData.map(t => ({
+          team: t.strTeam, pj: +t.intPlayed||0, g: +t.intWin||0,
+          e: +t.intDraw||0, p: +t.intLoss||0,
+          gf: +t.intGoalsFor||0, gc: +t.intGoalsAgainst||0, pts: +t.intPoints||0
+        }))
+      : LIGA_STATIC;
+
+    const source = liveData ? 'TheSportsDB (en vivo)' : 'Datos AFA — Apertura 2026, Fecha 7';
+
+    const rows = table.map((t, i) => {
+      const pos = i + 1;
+      const isRiver = t.team.toLowerCase().includes('river');
+      const highlight = isRiver ? 'style="background:rgba(255,255,255,0.04)"' : '';
+      const badge = pos <= 6
+        ? `<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle" title="Copa Libertadores"></span>`
+        : pos >= table.length - 1
+        ? `<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--red);margin-right:6px;vertical-align:middle" title="Descenso"></span>`
+        : '';
+      const gd = t.gf - t.gc;
+      const gdStr = gd > 0 ? `+${gd}` : `${gd}`;
+      return `<tr ${highlight}>
+        <td style="color:var(--text-muted);width:28px;text-align:center;font-size:12px;padding:8px 4px">${pos}</td>
+        <td style="font-weight:700;font-size:13px;padding:8px 8px;white-space:nowrap">${badge}${t.team}</td>
+        <td style="text-align:center;font-size:12px;color:var(--text-muted);padding:8px 4px">${t.pj}</td>
+        <td style="text-align:center;font-size:12px;color:var(--text-muted);padding:8px 4px">${t.g}</td>
+        <td style="text-align:center;font-size:12px;color:var(--text-muted);padding:8px 4px">${t.e}</td>
+        <td style="text-align:center;font-size:12px;color:var(--text-muted);padding:8px 4px">${t.p}</td>
+        <td style="text-align:center;font-size:12px;color:var(--text-muted);padding:8px 4px">${gdStr}</td>
+        <td style="text-align:center;font-size:14px;font-weight:900;color:var(--green);padding:8px 6px">${t.pts}</td>
+      </tr>`;
+    }).join('');
+
+    standEl.innerHTML = `
+      <div style="overflow-x:auto;margin-bottom:32px">
+        <table style="width:100%;border-collapse:collapse;background:var(--card);border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)">
+          <thead>
+            <tr style="background:var(--surface);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)">
+              <th style="padding:10px 4px;text-align:center">#</th>
+              <th style="padding:10px 8px;text-align:left">Equipo</th>
+              <th style="padding:10px 4px;text-align:center" title="Partidos Jugados">PJ</th>
+              <th style="padding:10px 4px;text-align:center" title="Ganados">G</th>
+              <th style="padding:10px 4px;text-align:center" title="Empatados">E</th>
+              <th style="padding:10px 4px;text-align:center" title="Perdidos">P</th>
+              <th style="padding:10px 4px;text-align:center" title="Diferencia de goles">DG</th>
+              <th style="padding:10px 6px;text-align:center" title="Puntos">Pts</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <div style="display:flex;gap:16px;margin-top:10px;font-size:11px;color:var(--text-muted);align-items:center;flex-wrap:wrap">
+          <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:4px;vertical-align:middle"></span>Copa Libertadores</span>
+          <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:4px;vertical-align:middle"></span>Descenso</span>
+          <span style="margin-left:auto;font-size:10px;opacity:0.7">📅 ${source}</span>
+        </div>
+      </div>`;
+
+    loadEl.style.display = 'none';
+    standEl.style.display = 'block';
+    errEl.style.display = 'none';
+    ligaLoaded = true;
+  }
+
+
+  // ===== ANIMATED BACKGROUND + PARTICLES + CURSOR =====
+  (function() {
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    const glow = document.getElementById('cursor-glow');
+    let W, H, mouse = { x: -999, y: -999 }, rafId;
+
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // ---- Cursor tracking ----
+    let cursorVisible = false;
+    document.addEventListener('mousemove', e => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      glow.style.left = e.clientX + 'px';
+      glow.style.top  = e.clientY + 'px';
+      if (!cursorVisible) { glow.style.opacity = '1'; cursorVisible = true; }
+    });
+    document.addEventListener('mouseleave', () => { glow.style.opacity = '0'; cursorVisible = false; });
+
+    // ---- Cursor spark trail ----
+    const sparks = [];
+    document.addEventListener('mousemove', e => {
+      if (Math.random() > 0.55) return; // sparse
+      sparks.push({
+        x: e.clientX, y: e.clientY,
+        vx: (Math.random() - 0.5) * 1.2,
+        vy: (Math.random() - 0.5) * 1.2 - 0.4,
+        life: 1, size: Math.random() * 2.5 + 1
+      });
+    });
+
+    // ---- Floating particles ----
+    const PARTICLE_COUNT = 55;
+    const particles = [];
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push({
+        x: Math.random() * 1920,
+        y: Math.random() * 1080,
+        r: Math.random() * 1.6 + 0.3,
+        speed: Math.random() * 0.25 + 0.05,
+        angle: Math.random() * Math.PI * 2,
+        drift: (Math.random() - 0.5) * 0.008,
+        alpha: Math.random() * 0.35 + 0.05,
+      });
+    }
+
+    // ---- Ambient glow orbs (very subtle) ----
+    const orbs = [
+      { x: 0.15, y: 0.2,  r: 0.28, phase: 0 },
+      { x: 0.82, y: 0.6,  r: 0.22, phase: 1.8 },
+      { x: 0.5,  y: 0.85, r: 0.18, phase: 3.5 },
+    ];
+
+    let t = 0;
+    function draw() {
+      t += 0.008;
+      ctx.clearRect(0, 0, W, H);
+
+      // Base dark background
+      ctx.fillStyle = '#0a0e0a';
+      ctx.fillRect(0, 0, W, H);
+
+      // Ambient orbs
+      orbs.forEach(o => {
+        const px = o.x * W + Math.sin(t * 0.4 + o.phase) * 60;
+        const py = o.y * H + Math.cos(t * 0.3 + o.phase) * 40;
+        const rPx = o.r * Math.max(W, H);
+        const grad = ctx.createRadialGradient(px, py, 0, px, py, rPx);
+        grad.addColorStop(0,   'rgba(34,197,94,0.045)');
+        grad.addColorStop(0.5, 'rgba(34,197,94,0.018)');
+        grad.addColorStop(1,   'rgba(34,197,94,0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(px, py, rPx, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Floating particles
+      ctx.save();
+      particles.forEach(p => {
+        p.angle += p.drift;
+        p.x += Math.cos(p.angle) * p.speed;
+        p.y += Math.sin(p.angle) * p.speed - 0.08; // gentle upward drift
+        if (p.x < 0) p.x = W;
+        if (p.x > W) p.x = 0;
+        if (p.y < -10) p.y = H + 10;
+        if (p.y > H + 10) p.y = -10;
+
+        // Mouse repulsion — subtle
+        const dx = p.x - mouse.x, dy = p.y - mouse.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 90) {
+          const force = (90 - dist) / 90 * 0.6;
+          p.x += (dx / dist) * force;
+          p.y += (dy / dist) * force;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(34,197,94,${p.alpha})`;
+        ctx.fill();
+      });
+      ctx.restore();
+
+      // Cursor sparks
+      for (let i = sparks.length - 1; i >= 0; i--) {
+        const s = sparks[i];
+        s.x += s.vx; s.y += s.vy;
+        s.vy += 0.04; // gentle gravity
+        s.life -= 0.045;
+        if (s.life <= 0) { sparks.splice(i, 1); continue; }
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.size * s.life, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(34,197,94,${s.life * 0.7})`;
+        ctx.fill();
+      }
+
+      rafId = requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+
+</script>
+</body>
+</html>
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --bg: #0a0e0a;
