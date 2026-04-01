@@ -870,6 +870,36 @@
       .cd-num { font-size: 20px; }
       .cd-unit { min-width: 48px; padding: 8px 10px; }
     }
+    /* ===== SCROLL TO TOP ===== */
+    #scroll-top {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 999;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(34,197,94,0.15);
+      border: 1.5px solid rgba(34,197,94,0.4);
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, background 0.2s, transform 0.2s;
+      backdrop-filter: blur(8px);
+    }
+    #scroll-top.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #scroll-top:hover {
+      background: rgba(34,197,94,0.28);
+      transform: translateY(-2px);
+    }
+    #scroll-top svg { display: block; }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
 </head>
@@ -880,6 +910,13 @@
 <!-- CURSOR GLOW -->
 <div id="cursor-glow" style="position:fixed;pointer-events:none;z-index:1;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(34,197,94,0.07) 0%,transparent 70%);transform:translate(-50%,-50%);transition:opacity 0.3s;opacity:0;"></div>
 
+<!-- SCROLL TO TOP -->
+<button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M9 13V5M9 5L5 9M9 5L13 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>
+
 <!-- HEADER -->
 <header>
   <div class="logo" onclick="goHome()" style="flex-shrink:0;cursor:pointer;">
@@ -887,10 +924,10 @@
     <span class="logo-text">Futbol Para Todos</span>
   </div>
   <nav class="nav-links">
-    <button class="nav-link active" id="navbtn-inicio" onclick="scrollToSection('inicio')">Inicio</button>
-    <button class="nav-link" id="navbtn-canales" onclick="scrollToSection('featured-section')">Canales Principales</button>
-    <button class="nav-link" id="navbtn-buscar" onclick="scrollToSection('tabs-section-anchor')">Buscar canales</button>
-    <button class="nav-link" id="navbtn-faq" onclick="scrollToSection('faq-section')">Preguntas Frecuentes</button>
+    <button class="nav-link active" id="navbtn-inicio" onclick="scrollToSection('inicio')">🏠 Inicio</button>
+    <button class="nav-link" id="navbtn-canales" onclick="scrollToSection('featured-section')">⭐ Canales Principales</button>
+    <button class="nav-link" id="navbtn-buscar" onclick="scrollToSection('tabs-section-anchor')">🔍 Buscar canales</button>
+    <button class="nav-link" id="navbtn-faq" onclick="scrollToSection('faq-section')">❓ Preguntas Frecuentes</button>
   </nav>
   <div class="next-match" onclick="showArgPage()">
     <div class="next-match-inner">
@@ -904,6 +941,10 @@
 
 <!-- HERO -->
 <div class="hero" id="inicio">
+  <div style="display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:20px;">
+    <div style="width:28px;height:28px;background:radial-gradient(circle at 35% 35%,#fff 0%,#d1fae5 30%,var(--green) 70%);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 14px var(--green-glow);flex-shrink:0;">⚽</div>
+    <span style="font-size:16px;font-weight:800;color:var(--text);letter-spacing:-0.3px;">Futbol Para Todos</span>
+  </div>
   <h1>Todos los partidos,<br><span>en un solo lugar</span></h1>
   <p>Elegí el canal que quieras y mirá el fútbol en vivo de forma gratuita.</p>
 </div>
@@ -1679,6 +1720,12 @@
 
   updateCountdowns();
   setInterval(updateCountdowns, 1000);
+
+  // ===== SCROLL TO TOP BUTTON =====
+  const scrollTopBtn = document.getElementById('scroll-top');
+  window.addEventListener('scroll', () => {
+    scrollTopBtn.classList.toggle('visible', window.scrollY > 300);
+  }, { passive: true });
 
   // ===== LIGA PROFESIONAL 2026 — Tabla estática actualizada (Torneo Apertura, Fecha 7) =====
   // Fuente: datos oficiales AFA al 30/03/2026
