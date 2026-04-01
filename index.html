@@ -39,6 +39,8 @@
       position: relative;
       z-index: 2;
     }
+    /* arg-page no debe tapar el header sticky */
+    #arg-page { z-index: 1; }
     /* ===== HEADER ===== */
     header {
       position: sticky;
@@ -655,22 +657,37 @@
     .next-match-countdown.soon { color: var(--yellow); animation: pulse 1.4s ease-in-out infinite; }
 
     /* ===== ARGENTINA PAGE ===== */
-    /* Color celeste AFA — sobreescribe el verde solo dentro de #arg-page */
     #arg-page {
       --arg: #74AADB;
       --arg-dark: #4e8fc7;
-      --arg-glow: rgba(116,170,219,0.18);
+      --arg-glow: rgba(116,170,219,0.22);
+      --green: #74AADB; --green-dark: #4e8fc7; --green-glow: rgba(116,170,219,0.18);
       display: none;
       animation: fadeIn 0.3s ease;
     }
     #arg-page.visible { display: block; }
+
+    /* Bordes de todos los recuadros en celeste dentro de arg-page */
+    #arg-page .fixture-card,
+    #arg-page .big-countdown,
+    #arg-page .cd-unit,
+    #arg-page .mundial-match-card,
+    #arg-page .mundial-panel,
+    #arg-page [style*="border:1px solid var(--border)"],
+    #arg-page [style*="border: 1px solid var(--border)"] {
+      border-color: rgba(116,170,219,0.28) !important;
+    }
+
+    /* Spinner de loading */
+    #arg-page .agenda-spinner { border-top-color: var(--arg); }
+
     @keyframes fadeIn { from { opacity:0; transform:translateY(10px);} to { opacity:1; transform:none; } }
 
     /* Hero ocupa full width, sin margen arriba */
     .arg-hero {
       text-align: center;
       padding: 56px 24px 40px;
-      background: linear-gradient(180deg, rgba(116,170,219,0.18) 0%, rgba(116,170,219,0.06) 55%, transparent 100%);
+      background: linear-gradient(180deg, rgba(116,170,219,0.22) 0%, rgba(116,170,219,0.08) 55%, transparent 100%);
       margin-bottom: 0;
       position: relative;
     }
@@ -1882,15 +1899,21 @@
 
   // ===== GO HOME (logo click, works from anywhere) =====
   function scrollToSection(id) {
+    // Si estamos en la página de Argentina, cerrarla primero
+    closeArgPage();
+
     if (id === 'inicio') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      const el = document.getElementById(id);
-      if (el) {
-        const offset = 72; // altura del header sticky
-        const top = el.getBoundingClientRect().top + window.scrollY - offset;
-        window.scrollTo({ top, behavior: 'smooth' });
-      }
+      // Pequeño delay para que closeArgPage restaure los elementos antes de hacer scroll
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) {
+          const offset = 72;
+          const top = el.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      }, 50);
     }
     // Update active nav button
     const map = { 'inicio': 'navbtn-inicio', 'agenda-section': 'navbtn-agenda', 'featured-section': 'navbtn-canales', 'tabs-section-anchor': 'navbtn-buscar', 'faq-section': 'navbtn-faq' };
@@ -1915,6 +1938,9 @@
     document.getElementById('agenda-section').style.display = 'none';
     document.getElementById('arg-page').classList.add('visible');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Cambiar canvas a celeste AFA (116, 170, 219)
+    window._bgColor = { r: 116, g: 170, b: 219 };
+    document.getElementById('cursor-glow').style.background = 'radial-gradient(circle,rgba(116,170,219,0.07) 0%,transparent 70%)';
     loadLigaStandings();
     initMundial();
   }
@@ -1929,6 +1955,9 @@
     document.getElementById('agenda-section').style.display = '';
     document.getElementById('arg-page').classList.remove('visible');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Restaurar canvas a verde
+    window._bgColor = { r: 34, g: 197, b: 94 };
+    document.getElementById('cursor-glow').style.background = 'radial-gradient(circle,rgba(34,197,94,0.07) 0%,transparent 70%)';
   }
 
   // ===== COUNTDOWN (shared) =====
@@ -2652,6 +2681,9 @@
     const glow = document.getElementById('cursor-glow');
     let W, H, mouse = { x: -999, y: -999 }, rafId;
 
+    // Color activo — se cambia desde showArgPage/closeArgPage
+    window._bgColor = { r: 34, g: 197, b: 94 }; // verde por defecto
+
     function resize() {
       W = canvas.width  = window.innerWidth;
       H = canvas.height = window.innerHeight;
@@ -2673,7 +2705,7 @@
     // ---- Cursor spark trail ----
     const sparks = [];
     document.addEventListener('mousemove', e => {
-      if (Math.random() > 0.55) return; // sparse
+      if (Math.random() > 0.55) return;
       sparks.push({
         x: e.clientX, y: e.clientY,
         vx: (Math.random() - 0.5) * 1.2,
@@ -2709,6 +2741,8 @@
       t += 0.008;
       ctx.clearRect(0, 0, W, H);
 
+      const { r, g, b } = window._bgColor;
+
       // Base dark background
       ctx.fillStyle = '#0a0e0a';
       ctx.fillRect(0, 0, W, H);
@@ -2719,9 +2753,9 @@
         const py = o.y * H + Math.cos(t * 0.3 + o.phase) * 40;
         const rPx = o.r * Math.max(W, H);
         const grad = ctx.createRadialGradient(px, py, 0, px, py, rPx);
-        grad.addColorStop(0,   'rgba(34,197,94,0.045)');
-        grad.addColorStop(0.5, 'rgba(34,197,94,0.018)');
-        grad.addColorStop(1,   'rgba(34,197,94,0)');
+        grad.addColorStop(0,   `rgba(${r},${g},${b},0.045)`);
+        grad.addColorStop(0.5, `rgba(${r},${g},${b},0.018)`);
+        grad.addColorStop(1,   `rgba(${r},${g},${b},0)`);
         ctx.fillStyle = grad;
         ctx.beginPath();
         ctx.arc(px, py, rPx, 0, Math.PI * 2);
@@ -2733,13 +2767,12 @@
       particles.forEach(p => {
         p.angle += p.drift;
         p.x += Math.cos(p.angle) * p.speed;
-        p.y += Math.sin(p.angle) * p.speed - 0.08; // gentle upward drift
+        p.y += Math.sin(p.angle) * p.speed - 0.08;
         if (p.x < 0) p.x = W;
         if (p.x > W) p.x = 0;
         if (p.y < -10) p.y = H + 10;
         if (p.y > H + 10) p.y = -10;
 
-        // Mouse repulsion — subtle
         const dx = p.x - mouse.x, dy = p.y - mouse.y;
         const dist = Math.sqrt(dx*dx + dy*dy);
         if (dist < 90) {
@@ -2750,7 +2783,7 @@
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(34,197,94,${p.alpha})`;
+        ctx.fillStyle = `rgba(${r},${g},${b},${p.alpha})`;
         ctx.fill();
       });
       ctx.restore();
@@ -2759,12 +2792,12 @@
       for (let i = sparks.length - 1; i >= 0; i--) {
         const s = sparks[i];
         s.x += s.vx; s.y += s.vy;
-        s.vy += 0.04; // gentle gravity
+        s.vy += 0.04;
         s.life -= 0.045;
         if (s.life <= 0) { sparks.splice(i, 1); continue; }
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.size * s.life, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(34,197,94,${s.life * 0.7})`;
+        ctx.fillStyle = `rgba(${r},${g},${b},${s.life * 0.7})`;
         ctx.fill();
       }
 
