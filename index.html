@@ -2600,19 +2600,32 @@
       { id: 2000, name: 'Mundial 2026',       flag: '🌍' },
     ];
 
-    // Argentine competition data (static/curated — football-data doesn't cover LPF free)
+    // Argentine competition data — curado y verificado al 01/04/2026
+    // Copa Argentina fuente: ESPN / copaargentina.org / La Nación
+    // Liga Profesional fuente: ESPN Apertura 2026
+    // Mundial 2026 fuente: FIFA / CNN
     const ARG_MATCHES = [
-      // Próximos partidos Liga Profesional — Fecha 8 (semana 5-6 abril 2026)
-      { date:'2026-04-05', time:'15:00', home:'Racing Club',     away:'Talleres',           comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
-      { date:'2026-04-05', time:'17:15', home:'River Plate',     away:'Huracán',            comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
-      { date:'2026-04-05', time:'19:30', home:'Boca Juniors',    away:'San Lorenzo',        comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
-      { date:'2026-04-06', time:'15:00', home:'Independiente',   away:'Vélez Sársfield',    comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
-      { date:'2026-04-06', time:'17:15', home:'Lanús',           away:'Estudiantes (LP)',   comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
-      { date:'2026-04-06', time:'19:30', home:'Rosario Central', away:'Defensa y Justicia', comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
-      // Selección Argentina — Mundial 2026
-      { date:'2026-06-16', time:'22:00', home:'Argentina', away:'Argelia',  comp:'Mundial 2026', flag:'🌍', status:'SCHEDULED' },
-      { date:'2026-06-22', time:'14:00', home:'Argentina', away:'Austria',  comp:'Mundial 2026', flag:'🌍', status:'SCHEDULED' },
-      { date:'2026-06-28', time:'23:00', home:'Argentina', away:'Jordania', comp:'Mundial 2026', flag:'🌍', status:'SCHEDULED' },
+      // ── Copa Argentina 2026 — 32avos de final (1/4) ──
+      { date:'2026-04-01', time:'19:00', home:'Defensa y Justicia', away:'Chaco For Ever',        comp:'Copa Argentina', flag:'🏅', status:'SCHEDULED', venue:'Est. Florencio Sola, Banfield' },
+      { date:'2026-04-01', time:'21:15', home:'Instituto',          away:'Atlanta',               comp:'Copa Argentina', flag:'🏅', status:'SCHEDULED', venue:'A confirmar' },
+      // ── Copa Argentina 2026 — 32avos de final (7/4) ──
+      { date:'2026-04-07', time:'17:00', home:'Estudiantes (RIV)',  away:'San Martín (TUC)',      comp:'Copa Argentina', flag:'🏅', status:'SCHEDULED', venue:'A confirmar' },
+      { date:'2026-04-07', time:'19:15', home:'Vélez Sársfield',    away:'Dep. Armenio',          comp:'Copa Argentina', flag:'🏅', status:'SCHEDULED', venue:'A confirmar' },
+      { date:'2026-04-07', time:'21:30', home:'Gimnasia (MZA)',     away:'Gimnasia y Tiro (SAL)', comp:'Copa Argentina', flag:'🏅', status:'SCHEDULED', venue:'A confirmar' },
+      // ── Copa Argentina 2026 — 32avos de final (8/4) ──
+      { date:'2026-04-08', time:'19:00', home:'Sarmiento (JUN)',    away:'Tristán Suárez',        comp:'Copa Argentina', flag:'🏅', status:'SCHEDULED', venue:'A confirmar' },
+      { date:'2026-04-08', time:'21:15', home:'Gimnasia LP',        away:'Camioneros',            comp:'Copa Argentina', flag:'🏅', status:'SCHEDULED', venue:'A confirmar' },
+      // ── Liga Profesional Apertura 2026 — Fecha 8 (5-6/4) ──
+      { date:'2026-04-05', time:'15:00', home:'Racing Club',        away:'Talleres',              comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
+      { date:'2026-04-05', time:'17:15', home:'River Plate',        away:'Huracán',               comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
+      { date:'2026-04-05', time:'19:30', home:'Boca Juniors',       away:'San Lorenzo',           comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
+      { date:'2026-04-06', time:'15:00', home:'Independiente',      away:'Vélez Sársfield',       comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
+      { date:'2026-04-06', time:'17:15', home:'Lanús',              away:'Estudiantes (LP)',      comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
+      { date:'2026-04-06', time:'19:30', home:'Rosario Central',    away:'Defensa y Justicia',    comp:'Liga Profesional', flag:'🇦🇷', status:'SCHEDULED' },
+      // ── Selección Argentina — Mundial 2026 (horarios en ARG = UTC-3) ──
+      { date:'2026-06-16', time:'22:00', home:'Argentina', away:'Argelia',  comp:'Mundial 2026', flag:'🌍', status:'SCHEDULED', venue:'Arrowhead Stadium, Kansas City' },
+      { date:'2026-06-22', time:'14:00', home:'Argentina', away:'Austria',  comp:'Mundial 2026', flag:'🌍', status:'SCHEDULED', venue:'AT&T Stadium, Dallas' },
+      { date:'2026-06-27', time:'22:00', home:'Jordania',  away:'Argentina',comp:'Mundial 2026', flag:'🌍', status:'SCHEDULED', venue:'AT&T Stadium, Dallas' },
     ];
 
     function fmtDateLabel(dateStr) {
@@ -2798,7 +2811,7 @@
                 <div class="agenda-match-flag">${flag}</div>
                 <div class="agenda-match-title">
                   <div>${matchTitle(m)}</div>
-                  <div style="font-size:10px;font-weight:600;color:var(--text-muted);margin-top:2px;text-transform:uppercase;letter-spacing:0.8px">${compName}</div>
+                  <div style="font-size:10px;font-weight:600;color:var(--text-muted);margin-top:2px;text-transform:uppercase;letter-spacing:0.8px">${compName}${m.venue && m.venue !== 'A confirmar' ? ` · 📍 ${m.venue}` : ''}</div>
                 </div>
                 ${score ? `<div class="agenda-match-score">${score}</div>` : ''}
                 <div class="agenda-expand-arrow">▼</div>
@@ -2893,41 +2906,60 @@
       } catch(_) {}
 
       // --- Copa Argentina via TheSportsDB (free, ID 4500, key 123) ---
-      // eventsnextleague returns next 15 fixtures; eventsseason can fetch by round
+      // Fetch both next AND past events to catch today's live/finished matches
       let copaArgMatches = [];
+      const parseSportsDBEvent = (e, dateFrom, dateTo) => {
+        const dateStr = e.dateEvent;
+        if (!dateStr || dateStr < dateFrom || dateStr > dateTo) return null;
+        // TheSportsDB times are UTC — convert to ARG (UTC-3)
+        let timeStr = '00:00';
+        if (e.strTime) {
+          const [h, m] = e.strTime.split(':').map(Number);
+          const argH = ((h - 3) + 24) % 24;
+          timeStr = `${String(argH).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+        }
+        const status = e.strStatus === 'Match Finished' ? 'FINISHED'
+                     : (e.strStatus === 'In Play' || e.strStatus === 'HT') ? 'IN_PLAY'
+                     : 'SCHEDULED';
+        return {
+          date: dateStr, time: timeStr,
+          home: e.strHomeTeam, away: e.strAwayTeam,
+          comp: 'Copa Argentina', flag: '🏅',
+          status,
+          scoreHome: e.intHomeScore != null ? +e.intHomeScore : undefined,
+          scoreAway: e.intAwayScore != null ? +e.intAwayScore : undefined,
+          venue: e.strVenue || '',
+          _fromAPI: true,
+        };
+      };
       try {
-        const res = await Promise.race([
-          fetch('https://www.thesportsdb.com/api/v1/json/123/eventsnextleague.php?id=4500'),
-          new Promise((_, rej) => setTimeout(() => rej(), 5000))
+        const [nextRes, pastRes] = await Promise.all([
+          Promise.race([fetch('https://www.thesportsdb.com/api/v1/json/123/eventsnextleague.php?id=4500'), new Promise((_,r)=>setTimeout(r,5000))]),
+          Promise.race([fetch('https://www.thesportsdb.com/api/v1/json/123/eventspastleague.php?id=4500'), new Promise((_,r)=>setTimeout(r,5000))]),
         ]);
-        if (res.ok) {
-          const json = await res.json();
-          if (json.events) {
-            json.events.forEach(e => {
-              const dateStr = e.dateEvent; // YYYY-MM-DD
-              if (dateStr >= dateFrom && dateStr <= dateTo) {
-                copaArgMatches.push({
-                  date:   dateStr,
-                  time:   e.strTime ? e.strTime.slice(0,5) : '00:00',
-                  home:   e.strHomeTeam,
-                  away:   e.strAwayTeam,
-                  comp:   'Copa Argentina',
-                  flag:   '🏅',
-                  status: e.strStatus === 'Match Finished' ? 'FINISHED'
-                        : (e.strStatus === 'In Play' || e.strStatus === 'HT') ? 'IN_PLAY'
-                        : 'SCHEDULED',
-                  scoreHome: e.intHomeScore,
-                  scoreAway: e.intAwayScore,
-                  venue: e.strVenue || '',
-                });
-              }
+        for (const res of [nextRes, pastRes]) {
+          if (res?.ok) {
+            const json = await res.json();
+            (json.events || []).forEach(e => {
+              const m = parseSportsDBEvent(e, dateFrom, dateTo);
+              if (m) copaArgMatches.push(m);
             });
           }
         }
       } catch(_) {}
 
+      // Deduplicate: API data overrides static for Copa Argentina (same home+away+date)
+      const apiCopaKeys = new Set(copaArgMatches.map(m => `${m.date}|${m.home}|${m.away}`));
+
       // --- Static Argentine data (Liga Profesional + Mundial, filtered to window) ---
-      const argFiltered = ARG_MATCHES.filter(m => m.date >= dateFrom && m.date <= dateTo);
+      // Skip Copa Argentina entries that the API already returned (avoid duplicates)
+      const argFiltered = ARG_MATCHES.filter(m => {
+        if (m.date < dateFrom || m.date > dateTo) return false;
+        if (m.comp === 'Copa Argentina') {
+          return !apiCopaKeys.has(`${m.date}|${m.home}|${m.away}`);
+        }
+        return true;
+      });
 
       // Merge all sources
       const allMatches = [...apiMatches, ...copaArgMatches, ...argFiltered];
