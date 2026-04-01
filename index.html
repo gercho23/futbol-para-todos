@@ -158,7 +158,7 @@
     }
     #player-section.visible { display: block; }
 
-    /* ── Single unified card ── */
+    /* ── Unified card ── */
     .player-card {
       background: var(--surface);
       border: 1px solid var(--green);
@@ -168,8 +168,6 @@
                   0 0 80px var(--green-glow);
       overflow: hidden;
     }
-
-    /* Top bar */
     .player-topbar {
       display: flex;
       align-items: center;
@@ -237,8 +235,6 @@
       flex-shrink: 0;
     }
     .btn-close:hover { background: rgba(239,68,68,0.25); }
-
-    /* Screen */
     .player-screen {
       position: relative;
       width: 100%;
@@ -252,8 +248,6 @@
       display: block;
     }
     .player-screen video { background: #000; outline: none; }
-
-    /* Controls bar */
     .player-controls {
       background: var(--card);
       border-top: 1px solid var(--border);
@@ -1136,7 +1130,6 @@
 <div id="player-section">
   <div class="player-card" id="player-card">
 
-    <!-- Top bar: nav + title + close -->
     <div class="player-topbar">
       <button class="btn-back" onclick="closePlayer()">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -1152,7 +1145,6 @@
       <button class="btn-close" onclick="closePlayer()">✕ Cerrar</button>
     </div>
 
-    <!-- Video -->
     <div class="player-screen" id="player-wrapper">
       <iframe
         id="stream-iframe"
@@ -1171,9 +1163,7 @@
       ></video>
     </div>
 
-    <!-- Bottom controls -->
     <div class="player-controls">
-      <!-- Fuente alternativa -->
       <div class="ctrl-group">
         <span class="ctrl-label">📡 Fuente</span>
         <button class="ctrl-btn active" id="src-1" onclick="switchSource('global1')">1</button>
@@ -1181,14 +1171,8 @@
         <button class="ctrl-btn" id="src-3" onclick="switchSource('skylive')">3</button>
       </div>
       <div class="ctrl-divider"></div>
-      <!-- Sync -->
-      <button class="btn-sync" onclick="syncLive()">
-        ⟳ Sincronizar
-      </button>
-      <!-- Fullscreen: clicks the iframe's native fullscreen button -->
-      <button class="btn-fullscreen" onclick="goFullscreen()">
-        ⛶ Pantalla Completa
-      </button>
+      <button class="btn-sync" onclick="syncLive()">⟳ Sincronizar</button>
+      <button class="btn-fullscreen" onclick="goFullscreen()">⛶ Pantalla Completa</button>
     </div>
 
   </div>
@@ -1593,12 +1577,36 @@
     { id:'dsports',         name:'DSports',           icon:'DS', color:'#6b46c1', region:'arg',    logo: LOGOS.dsports },
     { id:'dsports2',        name:'DSports 2',         icon:'D2', color:'#6b46c1', region:'arg',    logo: LOGOS.dsports },
     { id:'dsportsplus',     name:'DSports+',          icon:'D+', color:'#6b46c1', region:'arg',    logo: LOGOS.dsports },
-    { id:'tntsports',       name:'TNT Sports AR',     icon:'TN', color:'#d69e2e', region:'arg',    logo: LOGOS.tnt },
-    { id:'tycsports',       name:'TyC Sports',        icon:'TY', color:'#2d6a4f', region:'arg',    logo: LOGOS.tyc },
-    { id:'tycinternacional',name:'TyC Internacional', icon:'TI', color:'#2d6a4f', region:'arg',    logo: LOGOS.tyc },
-    { id:'winplus',         name:'Win Sports+',       icon:'W+', color:'#276749', region:'arg',    logo: LOGOS.win },
-    { id:'winplus2',        name:'Win Sports+ 2',     icon:'W2', color:'#276749', region:'arg',    logo: LOGOS.win },
-    { id:'winsports',       name:'Win Sports',        icon:'WN', color:'#276749', region:'arg',    logo: LOGOS.win },
+    { id:'tntsports',       name:'TNT Sports AR',     icon:'TN', color:'#d69e2e', region:'arg',    logo: LOGOS.tnt ,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=tntsports', type: 'iframe' },
+        { url: 'https://streamx339.cloud/global1.php?channel=tntar', type: 'iframe' },
+      ]},
+    { id:'tycsports',       name:'TyC Sports',        icon:'TY', color:'#2d6a4f', region:'arg',    logo: LOGOS.tyc ,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=tycsports', type: 'iframe' },
+        { url: 'https://streamx339.cloud/global1.php?channel=tyc', type: 'iframe' },
+      ]},
+    { id:'tycinternacional',name:'TyC Internacional', icon:'TI', color:'#2d6a4f', region:'arg',    logo: LOGOS.tyc ,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=tycinternacional', type: 'iframe' },
+        { url: 'https://streamx339.cloud/global1.php?channel=tycint', type: 'iframe' },
+      ]},
+    { id:'winplus',         name:'Win Sports+',       icon:'W+', color:'#276749', region:'arg',    logo: LOGOS.win ,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=winplus', type: 'iframe' },
+        { url: 'https://streamx339.cloud/global1.php?channel=winplus', type: 'iframe' },
+      ]},
+    { id:'winplus2',        name:'Win Sports+ 2',     icon:'W2', color:'#276749', region:'arg',    logo: LOGOS.win ,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=winplus2', type: 'iframe' },
+        { url: 'https://streamx339.cloud/global1.php?channel=winplus2', type: 'iframe' },
+      ]},
+    { id:'winsports',       name:'Win Sports',        icon:'WN', color:'#276749', region:'arg',    logo: LOGOS.win ,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=winsports', type: 'iframe' },
+        { url: 'https://streamx339.cloud/global1.php?channel=winsports', type: 'iframe' },
+      ]},
     { id:'telefe',          name:'Telefe',            icon:'TF', color:'#744210', region:'arg',    logo: LOGOS.telefe,
       customSources: [
         { url: 'https://pelisjuanita.com/tv/telefe.html', type: 'iframe' },
@@ -1644,9 +1652,21 @@
     { id:'sporttvbr1',      name:'Sport TV 1 BR',     icon:'S1', color:'#276749', region:'br',     logo: LOGOS.sportv },
     { id:'sporttvbr2',      name:'Sport TV 2 BR',     icon:'S2', color:'#276749', region:'br',     logo: LOGOS.sportv },
     { id:'sporttvbr3',      name:'Sport TV 3 BR',     icon:'S3', color:'#276749', region:'br',     logo: LOGOS.sportv },
-    { id:'premiere1',       name:'Premiere 1 BR',     icon:'P1', color:'#2c7a7b', region:'br',     logo: LOGOS.premiere },
-    { id:'premiere2',       name:'Premiere 2 BR',     icon:'P2', color:'#2c7a7b', region:'br',     logo: LOGOS.premiere },
-    { id:'premiere3',       name:'Premiere 3 BR',     icon:'P3', color:'#2c7a7b', region:'br',     logo: LOGOS.premiere },
+    { id:'premiere1',       name:'Premiere 1 BR',     icon:'P1', color:'#2c7a7b', region:'br',     logo: LOGOS.premiere ,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=premiere1', type: 'iframe' },
+        { url: 'https://streamx339.cloud/global1.php?channel=fanatiz1', type: 'iframe' },
+      ]},
+    { id:'premiere2',       name:'Premiere 2 BR',     icon:'P2', color:'#2c7a7b', region:'br',     logo: LOGOS.premiere ,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=premiere2', type: 'iframe' },
+        { url: 'https://streamx339.cloud/global1.php?channel=fanatiz2', type: 'iframe' },
+      ]},
+    { id:'premiere3',       name:'Premiere 3 BR',     icon:'P3', color:'#2c7a7b', region:'br',     logo: LOGOS.premiere ,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=premiere3', type: 'iframe' },
+        { url: 'https://streamx339.cloud/global1.php?channel=fanatiz3', type: 'iframe' },
+      ]},
 
     // Internacional
     { id:'tnt_1_gb',        name:'TNT 1 GB',          icon:'T1', color:'#d69e2e', region:'int',    logo: LOGOS.tnt },
@@ -1978,18 +1998,12 @@
   function goFullscreen() {
     const iframe = document.getElementById('stream-iframe');
     const video  = document.getElementById('stream-video');
-
-    // For HLS video element — use standard fullscreen API
     if (video && video.style.display !== 'none') {
       if (video.requestFullscreen)            video.requestFullscreen();
       else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
       else if (video.mozRequestFullScreen)    video.mozRequestFullScreen();
       return;
     }
-
-    // For iframe streams — request fullscreen on the iframe element itself.
-    // This makes the browser present the iframe content full-screen, which
-    // surfaces the player's own native controls (including its volume/fullscreen).
     if (iframe) {
       if (iframe.requestFullscreen)            iframe.requestFullscreen();
       else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
