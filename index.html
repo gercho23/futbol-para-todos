@@ -1174,6 +1174,7 @@
       <span class="ctrl-label">📡 Fuente</span>
       <button class="ctrl-btn active" id="src-1" onclick="switchSource('global1')">1</button>
       <button class="ctrl-btn" id="src-2" onclick="switchSource('global2')">2</button>
+      <button class="ctrl-btn" id="src-3" onclick="switchSource('skylive')">3</button>
     </div>
     <div class="ctrl-divider"></div>
     <!-- Sync -->
@@ -1562,6 +1563,12 @@
     tigo:     'https://commons.wikimedia.org/wiki/Special:FilePath/Tigo_Sports_2025.png',
     futv:     'https://commons.wikimedia.org/wiki/Special:FilePath/Logo_de_FUTV.svg',
     tn:       'https://commons.wikimedia.org/wiki/Special:FilePath/TN_todo_noticias_logo.svg',
+    bein:     'https://commons.wikimedia.org/wiki/Special:FilePath/BeIN_Sports_logo_(horizontal_version).svg',
+    redbull:  'https://commons.wikimedia.org/wiki/Special:FilePath/Logo_of_Red_bull.svg',
+    realmadridtv: 'https://commons.wikimedia.org/wiki/Special:FilePath/Realmadrid_Television_Logo.svg',
+    rta:      'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/RTA_logo.svg/200px-RTA_logo.svg.png',
+    telemundo:'https://commons.wikimedia.org/wiki/Special:FilePath/Telemundo_Logo.svg',
+    rtve:     'https://commons.wikimedia.org/wiki/Special:FilePath/RTVE_logo_2021.svg',
   };
 
   const channels = [
@@ -1600,6 +1607,7 @@
       ]
     },
     { id:'liga1max',        name:'Liga 1 MAX',        icon:'L1', color:'#c05621', region:'arg',    logo: LOGOS.liga1 },
+    { id:'movistar_deportes_peru', name:'Movistar Deportes PE', icon:'MD', color:'#019df4', region:'int', logo: null },
     { id:'tntsportschile',  name:'TNT Sports CL',     icon:'TC', color:'#d69e2e', region:'int',    logo: LOGOS.tnt },
 
     // USA
@@ -1647,6 +1655,98 @@
     { id:'futv',            name:'FUTV Eventos',      icon:'FU', color:'#276749', region:'events', logo: LOGOS.futv },
     { id:'laligahypermotion',name:'LaLiga Hypermotion',icon:'LL', color:'#e84393', region:'events', logo: LOGOS.laliga },
     { id:'tigosportsparaguay',name:'Tigo Sports PY',  icon:'TP', color:'#2b6cb0', region:'events', logo: LOGOS.tigo },
+    { id:'tigosportscr',    name:'Tigo Sports CR',    icon:'TC', color:'#2b6cb0', region:'events', logo: LOGOS.tigo,
+      customSources: [
+        { url: 'https://stream.ads.ottera.tv/playlist.m3u8?network_id=7357', type: 'hls' },
+        { url: 'https://stream.ads.ottera.tv/playlist.m3u8?network_id=7357', type: 'hls' },
+      ]
+    },
+
+    // Internacional — nuevos canales M3U8
+    { id:'rta_sports',      name:'RTA Sports HD',     icon:'RT', color:'#1a365d', region:'int',    logo: LOGOS.rta,
+      customSources: [
+        { url: 'https://rtatv.akamaized.net/Content/HLS/Live/channel(RTA3)/variant.m3u8', type: 'hls' },
+        { url: 'https://rtatv.akamaized.net/Content/HLS/Live/channel(RTA3)/variant.m3u8', type: 'hls' },
+      ]
+    },
+    { id:'mutv',            name:'MU TV',             icon:'MU', color:'#c53030', region:'int',    logo: null,
+      customSources: [
+        { url: 'https://bcovlive-a.akamaihd.net/r2d2c4ca5bf57456fb1d16255c1a535c8/eu-west-1/eu-west-1/6058004203001/profile_2/chunklist.m3u8', type: 'hls' },
+        { url: 'https://bcovlive-a.akamaihd.net/r6b4170ad9e8e4ed49986ecc03bac588b/eu-west-1/6058004203001/playlist.m3u8', type: 'hls' },
+      ]
+    },
+    { id:'redbulltv',       name:'Red Bull TV',       icon:'RB', color:'#c53030', region:'int',    logo: LOGOS.redbull,
+      customSources: [
+        { url: 'https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master_3360.m3u8', type: 'hls' },
+        { url: 'https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master_3360.m3u8', type: 'hls' },
+      ]
+    },
+    { id:'bein_xtra',       name:'beIN Sports Xtra',  icon:'BN', color:'#1a365d', region:'int',    logo: LOGOS.bein,
+      customSources: [
+        { url: 'https://bein-esp-xumo.amagi.tv/playlistR720P.m3u8', type: 'hls' },
+        { url: 'https://bein-esp-xumo.amagi.tv/playlistR720P.m3u8', type: 'hls' },
+      ]
+    },
+    { id:'bein_xtra_es',    name:'beIN Sports Xtra ES',icon:'BE', color:'#1a365d', region:'int',   logo: LOGOS.bein,
+      customSources: [
+        { url: 'https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bein-sports-xtra-en-espanol/playlist.m3u8', type: 'hls' },
+        { url: 'https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bein-sports-xtra-en-espanol/playlist.m3u8', type: 'hls' },
+      ]
+    },
+    { id:'realmadridtv',    name:'Real Madrid TV',    icon:'RM', color:'#c8a951', region:'int',    logo: LOGOS.realmadridtv,
+      customSources: [
+        { url: 'https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/bitrate_3.m3u8', type: 'hls' },
+        { url: 'https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/bitrate_3.m3u8', type: 'hls' },
+      ]
+    },
+    { id:'la1_rtve',        name:'La 1 RTVE',         icon:'L1', color:'#2b6cb0', region:'int',    logo: LOGOS.rtve,
+      customSources: [
+        { url: 'https://rtvelivestream.akamaized.net/rtvesec/la1/la1_main_720.m3u8', type: 'hls' },
+        { url: 'https://rtvelivestream.akamaized.net/rtvesec/la1/la1_main_720.m3u8', type: 'hls' },
+      ]
+    },
+    { id:'sport1_cz',       name:'Sport 1 CZ',        icon:'S1', color:'#c53030', region:'int',    logo: null,
+      customSources: [
+        { url: 'https://ts0-pl.tv.itself.cz/hls/master/live.m3u8?channel=727&device=2b6073bc96d57891dc6410d6ab150035&stream_profiles=profile11,profile12,profile13&changed_at=1726643016', type: 'hls' },
+        { url: 'https://ts0-pl.tv.itself.cz/hls/master/live.m3u8?channel=727&device=2b6073bc96d57891dc6410d6ab150035&stream_profiles=profile11,profile12,profile13&changed_at=1726643016', type: 'hls' },
+      ]
+    },
+    { id:'sport2_cz',       name:'Sport 2 CZ',        icon:'S2', color:'#c53030', region:'int',    logo: null,
+      customSources: [
+        { url: 'https://ts0-pl.tv.itself.cz/hls/master/live.m3u8?channel=729&device=2b6073bc96d57891dc6410d6ab150035&stream_profiles=profile11,profile12,profile13&changed_at=1726643016', type: 'hls' },
+        { url: 'https://ts0-pl.tv.itself.cz/hls/master/live.m3u8?channel=729&device=2b6073bc96d57891dc6410d6ab150035&stream_profiles=profile11,profile12,profile13&changed_at=1726643016', type: 'hls' },
+      ]
+    },
+    { id:'rtvs_sport',      name:'RTVS Sport',        icon:'RS', color:'#276749', region:'int',    logo: null,
+      customSources: [
+        { url: 'https://ts0-pl.tv.itself.cz/hls/master/live.m3u8?channel=2120&device=2b6073bc96d57891dc6410d6ab150035&stream_profiles=profile11,profile12,profile13&changed_at=172664301', type: 'hls' },
+        { url: 'https://ts0-pl.tv.itself.cz/hls/master/live.m3u8?channel=2120&device=2b6073bc96d57891dc6410d6ab150035&stream_profiles=profile11,profile12,profile13&changed_at=172664301', type: 'hls' },
+      ]
+    },
+    { id:'joj_sport',       name:'JOJ Sport',         icon:'JJ', color:'#553c9a', region:'int',    logo: null,
+      customSources: [
+        { url: 'https://ts0-pl.tv.itself.cz/hls/master/live.m3u8?channel=2164&device=2b6073bc96d57891dc6410d6ab150035&stream_profiles=profile11,profile12,profile13&changed_at=172664301', type: 'hls' },
+        { url: 'https://ts0-pl.tv.itself.cz/hls/master/live.m3u8?channel=2164&device=2b6073bc96d57891dc6410d6ab150035&stream_profiles=profile11,profile12,profile13&changed_at=172664301', type: 'hls' },
+      ]
+    },
+    { id:'itv_deportes',    name:'ITV Deportes',      icon:'ID', color:'#c05621', region:'int',    logo: null,
+      customSources: [
+        { url: 'https://stream.ads.ottera.tv/playlist.m3u8?network_id=3010', type: 'hls' },
+        { url: 'https://stream.ads.ottera.tv/playlist.m3u8?network_id=3010', type: 'hls' },
+      ]
+    },
+    { id:'telemundo_pr',    name:'Telemundo Puerto Rico', icon:'TM', color:'#c53030', region:'usa', logo: LOGOS.telemundo,
+      customSources: [
+        { url: 'https://nbculocallive.akamaized.net/hls/live/2037499/puertorico/stream1/master.m3u8', type: 'hls' },
+        { url: 'https://nbculocallive.akamaized.net/hls/live/2037499/puertorico/stream1/master.m3u8', type: 'hls' },
+      ]
+    },
+    { id:'fast_womens',     name:"Fast Studios Women's", icon:'FW', color:'#d53f8c', region:'int', logo: null,
+      customSources: [
+        { url: 'https://csm-e-eb.csm.tubi.video/csm/extlive/tubiprd01,Fast-Studios-Womens-Sports.m3u8', type: 'hls' },
+        { url: 'https://csm-e-eb.csm.tubi.video/csm/extlive/tubiprd01,Fast-Studios-Womens-Sports.m3u8', type: 'hls' },
+      ]
+    },
   ];
 
   let currentStream = null;
@@ -1703,12 +1803,15 @@
 
   // ===== BUILD GRIDS =====
   function buildChannelCard(ch) {
+    const imgTag = ch.logo
+      ? `<img src="${ch.logo}" alt="${ch.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />`
+      : '';
+    const fallbackDisplay = ch.logo ? '' : 'display:flex';
     return `
       <div class="channel-card" id="card-${ch.id}" onclick="playChannel('${ch.id}', '${ch.name}')">
         <div class="channel-icon">
-          <img src="${ch.logo}" alt="${ch.name}"
-            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
-          <span class="icon-fallback" style="color:${ch.color}">${ch.icon}</span>
+          ${imgTag}
+          <span class="icon-fallback" style="color:${ch.color};${fallbackDisplay}">${ch.icon}</span>
         </div>
         <div class="channel-name">${ch.name}</div>
       </div>`;
@@ -1747,7 +1850,24 @@
 
   let hlsInstance = null;
 
+  const SKYLIVE_IDS = new Set([
+    'canal5mx','dsports','dsports2','dsportsplus',
+    'espn','espn2','espn3','espn4','espn5','espn6','espn7',
+    'espndeportes','espnmx','espnpremium',
+    'fox_deportes_usa','liga1max','movistar_deportes_peru',
+    'premiere1','premiere2','sporttvbr1',
+    'telefe','tntsports','tudn_usa','tv_publica','tycsports',
+    'universo_usa','winsports','winplus','winplus2',
+  ]);
+
   function getSource(streamId, sourceKey) {
+    if (sourceKey === 'skylive') {
+      if (SKYLIVE_IDS.has(streamId)) {
+        return { url: `https://skylivefu.com/live.php?stream=${streamId}`, type: 'iframe' };
+      }
+      // Si no hay skylive para este canal, caer en fuente 1
+      return getSource(streamId, 'global1');
+    }
     const ch = channels.find(c => c.id === streamId);
     if (ch && ch.customSources) {
       return sourceKey === 'global1' ? ch.customSources[0] : ch.customSources[1];
@@ -1793,6 +1913,7 @@
     currentSource = 'global1';
     document.getElementById('src-1').classList.add('active');
     document.getElementById('src-2').classList.remove('active');
+    document.getElementById('src-3').classList.remove('active');
 
     // Update player
     document.getElementById('player-channel-name').textContent = '🔴 ' + name;
@@ -1832,6 +1953,7 @@
     currentSource = src;
     document.getElementById('src-1').classList.toggle('active', src === 'global1');
     document.getElementById('src-2').classList.toggle('active', src === 'global2');
+    document.getElementById('src-3').classList.toggle('active', src === 'skylive');
     if (currentStream) loadSource(getSource(currentStream, src));
   }
 
