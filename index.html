@@ -619,6 +619,63 @@
       animation: pulse 1.4s ease-in-out infinite;
     }
 
+    /* ===== STANDINGS ===== */
+    .standings-section { padding: 40px 20px; max-width: 900px; margin: 0 auto; }
+    .standings-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:24px; }
+    .standings-title { font-size:22px; font-weight:800; }
+    .favclub-btn {
+      display:flex; align-items:center; gap:8px; background:var(--card);
+      border:1px solid var(--border); border-radius:var(--radius-sm);
+      padding:8px 14px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text);
+      transition:all 0.2s;
+    }
+    .favclub-btn:hover { border-color:var(--green); color:var(--green); }
+    .favclub-btn.active { border-color:#facc15; color:#facc15; }
+    .standings-tabs { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:20px; }
+    .standings-tab {
+      padding:6px 14px; border-radius:20px; font-size:12px; font-weight:700;
+      border:1px solid var(--border); background:var(--card); color:var(--text-muted);
+      cursor:pointer; transition:all 0.2s; white-space:nowrap;
+    }
+    .standings-tab:hover { border-color:var(--green); color:var(--green); }
+    .standings-tab.active { background:var(--green); border-color:var(--green); color:#000; }
+    .standings-body { display:flex; flex-direction:column; gap:24px; }
+    .standings-group-title { font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+    .standings-table { width:100%; border-collapse:collapse; font-size:13px; }
+    .standings-table th { color:var(--text-muted); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:6px 8px; text-align:center; border-bottom:1px solid var(--border); }
+    .standings-table th:first-child, .standings-table th:nth-child(2), .standings-table th:nth-child(3) { text-align:left; }
+    .standings-table td { padding:7px 8px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.04); }
+    .standings-table td:first-child { text-align:left; font-weight:700; color:var(--text-muted); width:28px; }
+    .standings-table td:nth-child(2) { text-align:left; }
+    .standings-table td:nth-child(3) { text-align:left; min-width:140px; }
+    .standings-table tr:hover td { background:var(--card-hover); }
+    .standings-table tr.fav-row td { background:rgba(250,204,21,0.08); border-left:3px solid #facc15; }
+    .standings-table tr.fav-row td:first-child { border-left:3px solid #facc15; }
+    .standings-team-cell { display:flex; align-items:center; gap:8px; }
+    .standings-team-logo { width:20px; height:20px; object-fit:contain; flex-shrink:0; }
+    .standings-pts { font-weight:800; color:var(--text); }
+    .standings-loading { text-align:center; color:var(--text-muted); padding:40px; font-size:14px; }
+    .favclub-modal {
+      position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999;
+      display:flex; align-items:center; justify-content:center; padding:20px;
+    }
+    .favclub-modal-box {
+      background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+      padding:24px; width:100%; max-width:420px;
+    }
+    .favclub-modal-title { font-size:18px; font-weight:800; margin-bottom:16px; }
+    .favclub-search { width:100%; padding:10px 14px; background:var(--card); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-size:14px; outline:none; margin-bottom:12px; }
+    .favclub-search:focus { border-color:var(--green); }
+    .favclub-list { display:flex; flex-direction:column; gap:6px; max-height:280px; overflow-y:auto; }
+    .favclub-item { padding:10px 14px; border-radius:var(--radius-sm); cursor:pointer; font-size:13px; font-weight:600; display:flex; align-items:center; gap:10px; background:var(--card); border:1px solid transparent; transition:all 0.15s; }
+    .favclub-item:hover { border-color:var(--green); color:var(--green); }
+    .favclub-item.selected { border-color:#facc15; color:#facc15; background:rgba(250,204,21,0.08); }
+    .favclub-modal-actions { display:flex; gap:10px; margin-top:16px; justify-content:flex-end; }
+    .favclub-clear { padding:8px 16px; border-radius:var(--radius-sm); border:1px solid var(--border); background:transparent; color:var(--text-muted); cursor:pointer; font-size:13px; }
+    .favclub-clear:hover { border-color:var(--red); color:var(--red); }
+    .favclub-close { padding:8px 16px; border-radius:var(--radius-sm); border:none; background:var(--green); color:#000; font-weight:700; cursor:pointer; font-size:13px; }
+    .agenda-match-row.fav-match { border-left:3px solid #facc15 !important; }
+
     /* ===== FAQ ===== */
     .faq-section {
       max-width: 1100px;
@@ -1186,6 +1243,7 @@
     <button class="nav-link" id="navbtn-canales" onclick="scrollToSection('featured-section')">⭐ Canales Principales</button>
     <button class="nav-link" id="navbtn-buscar" onclick="scrollToSection('tabs-section-anchor')">🔍 Buscar canales</button>
     <button class="nav-link" id="navbtn-faq" onclick="scrollToSection('faq-section')">❓ Preguntas Frecuentes</button>
+    <button class="nav-link" id="navbtn-tablas" onclick="scrollToSection('standings-section')">📊 Tablas</button>
   </nav>
   <div class="next-match" onclick="showArgPage()">
     <div class="next-match-inner">
@@ -1385,6 +1443,33 @@
 </div>
 
 <!-- FAQ -->
+<!-- STANDINGS -->
+<div class="standings-section" id="standings-section">
+  <div class="standings-header">
+    <div class="standings-title">📊 Tablas de posiciones</div>
+    <button class="favclub-btn" id="favclub-btn" onclick="openFavClubModal()">
+      ⭐ <span id="favclub-label">Elegir mi club</span>
+    </button>
+  </div>
+  <div class="standings-tabs" id="standings-tabs"></div>
+  <div class="standings-body" id="standings-body">
+    <div class="standings-loading">Cargando tabla...</div>
+  </div>
+</div>
+
+<!-- FAV CLUB MODAL -->
+<div class="favclub-modal" id="favclub-modal" style="display:none" onclick="if(event.target===this)closeFavClubModal()">
+  <div class="favclub-modal-box">
+    <div class="favclub-modal-title">⭐ Elegir mi club favorito</div>
+    <input class="favclub-search" id="favclub-search" type="text" placeholder="Buscar club..." oninput="filterFavClubs()" />
+    <div class="favclub-list" id="favclub-list"></div>
+    <div class="favclub-modal-actions">
+      <button class="favclub-clear" onclick="clearFavClub()">Quitar favorito</button>
+      <button class="favclub-close" onclick="closeFavClubModal()">Listo</button>
+    </div>
+  </div>
+</div>
+
 <div class="faq-section" id="faq-section">
   <div class="faq-header">
     <h2>Preguntas frecuentes</h2>
@@ -1963,7 +2048,7 @@
       }, 50);
     }
     // Update active nav button
-    const map = { 'inicio': 'navbtn-inicio', 'agenda-section': 'navbtn-agenda', 'featured-section': 'navbtn-canales', 'tabs-section-anchor': 'navbtn-buscar', 'faq-section': 'navbtn-faq' };
+    const map = { 'inicio': 'navbtn-inicio', 'agenda-section': 'navbtn-agenda', 'featured-section': 'navbtn-canales', 'tabs-section-anchor': 'navbtn-buscar', 'faq-section': 'navbtn-faq', 'standings-section': 'navbtn-tablas' };
     document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
     const btnId = map[id];
     if (btnId) document.getElementById(btnId)?.classList.add('active');
@@ -1982,6 +2067,8 @@
     document.querySelector('footer').style.display = 'none';
     document.querySelector('.featured-section').style.display = 'none';
     document.querySelector('.faq-section').style.display = 'none';
+    document.getElementById('standings-section').style.display = 'none';
+    document.getElementById('favclub-modal').style.display = 'none';
     document.getElementById('agenda-section').style.display = 'none';
     document.getElementById('arg-page').classList.add('visible');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1999,6 +2086,7 @@
     document.querySelector('footer').style.display = '';
     document.querySelector('.featured-section').style.display = '';
     document.querySelector('.faq-section').style.display = '';
+    document.getElementById('standings-section').style.display = '';
     document.getElementById('agenda-section').style.display = '';
     document.getElementById('arg-page').classList.remove('visible');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2614,8 +2702,11 @@
           ).join('');
 
           const mid = `${m.date}_${(m.home||'').replace(/\W/g,'_')}_${(m.away||'').replace(/\W/g,'_')}`;
+          const favClub = (typeof getFavClub === 'function') ? getFavClub() : null;
+          const favName = favClub?.name?.toLowerCase() || '';
+          const isFavMatch = favName && ((m.home||'').toLowerCase().includes(favName) || (m.away||'').toLowerCase().includes(favName) || (m.homeTeam?.name||'').toLowerCase().includes(favName) || (m.awayTeam?.name||'').toLowerCase().includes(favName));
           return `
-            <div class="agenda-match-row agenda-match ${status}" id="amrow-${uid}" data-mid="${mid}">
+            <div class="agenda-match-row agenda-match ${status}${isFavMatch ? ' fav-match' : ''}" id="amrow-${uid}" data-mid="${mid}">
               <div class="agenda-match-summary" onclick="window._agendaToggleMatch('${uid}')">
                 <div class="agenda-match-time">${matchTimeStr(m)}</div>
                 <div class="agenda-match-live-dot"></div>
@@ -3068,6 +3159,233 @@
   })();
 
 </script>
+<script>
+// ===== STANDINGS & FAVORITE CLUB =====
+(function() {
+
+  const LEAGUES = [
+    { id:'lpf',      label:'Liga Prof. ARG', flag:'🇦🇷', type:'espn', slug:'arg.1',                  season:2025 },
+    { id:'libertad', label:'Libertadores',   flag:'🏆',  type:'espn', slug:'conmebol.libertadores',  season:2026 },
+    { id:'sudamer',  label:'Sudamericana',   flag:'🏅',  type:'espn', slug:'conmebol.sudamericana',  season:2026 },
+    { id:'cl',       label:'Champions',      flag:'🏆',  type:'fdorg', fdId:2001 },
+    { id:'premier',  label:'Premier League', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', type:'fdorg', fdId:2021 },
+    { id:'laliga',   label:'La Liga',        flag:'🇪🇸', type:'fdorg', fdId:2014 },
+    { id:'seriea',   label:'Serie A',        flag:'🇮🇹', type:'fdorg', fdId:2019 },
+    { id:'bundes',   label:'Bundesliga',     flag:'🇩🇪', type:'fdorg', fdId:2002 },
+  ];
+
+  let currentLeague = 'lpf';
+  let standingsCache = {};
+
+  // ── Favourite club ──────────────────────────────────────────
+  function getFavClub() {
+    try { return JSON.parse(localStorage.getItem('fpt_favClub')) || null; } catch(_) { return null; }
+  }
+  function saveFavClub(club) {
+    localStorage.setItem('fpt_favClub', JSON.stringify(club));
+    updateFavClubUI();
+    if (window._agendaData) renderDom(window._agendaData);
+    renderCurrentStandings();
+  }
+  function clearFavClub() {
+    localStorage.removeItem('fpt_favClub');
+    updateFavClubUI();
+    if (window._agendaData) renderDom(window._agendaData);
+    renderCurrentStandings();
+    closeFavClubModal();
+  }
+  function updateFavClubUI() {
+    const fav = getFavClub();
+    const btn = document.getElementById('favclub-btn');
+    const lbl = document.getElementById('favclub-label');
+    if (!btn || !lbl) return;
+    if (fav) {
+      lbl.textContent = fav.name;
+      btn.classList.add('active');
+    } else {
+      lbl.textContent = 'Elegir mi club';
+      btn.classList.remove('active');
+    }
+  }
+
+  // All known clubs (built from fetched standings + a static seed)
+  let _allClubs = [];
+  function collectClubs(entries) {
+    entries.forEach(e => {
+      const name = e.name;
+      const logo = e.logo || '';
+      if (name && !_allClubs.find(c => c.name === name)) _allClubs.push({ name, logo });
+    });
+    _allClubs.sort((a,b) => a.name.localeCompare(b.name));
+  }
+
+  window.openFavClubModal = function() {
+    renderFavClubList('');
+    document.getElementById('favclub-search').value = '';
+    document.getElementById('favclub-modal').style.display = 'flex';
+  };
+  window.closeFavClubModal = function() {
+    document.getElementById('favclub-modal').style.display = 'none';
+  };
+  window.clearFavClub = clearFavClub;
+  window.filterFavClubs = function() {
+    const q = document.getElementById('favclub-search').value;
+    renderFavClubList(q);
+  };
+
+  function renderFavClubList(query) {
+    const fav = getFavClub();
+    const q = query.toLowerCase().trim();
+    const filtered = q ? _allClubs.filter(c => c.name.toLowerCase().includes(q)) : _allClubs;
+    const list = document.getElementById('favclub-list');
+    if (!list) return;
+    if (!filtered.length) { list.innerHTML = '<div style="color:var(--text-muted);padding:12px;font-size:13px">No se encontraron clubes</div>'; return; }
+    list.innerHTML = filtered.slice(0, 60).map(c => `
+      <div class="favclub-item ${fav?.name === c.name ? 'selected' : ''}" onclick="window._selectFavClub('${c.name.replace(/'/g,"\\'")}','${c.logo}')">
+        ${c.logo ? `<img src="${c.logo}" width="20" height="20" style="object-fit:contain" onerror="this.style.display='none'">` : ''}
+        ${c.name}
+      </div>`).join('');
+  }
+
+  window._selectFavClub = function(name, logo) {
+    saveFavClub({ name, logo });
+    renderFavClubList(document.getElementById('favclub-search').value);
+  };
+
+  // ── Fetch standings ─────────────────────────────────────────
+  async function fetchStandings(league) {
+    if (standingsCache[league.id]) return standingsCache[league.id];
+
+    if (league.type === 'espn') {
+      const url = `https://site.web.api.espn.com/apis/v2/sports/soccer/${league.slug}/standings?region=us&lang=en&season=${league.season}`;
+      const data = await fetch(url).then(r => r.ok ? r.json() : null).catch(() => null);
+      if (!data) return [];
+      const groups = [];
+      for (const child of (data.children || [])) {
+        const entries = (child.standings?.entries || []).map(e => {
+          const stats = {};
+          (e.stats || []).forEach(s => { stats[s.name] = s.displayValue || s.value; });
+          return {
+            pos:   stats.rank || '',
+            name:  e.team?.displayName || '',
+            logo:  e.team?.logos?.[0]?.href || '',
+            pj:    stats.gamesPlayed || 0,
+            g:     stats.wins || 0,
+            e:     stats.ties || 0,
+            p:     stats.losses || 0,
+            gf:    stats.pointsFor || 0,
+            gc:    stats.pointsAgainst || 0,
+            dif:   stats.pointDifferential || 0,
+            pts:   stats.points || 0,
+          };
+        }).sort((a,b) => (Number(a.pos)||99) - (Number(b.pos)||99));
+        groups.push({ name: child.name || child.abbreviation || '', entries });
+        collectClubs(entries);
+      }
+      standingsCache[league.id] = groups;
+      return groups;
+    }
+
+    if (league.type === 'fdorg') {
+      const url = `https://api.football-data.org/v4/competitions/${league.fdId}/standings`;
+      const data = await fetch(url).then(r => r.ok ? r.json() : null).catch(() => null);
+      if (!data) return [];
+      const groups = (data.standings || []).map(g => ({
+        name: g.group || g.type || '',
+        entries: (g.table || []).map(e => ({
+          pos:  e.position,
+          name: e.team?.name || '',
+          logo: e.team?.crest || '',
+          pj:   e.playedGames || 0,
+          g:    e.won || 0,
+          e:    e.draw || 0,
+          p:    e.lost || 0,
+          gf:   e.goalsFor || 0,
+          gc:   e.goalsAgainst || 0,
+          dif:  e.goalDifference || 0,
+          pts:  e.points || 0,
+        })),
+      }));
+      groups.forEach(g => collectClubs(g.entries));
+      standingsCache[league.id] = groups;
+      return groups;
+    }
+
+    return [];
+  }
+
+  // ── Render ──────────────────────────────────────────────────
+  function renderStandingsTable(groups) {
+    const fav = getFavClub();
+    const body = document.getElementById('standings-body');
+    if (!body) return;
+    if (!groups.length) { body.innerHTML = '<div class="standings-loading">No hay datos disponibles</div>'; return; }
+
+    body.innerHTML = groups.map(g => `
+      ${groups.length > 1 ? `<div class="standings-group-title">${g.name}</div>` : ''}
+      <table class="standings-table">
+        <thead><tr>
+          <th>#</th><th></th><th>Club</th>
+          <th>PJ</th><th>G</th><th>E</th><th>P</th>
+          <th>GF</th><th>GC</th><th>DIF</th><th>PTS</th>
+        </tr></thead>
+        <tbody>
+          ${g.entries.map(e => {
+            const isFav = fav && e.name.toLowerCase().includes(fav.name.toLowerCase());
+            return `<tr class="${isFav ? 'fav-row' : ''}">
+              <td>${e.pos}</td>
+              <td><img class="standings-team-logo" src="${e.logo}" onerror="this.style.display='none'" loading="lazy"></td>
+              <td><div class="standings-team-cell">${isFav ? '⭐ ' : ''}${e.name}</div></td>
+              <td>${e.pj}</td><td>${e.g}</td><td>${e.e}</td><td>${e.p}</td>
+              <td>${e.gf}</td><td>${e.gc}</td>
+              <td style="color:${Number(e.dif)>0?'var(--green)':Number(e.dif)<0?'var(--red)':'var(--text-muted)'}">${Number(e.dif)>0?'+':''}${e.dif}</td>
+              <td class="standings-pts">${e.pts}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    `).join('');
+  }
+
+  async function loadLeague(id) {
+    currentLeague = id;
+    // Update tab active state
+    document.querySelectorAll('.standings-tab').forEach(t => t.classList.toggle('active', t.dataset.id === id));
+    const body = document.getElementById('standings-body');
+    if (body) body.innerHTML = '<div class="standings-loading">Cargando...</div>';
+    const league = LEAGUES.find(l => l.id === id);
+    if (!league) return;
+    const groups = await fetchStandings(league);
+    renderStandingsTable(groups);
+  }
+
+  function renderCurrentStandings() {
+    const cached = standingsCache[currentLeague];
+    if (cached) renderStandingsTable(cached);
+  }
+
+  window._standingsLoadLeague = loadLeague;
+
+  // ── Init ────────────────────────────────────────────────────
+  function initStandings() {
+    // Render tabs
+    const tabsEl = document.getElementById('standings-tabs');
+    if (tabsEl) {
+      tabsEl.innerHTML = LEAGUES.map(l =>
+        `<button class="standings-tab ${l.id === currentLeague ? 'active' : ''}" data-id="${l.id}" onclick="window._standingsLoadLeague('${l.id}')">${l.flag} ${l.label}</button>`
+      ).join('');
+    }
+    updateFavClubUI();
+    loadLeague(currentLeague);
+  }
+
+  // Init when DOM ready
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initStandings);
+  else initStandings();
+
+})();
+</script>
+
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
