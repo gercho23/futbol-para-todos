@@ -2697,7 +2697,7 @@
       } catch(_) {}
 
       // --- Liga Profesional Argentina via ESPN API (real-time, no key needed) ---
-      function parseEspnEvents(events) {
+      function parseEspnEvents(events, compName, compFlag) {
         const result = [];
         for (const ev of (events || [])) {
           const comp = ev.competitions?.[0];
@@ -2733,8 +2733,8 @@
             away:      away.team?.displayName || away.team?.name || '?',
             homeLogo:  home.team?.logo || '',
             awayLogo:  away.team?.logo || '',
-            comp:      'Liga Profesional',
-            flag:      '🇦🇷',
+            comp:      compName || 'Liga Profesional',
+            flag:      compFlag || '🇦🇷',
             status,
             scoreHome: state !== 'pre' ? home.score : null,
             scoreAway: state !== 'pre' ? away.score : null,
@@ -2747,17 +2747,28 @@
         return result;
       }
 
+      // ESPN competitions: LPF + Copa Libertadores + Copa Sudamericana
+      const ESPN_COMPS = [
+        { slug: 'arg.1',                   name: 'Liga Profesional', flag: '🇦🇷' },
+        { slug: 'conmebol.libertadores',    name: 'Copa Libertadores', flag: '🏆' },
+        { slug: 'conmebol.sudamericana',    name: 'Copa Sudamericana', flag: '🏅' },
+      ];
+
       let lpfMatches = [];
       try {
-        // Fetch LPF for each day in our window (ESPN returns per-day data)
-        const lpfFetches = dates.slice(0, 14).map(d => {
-          const espnDate = d.replace(/-/g, '');
-          return fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/arg.1/scoreboard?dates=${espnDate}`)
-            .then(r => r.ok ? r.json() : null)
-            .then(data => { if (data?.events) lpfMatches.push(...parseEspnEvents(data.events)); })
-            .catch(() => null);
-        });
-        await Promise.allSettled(lpfFetches);
+        const espnFetches = [];
+        for (const comp of ESPN_COMPS) {
+          for (const d of dates.slice(0, 14)) {
+            const espnDate = d.replace(/-/g, '');
+            espnFetches.push(
+              fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${comp.slug}/scoreboard?dates=${espnDate}`)
+                .then(r => r.ok ? r.json() : null)
+                .then(data => { if (data?.events) lpfMatches.push(...parseEspnEvents(data.events, comp.name, comp.flag)); })
+                .catch(() => null)
+            );
+          }
+        }
+        await Promise.allSettled(espnFetches);
       } catch(_) {}
 
       // --- Copa Argentina via TheSportsDB (free, ID 4500, key 123) ---
