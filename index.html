@@ -1066,6 +1066,11 @@
     .agenda-match.live .agenda-match-score { color: var(--red); background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.25); }
     @keyframes scoreFlash { 0%,20% { background: rgba(34,197,94,0.45); transform: scale(1.15); } 100% { background: rgba(34,197,94,0.1); transform: scale(1); } }
     .agenda-match-score.score-updated { animation: scoreFlash 1.2s ease-out; }
+    .agenda-match-clock {
+      font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+      color: var(--red); opacity: 0.85; margin-top: 2px; text-align: center;
+    }
+    .agenda-match.finished .agenda-match-clock { color: var(--text-muted); }
     .agenda-expand-arrow {
       color: var(--text-muted); font-size: 11px;
       transition: transform 0.22s, color 0.2s; flex-shrink: 0;
@@ -2495,6 +2500,25 @@
       return '';
     }
 
+    function matchClock(m) {
+      const status = matchStatus(m);
+      if (status === 'finished') return 'FIN';
+      if (status !== 'live') return '';
+      // Entretiempo
+      if (m.isHalfTime || m.status === 'PAUSED') return 'ET';
+      // ESPN: clockMins + period
+      if (m.clockMins) {
+        const t = m.period === 2 ? '2T' : '1T';
+        return `${m.clockMins}' · ${t}`;
+      }
+      // football-data.org: m.minute
+      if (m.minute != null) {
+        const t = m.minute > 45 ? '2T' : '1T';
+        return `${m.minute}' · ${t}`;
+      }
+      return '🔴 EN VIVO';
+    }
+
     function matchDateKey(m) {
       if (m.date) return m.date; // Argentine static
       return m.utcDate ? m.utcDate.slice(0, 10) : '?';
@@ -2553,6 +2577,7 @@
           const uid = `${dayIdx}-${mi}`;
           const status = matchStatus(m);
           const score = matchScore(m);
+          const clock = matchClock(m);
           const compName = matchCompName(m);
           const channels = getChannels(compName);
           const isMatchOpen = openMatches.has(uid);
@@ -2576,7 +2601,7 @@
                   <div>${matchTitle(m)}</div>
                   <div style="font-size:10px;font-weight:600;color:var(--text-muted);margin-top:2px;text-transform:uppercase;letter-spacing:0.8px">${compName}</div>
                 </div>
-                ${score ? `<div class="agenda-match-score">${score}</div>` : ''}
+                ${score ? `<div class="agenda-match-score">${score}${clock ? `<div class="agenda-match-clock">${clock}</div>` : ''}</div>` : ''}
                 <div class="agenda-expand-arrow">▼</div>
               </div>
               <div class="agenda-channels ${isMatchOpen ? 'open' : ''}" style="${isMatchOpen ? 'max-height:600px' : ''}">
@@ -2690,9 +2715,16 @@
 
           const state = ev.status?.type?.state || '';
           const sName = ev.status?.type?.name  || '';
+          const statusDesc = ev.status?.type?.description || '';
           const status = state === 'post' || sName === 'STATUS_FINAL'       ? 'FINISHED'
                        : state === 'in'   || sName === 'STATUS_IN_PROGRESS' ? 'IN_PLAY'
                        : 'SCHEDULED';
+
+          // Extraer reloj del partido (ej: "45", "67") y período
+          const rawClock = ev.status?.displayClock || '';
+          const clockMins = rawClock ? rawClock.split(':')[0] : '';
+          const period = ev.status?.period || null;
+          const isHalfTime = statusDesc === 'Halftime';
 
           result.push({
             date:      dateStr,
@@ -2707,6 +2739,9 @@
             scoreHome: state !== 'pre' ? home.score : null,
             scoreAway: state !== 'pre' ? away.score : null,
             venue:     comp.venue?.fullName || '',
+            clockMins,
+            period,
+            isHalfTime,
           });
         }
         return result;
@@ -2743,6 +2778,7 @@
                 : 'SCHEDULED',
           scoreHome: e.intHomeScore, scoreAway: e.intAwayScore,
           venue: e.strVenue || '',
+          isHalfTime: e.strStatus === 'HT',
         };
       }
 
@@ -2805,6 +2841,7 @@
 
           const status  = matchStatus(m);
           const score   = matchScore(m);
+          const clock   = matchClock(m);
 
           // Actualizar clase de estado (live / finished / scheduled)
           row.className = `agenda-match-row agenda-match ${status}`;
@@ -2817,18 +2854,38 @@
           let scoreEl = row.querySelector('.agenda-match-score');
           if (score) {
             if (scoreEl) {
-              if (scoreEl.textContent !== score) {
-                scoreEl.textContent = score;
+              // Separar texto del score del clock child
+              const prevScore = scoreEl.childNodes[0]?.textContent?.trim() || scoreEl.textContent.trim();
+              if (prevScore !== score) {
+                scoreEl.childNodes[0] ? (scoreEl.childNodes[0].textContent = score) : (scoreEl.textContent = score);
                 scoreEl.classList.remove('score-updated');
-                void scoreEl.offsetWidth; // reflow para reiniciar animación
+                void scoreEl.offsetWidth;
                 scoreEl.classList.add('score-updated');
                 setTimeout(() => scoreEl.classList.remove('score-updated'), 1300);
               }
+              // Actualizar clock dentro del score
+              let clockEl = scoreEl.querySelector('.agenda-match-clock');
+              if (clock) {
+                if (!clockEl) {
+                  clockEl = document.createElement('div');
+                  clockEl.className = 'agenda-match-clock';
+                  scoreEl.appendChild(clockEl);
+                }
+                clockEl.textContent = clock;
+              } else if (clockEl) {
+                clockEl.remove();
+              }
             } else {
-              // El partido recién arrancó — insertar el score
+              // El partido recién arrancó — insertar el score con clock
               scoreEl = document.createElement('div');
               scoreEl.className = 'agenda-match-score score-updated';
               scoreEl.textContent = score;
+              if (clock) {
+                const clockEl = document.createElement('div');
+                clockEl.className = 'agenda-match-clock';
+                clockEl.textContent = clock;
+                scoreEl.appendChild(clockEl);
+              }
               const arrow = row.querySelector('.agenda-expand-arrow');
               if (arrow) arrow.before(scoreEl);
               setTimeout(() => scoreEl.classList.remove('score-updated'), 1300);
