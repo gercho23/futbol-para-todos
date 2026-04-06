@@ -1064,6 +1064,8 @@
     .agenda-match.live .agenda-match-score,
     .agenda-match.finished .agenda-match-score { display: block; }
     .agenda-match.live .agenda-match-score { color: var(--red); background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.25); }
+    @keyframes scoreFlash { 0%,20% { background: rgba(34,197,94,0.45); transform: scale(1.15); } 100% { background: rgba(34,197,94,0.1); transform: scale(1); } }
+    .agenda-match-score.score-updated { animation: scoreFlash 1.2s ease-out; }
     .agenda-expand-arrow {
       color: var(--text-muted); font-size: 11px;
       transition: transform 0.22s, color 0.2s; flex-shrink: 0;
@@ -2563,8 +2565,9 @@
             </div>`
           ).join('');
 
+          const mid = `${m.date}_${(m.home||'').replace(/\W/g,'_')}_${(m.away||'').replace(/\W/g,'_')}`;
           return `
-            <div class="agenda-match-row agenda-match ${status}" id="amrow-${uid}">
+            <div class="agenda-match-row agenda-match ${status}" id="amrow-${uid}" data-mid="${mid}">
               <div class="agenda-match-summary" onclick="window._agendaToggleMatch('${uid}')">
                 <div class="agenda-match-time">${matchTimeStr(m)}</div>
                 <div class="agenda-match-live-dot"></div>
@@ -2779,7 +2782,62 @@
       });
 
       window._agendaData = allMatches;
-      renderDom(allMatches);
+      if (!window._agendaFirstRender) {
+        renderDom(allMatches);
+        window._agendaFirstRender = true;
+      } else {
+        smartUpdate(allMatches);
+      }
+    }
+
+    function smartUpdate(allMatches) {
+      let needsFullRender = false;
+      const rendered = document.querySelectorAll('[data-mid]');
+
+      // Si cambió la cantidad de partidos, hacer render completo
+      if (rendered.length !== allMatches.length) { needsFullRender = true; }
+
+      if (!needsFullRender) {
+        allMatches.forEach(m => {
+          const mid = `${m.date}_${(m.home||'').replace(/\W/g,'_')}_${(m.away||'').replace(/\W/g,'_')}`;
+          const row = document.querySelector(`[data-mid="${mid}"]`);
+          if (!row) { needsFullRender = true; return; }
+
+          const status  = matchStatus(m);
+          const score   = matchScore(m);
+
+          // Actualizar clase de estado (live / finished / scheduled)
+          row.className = `agenda-match-row agenda-match ${status}`;
+
+          // Actualizar tiempo/indicador
+          const timeEl = row.querySelector('.agenda-match-time');
+          if (timeEl) timeEl.textContent = matchTimeStr(m);
+
+          // Actualizar marcador
+          let scoreEl = row.querySelector('.agenda-match-score');
+          if (score) {
+            if (scoreEl) {
+              if (scoreEl.textContent !== score) {
+                scoreEl.textContent = score;
+                scoreEl.classList.remove('score-updated');
+                void scoreEl.offsetWidth; // reflow para reiniciar animación
+                scoreEl.classList.add('score-updated');
+                setTimeout(() => scoreEl.classList.remove('score-updated'), 1300);
+              }
+            } else {
+              // El partido recién arrancó — insertar el score
+              scoreEl = document.createElement('div');
+              scoreEl.className = 'agenda-match-score score-updated';
+              scoreEl.textContent = score;
+              const arrow = row.querySelector('.agenda-expand-arrow');
+              if (arrow) arrow.before(scoreEl);
+              setTimeout(() => scoreEl.classList.remove('score-updated'), 1300);
+            }
+          }
+        });
+      }
+
+      if (needsFullRender) renderDom(allMatches);
     }
 
     fetchAgenda();
