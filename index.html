@@ -3167,11 +3167,11 @@
     { id:'lpf',      label:'Liga Prof. ARG', flag:'🇦🇷', type:'espn', slug:'arg.1',                  season:2025 },
     { id:'libertad', label:'Libertadores',   flag:'🏆',  type:'espn', slug:'conmebol.libertadores',  season:2026 },
     { id:'sudamer',  label:'Sudamericana',   flag:'🏅',  type:'espn', slug:'conmebol.sudamericana',  season:2026 },
-    { id:'cl',       label:'Champions',      flag:'🏆',  type:'fdorg', fdId:2001 },
-    { id:'premier',  label:'Premier League', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', type:'fdorg', fdId:2021 },
-    { id:'laliga',   label:'La Liga',        flag:'🇪🇸', type:'fdorg', fdId:2014 },
-    { id:'seriea',   label:'Serie A',        flag:'🇮🇹', type:'fdorg', fdId:2019 },
-    { id:'bundes',   label:'Bundesliga',     flag:'🇩🇪', type:'fdorg', fdId:2002 },
+    { id:'cl',       label:'Champions',      flag:'🏆',  type:'espn', slug:'uefa.champions',         season:2025 },
+    { id:'premier',  label:'Premier League', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', type:'espn', slug:'eng.1',                   season:2025 },
+    { id:'laliga',   label:'La Liga',        flag:'🇪🇸', type:'espn', slug:'esp.1',                   season:2025 },
+    { id:'seriea',   label:'Serie A',        flag:'🇮🇹', type:'espn', slug:'ita.1',                   season:2025 },
+    { id:'bundes',   label:'Bundesliga',     flag:'🇩🇪', type:'espn', slug:'ger.1',                   season:2025 },
   ];
 
   let currentLeague = 'lpf';
@@ -3260,53 +3260,41 @@
       const url = `https://site.web.api.espn.com/apis/v2/sports/soccer/${league.slug}/standings?region=us&lang=en&season=${league.season}`;
       const data = await fetch(url).then(r => r.ok ? r.json() : null).catch(() => null);
       if (!data) return [];
+
+      const parseEntries = (entries) => (entries || []).map(e => {
+        const stats = {};
+        (e.stats || []).forEach(s => { stats[s.name] = s.displayValue !== undefined ? s.displayValue : s.value; });
+        return {
+          pos:  stats.rank !== undefined ? stats.rank : '',
+          name: e.team?.displayName || '',
+          logo: e.team?.logos?.[0]?.href || '',
+          pj:   stats.gamesPlayed || 0,
+          g:    stats.wins || 0,
+          e:    stats.ties || 0,
+          p:    stats.losses || 0,
+          gf:   stats.pointsFor || 0,
+          gc:   stats.pointsAgainst || 0,
+          dif:  stats.pointDifferential || 0,
+          pts:  stats.points || 0,
+        };
+      }).sort((a,b) => (Number(a.pos)||99) - (Number(b.pos)||99));
+
       const groups = [];
-      for (const child of (data.children || [])) {
-        const entries = (child.standings?.entries || []).map(e => {
-          const stats = {};
-          (e.stats || []).forEach(s => { stats[s.name] = s.displayValue || s.value; });
-          return {
-            pos:   stats.rank || '',
-            name:  e.team?.displayName || '',
-            logo:  e.team?.logos?.[0]?.href || '',
-            pj:    stats.gamesPlayed || 0,
-            g:     stats.wins || 0,
-            e:     stats.ties || 0,
-            p:     stats.losses || 0,
-            gf:    stats.pointsFor || 0,
-            gc:    stats.pointsAgainst || 0,
-            dif:   stats.pointDifferential || 0,
-            pts:   stats.points || 0,
-          };
-        }).sort((a,b) => (Number(a.pos)||99) - (Number(b.pos)||99));
-        groups.push({ name: child.name || child.abbreviation || '', entries });
+      // Some leagues have children (groups/conferences), others have a flat standings object
+      if (data.children?.length) {
+        for (const child of data.children) {
+          const entries = parseEntries(child.standings?.entries);
+          if (entries.length) {
+            groups.push({ name: child.name || child.abbreviation || '', entries });
+            collectClubs(entries);
+          }
+        }
+      } else if (data.standings?.entries?.length) {
+        const entries = parseEntries(data.standings.entries);
+        groups.push({ name: '', entries });
         collectClubs(entries);
       }
-      standingsCache[league.id] = groups;
-      return groups;
-    }
 
-    if (league.type === 'fdorg') {
-      const url = `https://api.football-data.org/v4/competitions/${league.fdId}/standings`;
-      const data = await fetch(url).then(r => r.ok ? r.json() : null).catch(() => null);
-      if (!data) return [];
-      const groups = (data.standings || []).map(g => ({
-        name: g.group || g.type || '',
-        entries: (g.table || []).map(e => ({
-          pos:  e.position,
-          name: e.team?.name || '',
-          logo: e.team?.crest || '',
-          pj:   e.playedGames || 0,
-          g:    e.won || 0,
-          e:    e.draw || 0,
-          p:    e.lost || 0,
-          gf:   e.goalsFor || 0,
-          gc:   e.goalsAgainst || 0,
-          dif:  e.goalDifference || 0,
-          pts:  e.points || 0,
-        })),
-      }));
-      groups.forEach(g => collectClubs(g.entries));
       standingsCache[league.id] = groups;
       return groups;
     }
