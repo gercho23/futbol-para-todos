@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="40" fill="#0a0e0a"/>
+  <circle cx="96" cy="96" r="62" fill="#22c55e" stroke="#16a34a" stroke-width="4"/>
+  <polygon points="96,46 107,80 143,80 114,101 125,135 96,114 67,135 78,101 49,80 85,80" fill="#0a0e0a" opacity="0.5"/>
+  <text x="96" y="165" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="18" font-weight="bold" fill="#22c55e">⚽ FPT</text>
+</svg>

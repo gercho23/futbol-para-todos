@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="100" fill="#0a0e0a"/>
+  <circle cx="256" cy="240" r="170" fill="#22c55e" stroke="#16a34a" stroke-width="10"/>
+  <polygon points="256,110 290,210 400,210 315,270 345,370 256,310 167,370 197,270 112,210 222,210" fill="#0a0e0a" opacity="0.5"/>
+  <text x="256" y="455" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="52" font-weight="bold" fill="#22c55e">FútbolParaTodos</text>
+</svg>
