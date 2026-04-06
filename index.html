@@ -1,0 +1,3370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Futbol Para Todos</title>
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0e0a;
+      --surface: #111611;
+      --card: #161d16;
+      --card-hover: #1e2b1e;
+      --border: #1f2e1f;
+      --green: #22c55e;
+      --green-dark: #16a34a;
+      --green-glow: rgba(34,197,94,0.18);
+      --text: #e8f5e8;
+      --text-muted: #7a9e7a;
+      --red: #ef4444;
+      --yellow: #facc15;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #0a0e0a;
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+    /* Lift all direct content above canvas */
+    header, .nav-overlay, .nav-drawer,
+    .hero, #player-section, .featured-section,
+    .tabs-section, footer, .faq-section, #arg-page {
+      position: relative;
+      z-index: 2;
+    }
+    /* arg-page no debe tapar el header sticky */
+    #arg-page { z-index: 1; }
+    /* ===== HEADER ===== */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,14,10,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      height: 64px;
+      gap: 32px;
+    }
+    /* Horizontal nav links */
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+    }
+    .nav-link {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: color 0.18s, background 0.18s;
+      white-space: nowrap;
+      letter-spacing: 0.1px;
+    }
+    .nav-link:hover {
+      color: var(--text);
+      background: var(--card);
+    }
+    .nav-link.active {
+      color: var(--green);
+      background: var(--green-glow);
+    }
+    /* Hide old drawer elements */
+    .nav-overlay, .nav-drawer { display: none !important; }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .logo-ball {
+      width: 32px; height: 32px;
+      background: radial-gradient(circle at 35% 35%, #fff 0%, #d1fae5 30%, var(--green) 70%);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 0 16px var(--green-glow);
+      flex-shrink: 0;
+    }
+    .logo-text { color: var(--text); letter-spacing: -0.3px; }
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(239,68,68,0.15);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .live-dot {
+      width: 7px; height: 7px;
+      background: var(--red);
+      border-radius: 50%;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:0.4; transform:scale(0.8); }
+    }
+    /* ===== HERO ===== */
+    .hero {
+      text-align: center;
+      padding: 56px 24px 40px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(34,197,94,0.08) 0%, transparent 70%);
+    }
+    .hero h1 {
+      font-size: clamp(28px, 6vw, 52px);
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+    .hero h1 span { color: var(--green); }
+    .hero p {
+      color: var(--text-muted);
+      font-size: 16px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    /* ===== PLAYER SECTION ===== */
+    #player-section {
+      display: none;
+      padding: 0 24px 32px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    #player-section.visible { display: block; }
+
+    /* ── Unified card ── */
+    .player-card {
+      background: var(--surface);
+      border: 1px solid var(--green);
+      border-radius: var(--radius);
+      box-shadow: 0 0 0 1px rgba(34,197,94,0.12),
+                  0 0 40px rgba(0,0,0,0.6),
+                  0 0 80px var(--green-glow);
+      overflow: hidden;
+    }
+    .player-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .player-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      flex: 1;
+      justify-content: center;
+    }
+    .live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: rgba(239,68,68,0.15);
+      border: 1px solid rgba(239,68,68,0.35);
+      color: var(--red);
+      border-radius: 20px;
+      padding: 3px 10px 3px 8px;
+      flex-shrink: 0;
+    }
+    .live-pill .dot {
+      width: 7px; height: 7px;
+      background: var(--red);
+      border-radius: 50%;
+      animation: pulse 1.4s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    .btn-back {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .btn-back:hover { border-color: var(--green); color: var(--green); }
+    .btn-back svg { flex-shrink: 0; }
+    .btn-close {
+      background: rgba(239,68,68,0.12);
+      border: 1px solid rgba(239,68,68,0.28);
+      color: var(--red);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .btn-close:hover { background: rgba(239,68,68,0.25); }
+    .player-screen {
+      position: relative;
+      width: 100%;
+      background: #000;
+    }
+    .player-screen iframe,
+    .player-screen video {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border: none;
+      display: block;
+    }
+    .player-screen video { background: #000; outline: none; }
+    /* Anti-popup click shield — absorbs the first click that would trigger popups */
+    .popup-shield {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      cursor: pointer;
+      background: transparent;
+    }
+    .popup-shield.armed {
+      display: block;
+    }
+    .popup-shield.disarmed {
+      display: none;
+    }
+    /* Toast-style popup warning */
+    .popup-blocked-toast {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(239,68,68,0.15);
+      border: 1px solid rgba(239,68,68,0.4);
+      color: #fca5a5;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 7px 16px;
+      border-radius: 20px;
+      white-space: nowrap;
+      z-index: 20;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .popup-blocked-toast.show { opacity: 1; }
+    .player-controls {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .ctrl-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 4px 8px;
+    }
+    .ctrl-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    .ctrl-btn {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+    .ctrl-btn:hover { background: var(--green-glow); color: var(--green); }
+    .ctrl-btn.active { background: var(--green); color: #000; }
+    .ctrl-divider { flex: 1; }
+    .btn-fullscreen {
+      background: var(--green);
+      color: #000;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-fullscreen:hover { background: var(--green-dark); }
+    .btn-sync {
+      background: rgba(250,204,21,0.15);
+      color: var(--yellow);
+      border: 1px solid rgba(250,204,21,0.3);
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-sync:hover { background: rgba(250,204,21,0.25); }
+    /* ===== TABS ===== */
+    .tabs-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 32px;
+    }
+    .tabs-header {
+      display: flex;
+      gap: 4px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs-header::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+      margin-bottom: -1px;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active {
+      color: var(--green);
+      border-bottom-color: var(--green);
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    /* ===== CHANNEL GRID ===== */
+    .channels-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+    }
+    .channel-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+      user-select: none;
+    }
+    .channel-card:hover {
+      background: var(--card-hover);
+      border-color: var(--green);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px var(--green-glow);
+    }
+    .channel-card.playing {
+      background: var(--card-hover);
+      border-color: var(--green);
+      box-shadow: 0 0 0 2px var(--green);
+    }
+    .channel-icon {
+      width: 72px; height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+      overflow: hidden;
+      padding: 6px;
+    }
+    .channel-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .icon-fallback {
+      font-size: 18px;
+      font-weight: 900;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+    .channel-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    /* ===== SEARCH BAR ===== */
+    .search-bar {
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .search-bar input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      padding: 12px 16px 12px 40px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-bar input:focus { border-color: var(--green); }
+    .search-bar input::placeholder { color: var(--text-muted); }
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 15px;
+      pointer-events: none;
+    }
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center;
+      padding: 40px 24px 48px;
+      color: var(--text-muted);
+      font-size: 13px;
+      border-top: 1px solid var(--border);
+      margin-top: 0;
+    }
+    /* ===== FEATURED CHANNELS ===== */
+    .featured-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 8px;
+    }
+    .featured-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .featured-title::after { content:''; flex:1; height:1px; background:var(--border); }
+    .featured-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 600px) { .featured-grid { grid-template-columns: repeat(2, 1fr); } }
+    .featured-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .featured-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--green);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .featured-card:hover {
+      background: var(--card-hover);
+      border-color: var(--green);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px var(--green-glow);
+    }
+    .featured-card:hover::before { opacity: 1; }
+    .featured-icon {
+      width: 80px; height: 52px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      border: 1px solid rgba(255,255,255,0.1);
+      flex-shrink: 0;
+      overflow: hidden;
+      padding: 8px;
+    }
+    .featured-icon img { width:100%; height:100%; object-fit:contain; }
+    .featured-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    .featured-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+      text-align: center;
+    }
+    .featured-live {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .featured-live-dot {
+      width: 6px; height: 6px;
+      background: var(--red);
+      border-radius: 50%;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    /* ===== FAQ ===== */
+    .faq-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 24px 64px;
+    }
+    .faq-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .faq-header h2 {
+      font-size: clamp(22px, 4vw, 32px);
+      font-weight: 900;
+      letter-spacing: -0.8px;
+      margin-bottom: 8px;
+    }
+    .faq-header p { color: var(--text-muted); font-size: 15px; }
+    .faq-list { display: flex; flex-direction: column; gap: 0; }
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 8px;
+      overflow: hidden;
+      background: var(--card);
+      transition: border-color 0.2s;
+    }
+    .faq-item.open { border-color: var(--green); }
+    .faq-question {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 700;
+      text-align: left;
+      padding: 18px 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      line-height: 1.4;
+      transition: color 0.2s;
+    }
+    .faq-item.open .faq-question { color: var(--green); }
+    .faq-chevron {
+      flex-shrink: 0;
+      width: 20px; height: 20px;
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      transition: transform 0.25s, border-color 0.2s, color 0.2s;
+    }
+    .faq-item.open .faq-chevron {
+      transform: rotate(180deg);
+      border-color: var(--green);
+      color: var(--green);
+    }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      padding: 0 20px;
+    }
+    .faq-item.open .faq-answer {
+      max-height: 300px;
+      padding: 0 20px 18px;
+    }
+    .faq-answer p {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      .channels-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+      .player-controls { gap: 6px; }
+    }
+
+    /* ===== NEXT MATCH BADGE (header) ===== */
+    .next-match {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 12px;
+      background: rgba(34,197,94,0.08);
+      border: 1px solid rgba(34,197,94,0.28);
+      border-radius: 10px;
+      padding: 0 16px;
+      height: 46px;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .next-match:hover { background: rgba(34,197,94,0.15); border-color: var(--green); }
+    .next-match-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .next-match-label {
+      font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: var(--green); opacity: .85;
+    }
+    .next-match-teams { font-size: 13px; font-weight: 800; color: var(--text); white-space: nowrap; }
+    .next-match-divider {
+      width: 1px; height: 28px;
+      background: rgba(34,197,94,0.25);
+      flex-shrink: 0;
+    }
+    .next-match-countdown {
+      font-size: 13px; font-weight: 800; color: var(--green);
+      font-variant-numeric: tabular-nums; white-space: nowrap;
+    }
+    .next-match-countdown.soon { color: var(--yellow); animation: pulse 1.4s ease-in-out infinite; }
+
+    /* ===== ARGENTINA PAGE ===== */
+    #arg-page {
+      --arg: #74AADB;
+      --arg-dark: #4e8fc7;
+      --arg-glow: rgba(116,170,219,0.22);
+      --green: #74AADB; --green-dark: #4e8fc7; --green-glow: rgba(116,170,219,0.18);
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    #arg-page.visible { display: block; }
+
+    /* Bordes de todos los recuadros en celeste dentro de arg-page */
+    #arg-page .fixture-card,
+    #arg-page .big-countdown,
+    #arg-page .cd-unit,
+    #arg-page .mundial-match-card,
+    #arg-page .mundial-panel,
+    #arg-page [style*="border:1px solid var(--border)"],
+    #arg-page [style*="border: 1px solid var(--border)"] {
+      border-color: rgba(116,170,219,0.28) !important;
+    }
+
+    /* Spinner de loading */
+    #arg-page .agenda-spinner { border-top-color: var(--arg); }
+
+    @keyframes fadeIn { from { opacity:0; transform:translateY(10px);} to { opacity:1; transform:none; } }
+
+    /* Hero ocupa full width, sin margen arriba */
+    .arg-hero {
+      text-align: center;
+      padding: 56px 24px 40px;
+      background: linear-gradient(180deg, rgba(116,170,219,0.22) 0%, rgba(116,170,219,0.08) 55%, transparent 100%);
+      margin-bottom: 0;
+      position: relative;
+    }
+    /* Botón flotante arriba a la izquierda, ENCIMA del degradé */
+    .arg-back-wrapper {
+      position: absolute;
+      top: 18px;
+      left: 24px;
+    }
+    .arg-flag { font-size: 52px; margin-bottom: 10px; }
+    .arg-hero h2 { font-size: clamp(22px,5vw,38px); font-weight: 900; letter-spacing: -1px; margin-bottom: 6px; }
+    .arg-hero h2 span { color: var(--arg); }
+    .arg-hero p { color: var(--text-muted); font-size: 15px; }
+
+    /* Contenido interior con max-width */
+    .arg-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    /* Countdown big */
+    .big-countdown {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .big-countdown-left { display: flex; flex-direction: column; gap: 4px; }
+    .big-countdown-match { font-size: 20px; font-weight: 800; }
+    .big-countdown-meta { font-size: 13px; color: var(--text-muted); }
+    .big-countdown-timer { display: flex; gap: 12px; }
+    .cd-unit {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      min-width: 58px;
+    }
+    .cd-num {
+      font-size: 26px; font-weight: 900; line-height: 1;
+      color: var(--arg); font-variant-numeric: tabular-nums;
+    }
+    .cd-label { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; }
+
+    /* Section title */
+    .section-title {
+      font-size: 16px; font-weight: 800;
+      letter-spacing: -0.3px;
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* Fixture */
+    .fixture-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+    .fixture-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 10px;
+      transition: border-color 0.2s;
+    }
+    #arg-page .fixture-card.next-up { border-color: var(--arg); box-shadow: 0 0 16px var(--arg-glow); }
+    .fixture-card-left { display: flex; flex-direction: column; gap: 3px; }
+    .fixture-date { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+    .fixture-teams { font-size: 16px; font-weight: 800; }
+    .fixture-teams .vs { color: var(--text-muted); font-weight: 400; margin: 0 6px; font-size: 13px; }
+    .fixture-right { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+    .fixture-venue { font-size: 12px; color: var(--text-muted); }
+    #arg-page .fixture-time { font-size: 13px; font-weight: 700; color: var(--arg); }
+    #arg-page .fixture-badge { font-size: 10px; font-weight: 700; background: var(--arg); color: #000; border-radius: 20px; padding: 2px 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    #arg-page .result-badge { font-size: 13px; font-weight: 800; color: var(--arg); }
+
+    /* Formation */
+    .formation-wrap { margin-bottom: 32px; }
+    .formation-field {
+      background: linear-gradient(180deg, #14532d 0%, #166534 40%, #15803d 70%, #166534 100%);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 20px 16px;
+      position: relative; overflow: hidden; margin-bottom: 12px;
+    }
+    .formation-field::before {
+      content: ''; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120px; height: 120px;
+      border: 2px solid rgba(255,255,255,0.15); border-radius: 50%;
+    }
+    .formation-field::after {
+      content: ''; position: absolute; top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 60%; height: 100%;
+      border-left: 2px solid rgba(255,255,255,0.08);
+      border-right: 2px solid rgba(255,255,255,0.08);
+    }
+    .formation-row { display: flex; justify-content: center; gap: 8px; margin-bottom: 14px; position: relative; z-index: 1; }
+    .formation-row:last-child { margin-bottom: 0; }
+    .player-dot { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: default; width: 64px; }
+    .player-circle {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      border: 2px solid rgba(255,255,255,0.6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 900; color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    .player-circle.captain { border-color: var(--yellow); background: rgba(250,204,21,0.2); color: var(--yellow); }
+    .player-name-tag {
+      font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.9);
+      text-align: center; white-space: nowrap; text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+      max-width: 64px; overflow: hidden; text-overflow: ellipsis;
+    }
+    .formation-label { text-align: center; font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 8px; }
+
+    /* News / Highlights (por si se usan) */
+    .news-card:hover { background: var(--card-hover); border-color: var(--arg); transform: translateY(-2px); }
+    #arg-page .news-tag { color: var(--arg); }
+    .highlight-card:hover { border-color: var(--arg); transform: translateY(-2px); box-shadow: 0 8px 24px var(--arg-glow); }
+    #arg-page .highlight-play-btn { background: var(--arg); box-shadow: 0 0 20px var(--arg-glow); }
+
+    /* Back btn */
+    .arg-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(10,14,10,0.75); border: 1px solid var(--border);
+      color: var(--text); border-radius: var(--radius-sm);
+      padding: 9px 18px; cursor: pointer; font-size: 13px; font-weight: 700;
+      transition: all 0.2s; backdrop-filter: blur(8px);
+    }
+    .arg-back:hover { background: var(--card-hover); border-color: var(--arg); color: var(--arg); }
+
+    /* ===== MUNDIAL 2026 GROUPS ===== */
+    .mundial-tabs {
+      display: flex; gap: 4px;
+      overflow-x: auto; scrollbar-width: none;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    .mundial-tabs::-webkit-scrollbar { display: none; }
+    .mundial-tab {
+      background: transparent; border: none;
+      color: var(--text-muted); padding: 8px 14px;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      border-bottom: 2px solid transparent; white-space: nowrap;
+      transition: all 0.2s; margin-bottom: -1px;
+    }
+    .mundial-tab:hover { color: var(--text); }
+    .mundial-tab.active { color: var(--arg); border-bottom-color: var(--arg); }
+    .mundial-panel { display: none; }
+    .mundial-panel.active { display: block; }
+
+    /* Group grid */
+    .groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; margin-bottom: 32px; }
+    .group-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .group-card-header {
+      background: linear-gradient(90deg, rgba(116,170,219,0.12) 0%, transparent 60%);
+      padding: 10px 16px;
+      font-size: 12px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--arg);
+      border-bottom: 1px solid var(--border);
+    }
+    .group-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .group-table th {
+      padding: 6px 8px; text-align: center;
+      color: var(--text-muted); font-weight: 700; font-size: 10px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+    .group-table th:first-child { text-align: left; padding-left: 16px; }
+    .group-table td {
+      padding: 8px 8px; text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-variant-numeric: tabular-nums;
+    }
+    .group-table td:first-child { text-align: left; padding-left: 16px; font-weight: 700; }
+    .group-table tr:last-child td { border-bottom: none; }
+    .group-table tr.qualify td:first-child { border-left: 3px solid var(--arg); }
+    .group-table tr.arg-row td { background: rgba(116,170,219,0.08); }
+    .g-pos { color: var(--text-muted); font-size: 11px; margin-right: 6px; }
+    .g-pts { color: var(--arg); font-weight: 900; }
+
+    /* Partidos del Mundial */
+    .mundial-matches { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px; }
+    .mundial-match-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 12px 18px;
+      display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+      transition: border-color 0.2s;
+    }
+    .mundial-match-card.arg-match { border-color: rgba(116,170,219,0.4); }
+    .mundial-match-date { font-size: 11px; color: var(--text-muted); font-weight: 700; min-width: 80px; white-space: nowrap; }
+    .mundial-match-teams { flex: 1; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+    .mundial-match-vs { color: var(--text-muted); font-size: 11px; font-weight: 400; }
+    .mundial-match-group { font-size: 10px; font-weight: 700; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 2px 8px; white-space: nowrap; }
+    .mundial-match-time { font-size: 13px; font-weight: 800; color: var(--arg); white-space: nowrap; }
+    .mundial-match-card.arg-match .mundial-match-time { color: var(--yellow); }
+
+    @media (max-width: 600px) {
+      .big-countdown { flex-direction: column; }
+      .big-countdown-timer { flex-wrap: wrap; }
+      .cd-num { font-size: 20px; }
+      .cd-unit { min-width: 48px; padding: 8px 10px; }
+    }
+    /* ===== AGENDA DE PARTIDOS ===== */
+    .agenda-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 32px;
+      position: relative;
+      z-index: 2;
+    }
+    .agenda-section-title {
+      font-size: 13px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.2px;
+      color: var(--text-muted); margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .agenda-section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+    /* Loading / empty */
+    .agenda-loading {
+      display: flex; align-items: center; gap: 10px;
+      color: var(--text-muted); font-size: 13px;
+      padding: 20px 0;
+    }
+    .agenda-spinner {
+      display: inline-block; width: 14px; height: 14px;
+      border: 2px solid var(--border); border-top-color: var(--green);
+      border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .agenda-empty { color: var(--text-muted); font-size: 13px; padding: 20px 0; text-align: center; }
+    /* Day groups */
+    .agenda-day {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 8px;
+      transition: border-color 0.2s;
+    }
+    .agenda-day:has(.agenda-match.live) { border-color: rgba(239,68,68,0.4); }
+    .agenda-day-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 18px;
+      cursor: pointer; user-select: none;
+      background: linear-gradient(90deg, rgba(34,197,94,0.08) 0%, transparent 55%);
+      transition: background 0.2s;
+    }
+    .agenda-day-header:hover { background: linear-gradient(90deg, rgba(34,197,94,0.15) 0%, transparent 55%); }
+    .agenda-day-left { display: flex; align-items: center; gap: 10px; }
+    .agenda-day-label {
+      font-size: 13px; font-weight: 800; color: var(--green);
+    }
+    .agenda-day-meta { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+    .agenda-day-count {
+      font-size: 11px; font-weight: 700;
+      background: rgba(34,197,94,0.12); color: var(--green);
+      border: 1px solid rgba(34,197,94,0.2);
+      border-radius: 20px; padding: 2px 8px;
+    }
+    .agenda-day-arrow {
+      color: var(--text-muted); font-size: 11px;
+      transition: transform 0.25s, color 0.2s; flex-shrink: 0;
+    }
+    .agenda-day.open .agenda-day-arrow { transform: rotate(180deg); color: var(--green); }
+    .agenda-day-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(.4,0,.2,1);
+    }
+    .agenda-day.open .agenda-day-body { max-height: 4000px; }
+    /* Match rows */
+    .agenda-match-row {
+      border-top: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    .agenda-match-row:hover { background: var(--card-hover); }
+    .agenda-match-summary {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 18px; cursor: pointer; user-select: none;
+    }
+    .agenda-match-time {
+      font-size: 13px; font-weight: 800;
+      color: var(--green); white-space: nowrap;
+      min-width: 50px; font-variant-numeric: tabular-nums;
+    }
+    .agenda-match-live-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--red); flex-shrink: 0;
+      animation: pulse 1.4s ease-in-out infinite;
+      display: none;
+    }
+    .agenda-match.live .agenda-match-live-dot { display: block; }
+    .agenda-match-flag { font-size: 16px; flex-shrink: 0; }
+    .agenda-match-title {
+      flex: 1; font-size: 13px; font-weight: 700; line-height: 1.4;
+    }
+    .agenda-match-score {
+      font-size: 14px; font-weight: 900;
+      color: var(--green); white-space: nowrap;
+      background: rgba(34,197,94,0.1);
+      border: 1px solid rgba(34,197,94,0.2);
+      border-radius: 6px; padding: 2px 8px;
+      display: none;
+    }
+    .agenda-match.live .agenda-match-score,
+    .agenda-match.finished .agenda-match-score { display: block; }
+    .agenda-match.live .agenda-match-score { color: var(--red); background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.25); }
+    .agenda-expand-arrow {
+      color: var(--text-muted); font-size: 11px;
+      transition: transform 0.22s, color 0.2s; flex-shrink: 0;
+    }
+    .agenda-match.open .agenda-expand-arrow { transform: rotate(180deg); color: var(--green); }
+    /* Channels dropdown */
+    .agenda-channels {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.28s ease;
+      background: rgba(0,0,0,0.25);
+    }
+    .agenda-match.open .agenda-channels { max-height: 600px; }
+    .agenda-channel-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 18px 9px 82px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .agenda-channel-item:hover { background: var(--card-hover); }
+    .agenda-channel-item-name {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 600; color: var(--text);
+    }
+    .agenda-channel-item-name::before {
+      content: '▶'; font-size: 8px; color: var(--green);
+    }
+    .agenda-quality-badge {
+      font-size: 11px; font-weight: 700;
+      background: rgba(34,197,94,0.1); color: var(--green);
+      border: 1px solid rgba(34,197,94,0.22);
+      border-radius: 20px; padding: 2px 9px; white-space: nowrap;
+    }
+    /* ===== SCROLL TO TOP ===== */
+    #scroll-top {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 999;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(34,197,94,0.15);
+      border: 1.5px solid rgba(34,197,94,0.4);
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, background 0.2s, transform 0.2s;
+      backdrop-filter: blur(8px);
+    }
+    #scroll-top.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #scroll-top:hover {
+      background: rgba(34,197,94,0.28);
+      transform: translateY(-2px);
+    }
+    #scroll-top svg { display: block; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
+</head>
+<body>
+
+<!-- ANIMATED BACKGROUND CANVAS -->
+<canvas id="bg-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
+<!-- CURSOR GLOW -->
+<div id="cursor-glow" style="position:fixed;pointer-events:none;z-index:1;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(34,197,94,0.07) 0%,transparent 70%);transform:translate(-50%,-50%);transition:opacity 0.3s;opacity:0;"></div>
+
+<!-- SCROLL TO TOP -->
+<button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M9 13V5M9 5L5 9M9 5L13 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>
+
+<!-- HEADER -->
+<header>
+  <div class="logo" onclick="goHome()" style="flex-shrink:0;cursor:pointer;">
+    <div class="logo-ball">⚽</div>
+    <span class="logo-text">Futbol Para Todos</span>
+  </div>
+  <nav class="nav-links">
+    <button class="nav-link active" id="navbtn-inicio" onclick="scrollToSection('inicio')">🏠 Inicio</button>
+    <button class="nav-link" id="navbtn-agenda" onclick="scrollToSection('agenda-section')">📅 Agenda de partidos</button>
+    <button class="nav-link" id="navbtn-canales" onclick="scrollToSection('featured-section')">⭐ Canales Principales</button>
+    <button class="nav-link" id="navbtn-buscar" onclick="scrollToSection('tabs-section-anchor')">🔍 Buscar canales</button>
+    <button class="nav-link" id="navbtn-faq" onclick="scrollToSection('faq-section')">❓ Preguntas Frecuentes</button>
+  </nav>
+  <div class="next-match" onclick="showArgPage()">
+    <div class="next-match-inner">
+      <div class="next-match-label">🏆 Mundial 2026</div>
+      <div class="next-match-teams">🇦🇷 ARG vs DZA 🇩🇿</div>
+    </div>
+    <div class="next-match-divider"></div>
+    <div class="next-match-countdown" id="header-countdown">--d --h</div>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero" id="inicio">
+  <div style="display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:20px;">
+    <div style="width:28px;height:28px;background:radial-gradient(circle at 35% 35%,#fff 0%,#d1fae5 30%,var(--green) 70%);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 14px var(--green-glow);flex-shrink:0;">⚽</div>
+    <span style="font-size:16px;font-weight:800;color:var(--text);letter-spacing:-0.3px;">Futbol Para Todos</span>
+  </div>
+  <h1>Todos los partidos,<br><span>en un solo lugar</span></h1>
+  <p>Elegí el canal que quieras y mirá el fútbol en vivo de forma gratuita.</p>
+</div>
+
+<!-- PLAYER SECTION (hidden by default) -->
+<div id="player-section">
+  <div class="player-card" id="player-card">
+
+    <div class="player-topbar">
+      <button class="btn-back" onclick="closePlayer()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Volver
+      </button>
+      <div class="player-title">
+        <span id="player-channel-name">Canal</span>
+        <span class="live-pill"><span class="dot"></span>EN VIVO</span>
+      </div>
+      <button class="btn-close" onclick="closePlayer()">✕ Cerrar</button>
+    </div>
+
+    <div class="player-screen" id="player-wrapper">
+      <!-- Anti-popup shield: absorbs the first click on the iframe -->
+      <div class="popup-shield armed" id="popup-shield" onclick="disarmShield(event)"></div>
+      <div class="popup-blocked-toast" id="popup-toast">🛡️ Clic registrado — reproduciendo sin popup</div>
+      <iframe
+        id="stream-iframe"
+        src=""
+        allowfullscreen
+        scrolling="no"
+        allow="autoplay; encrypted-media; fullscreen; picture-in-picture; accelerometer; gyroscope"
+        referrerpolicy="no-referrer-when-downgrade"
+      ></iframe>
+      <video
+        id="stream-video"
+        controls
+        autoplay
+        playsinline
+        style="display:none"
+      ></video>
+    </div>
+
+    <div class="player-controls">
+      <div class="ctrl-group">
+        <span class="ctrl-label">📡 Fuente</span>
+        <button class="ctrl-btn active" id="src-1" onclick="switchSource('global1')">1</button>
+        <button class="ctrl-btn" id="src-2" onclick="switchSource('global2')">2</button>
+        <button class="ctrl-btn" id="src-3" onclick="switchSource('skylive')">3</button>
+      </div>
+      <div class="ctrl-divider"></div>
+      <button class="btn-sync" onclick="syncLive()">⟳ Sincronizar</button>
+      <button class="btn-fullscreen" onclick="goFullscreen()">⛶ Pantalla Completa</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- AGENDA DE PARTIDOS -->
+<div class="agenda-section" id="agenda-section">
+  <div class="agenda-section-title">📅 Agenda de partidos</div>
+  <div id="agenda-loading" class="agenda-loading">
+    <span class="agenda-spinner"></span> Cargando partidos...
+  </div>
+  <div id="agenda-empty" class="agenda-empty" style="display:none">
+    No hay partidos programados para hoy ni los próximos días.
+  </div>
+  <div id="agenda-list"></div>
+</div>
+
+<!-- FEATURED CHANNELS -->
+<div class="featured-section" id="featured-section">
+  <div class="featured-title">⭐ Canales principales</div>
+  <div class="featured-grid">
+    <div class="featured-card" onclick="playChannel('espnpremium','ESPN Premium')">
+      <div class="featured-icon">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/200px-ESPN_wordmark.svg.png" alt="ESPN Premium">
+      </div>
+      <div class="featured-name">ESPN Premium</div>
+      <div class="featured-desc">No te pierdas los encuentros más importantes de fútbol, análisis en vivo y cobertura especial en ESPN Premium.</div>
+      <div class="featured-live"><span class="featured-live-dot"></span> En vivo</div>
+    </div>
+    <div class="featured-card" onclick="playChannel('tntsports','TNT Sports AR')">
+      <div class="featured-icon">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/TNT_Sports_Logo.svg" alt="TNT Sports">
+      </div>
+      <div class="featured-name">TNT Sports AR</div>
+      <div class="featured-desc">Mirá partidos de ligas locales y regionales con TNT Sports, disponible gratis en nuestra plataforma.</div>
+      <div class="featured-live"><span class="featured-live-dot"></span> En vivo</div>
+    </div>
+    <div class="featured-card" onclick="playChannel('fox1ar','Fox Sports Premium')">
+      <div class="featured-icon">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/FOX_Sports_logo.svg/200px-FOX_Sports_logo.svg.png" alt="Fox Sports Premium">
+      </div>
+      <div class="featured-name">Fox Sports Premium</div>
+      <div class="featured-desc">Disfrutá de competencias globales, entrevistas exclusivas y más a través de Fox Sports en alta definición.</div>
+      <div class="featured-live"><span class="featured-live-dot"></span> En vivo</div>
+    </div>
+    <div class="featured-card" onclick="playChannel('tycsports','TyC Sports')">
+      <div class="featured-icon">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/TyC_Sports_logo.svg/200px-TyC_Sports_logo.svg.png" alt="TyC Sports">
+      </div>
+      <div class="featured-name">TyC Sports</div>
+      <div class="featured-desc">Disfrutá de los mejores partidos de fútbol argentino y otros deportes a través de TyC Sports con señal en vivo y gratuita.</div>
+      <div class="featured-live"><span class="featured-live-dot"></span> En vivo</div>
+    </div>
+    <div class="featured-card" onclick="playChannel('dsports','DSports')">
+      <div class="featured-icon">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/DSports_logo_2022.svg" alt="DSports">
+      </div>
+      <div class="featured-name">DSports</div>
+      <div class="featured-desc">Accedé a transmisiones exclusivas de torneos internacionales y ligas de América Latina en DirecTV Sports.</div>
+      <div class="featured-live"><span class="featured-live-dot"></span> En vivo</div>
+    </div>
+    <div class="featured-card" onclick="playChannel('telefe','Telefe')">
+      <div class="featured-icon">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Logo_telefe_argentina.svg" alt="Telefe">
+      </div>
+      <div class="featured-name">Telefe</div>
+      <div class="featured-desc">Seguí los partidos de la Selección Argentina en abierto y gratuito por Telefe, el canal de todos los argentinos.</div>
+      <div class="featured-live"><span class="featured-live-dot"></span> En vivo</div>
+    </div>
+  </div>
+</div>
+
+<!-- CHANNELS SECTION -->
+<div class="tabs-section" id="tabs-section-anchor">
+
+  <!-- Search -->
+  <div class="search-bar">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search-input" placeholder="Buscar canal..." oninput="filterChannels()" />
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs-header">
+    <button class="tab-btn active" onclick="switchTab('all', this)">Todos</button>
+    <button class="tab-btn" onclick="switchTab('arg', this)">🇦🇷 Argentina</button>
+    <button class="tab-btn" onclick="switchTab('usa', this)">🇺🇸 USA</button>
+    <button class="tab-btn" onclick="switchTab('mx', this)">🇲🇽 México</button>
+    <button class="tab-btn" onclick="switchTab('br', this)">🇧🇷 Brasil</button>
+    <button class="tab-btn" onclick="switchTab('int', this)">🌍 Internacional</button>
+    <button class="tab-btn" onclick="switchTab('events', this)">🏆 Eventos</button>
+    <button class="tab-btn" onclick="switchTab('ent', this)">📺 Entretenimiento</button>
+  </div>
+
+  <!-- Tab: ALL (search results + default grid) -->
+  <div class="tab-content active" id="tab-all">
+    <div class="channels-grid" id="grid-all"></div>
+  </div>
+  <!-- Tab: Argentina -->
+  <div class="tab-content" id="tab-arg">
+    <div class="channels-grid" id="grid-arg"></div>
+  </div>
+  <!-- Tab: USA -->
+  <div class="tab-content" id="tab-usa">
+    <div class="channels-grid" id="grid-usa"></div>
+  </div>
+  <!-- Tab: Mexico -->
+  <div class="tab-content" id="tab-mx">
+    <div class="channels-grid" id="grid-mx"></div>
+  </div>
+  <!-- Tab: Brasil -->
+  <div class="tab-content" id="tab-br">
+    <div class="channels-grid" id="grid-br"></div>
+  </div>
+  <!-- Tab: Internacional -->
+  <div class="tab-content" id="tab-int">
+    <div class="channels-grid" id="grid-int"></div>
+  </div>
+  <!-- Tab: Eventos -->
+  <div class="tab-content" id="tab-events">
+    <div class="channels-grid" id="grid-events"></div>
+  </div>
+  <!-- Tab: Entretenimiento -->
+  <div class="tab-content" id="tab-ent">
+    <div class="channels-grid" id="grid-ent"></div>
+  </div>
+
+</div>
+
+<!-- FAQ -->
+<div class="faq-section" id="faq-section">
+  <div class="faq-header">
+    <h2>Preguntas frecuentes</h2>
+    <p>Todo lo que tenés que saber sobre Fútbol Para Todos.</p>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item" id="faq-0">
+      <button class="faq-question" onclick="toggleFaq(0)">
+        ¿Qué es Fútbol Para Todos TV?
+        <span class="faq-chevron">∧</span>
+      </button>
+      <div class="faq-answer">
+        <p>Fútbol Para Todos es tu espacio para disfrutar partidos online gratis en Full HD y apoyar a tu equipo favorito del fútbol argentino. También transmitimos la Copa Sudamericana, Copa Libertadores, encuentros de Boca Juniors, River Plate y la Selección Argentina. Todo el fútbol que querés, en un solo lugar.</p>
+      </div>
+    </div>
+    <div class="faq-item" id="faq-1">
+      <button class="faq-question" onclick="toggleFaq(1)">
+        ¿Cómo ver un partido en la web?
+        <span class="faq-chevron">∧</span>
+      </button>
+      <div class="faq-answer">
+        <p>Ver Fútbol Para Todos online en vivo es muy sencillo. Solo entrá al sitio, consultá la grilla de canales para encontrar el partido que querés ver y hacé clic en el canal que prefieras. También podés buscar directamente el canal que transmitirá el encuentro en el horario indicado. Los canales se actualizan todos los días para que no te pierdas ningún partido.</p>
+      </div>
+    </div>
+    <div class="faq-item" id="faq-2">
+      <button class="faq-question" onclick="toggleFaq(2)">
+        ¿Cómo ver Fútbol Para Todos en Android u otro dispositivo?
+        <span class="faq-chevron">∧</span>
+      </button>
+      <div class="faq-answer">
+        <p>Para disfrutar de Fútbol Para Todos desde cualquier dispositivo, solo necesitás conexión a internet estable. Ingresá al sitio desde el navegador de tu teléfono o tablet, elegí tu canal favorito en Full HD y viví cada partido en vivo donde quieras, sin instalar nada.</p>
+      </div>
+    </div>
+    <div class="faq-item" id="faq-3">
+      <button class="faq-question" onclick="toggleFaq(3)">
+        ¿Qué partidos se transmiten en Fútbol Para Todos?
+        <span class="faq-chevron">∧</span>
+      </button>
+      <div class="faq-answer">
+        <p>En Fútbol Para Todos podés ver todos los partidos del fútbol argentino, además de encuentros destacados de Chile, Perú, Paraguay y Estados Unidos. También transmitimos la Copa Libertadores, la Copa Sudamericana y los partidos de la Selección Argentina.</p>
+      </div>
+    </div>
+    <div class="faq-item" id="faq-4">
+      <button class="faq-question" onclick="toggleFaq(4)">
+        Exención de Responsabilidad
+        <span class="faq-chevron">∧</span>
+      </button>
+      <div class="faq-answer">
+        <p>Fútbol Para Todos no aloja transmisiones en sus servidores. Cualquier enlace o contenido mostrado proviene de fuentes externas. No somos responsables por el contenido transmitido por sitios de terceros.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  ⚽ Futbol Para Todos &mdash; Todos los partidos en vivo &bull; Solo para uso personal &bull; © 2026 All rights reserved.
+</footer>
+<div id="arg-page">
+
+  <!-- Hero full-width con botón encima del degradé -->
+  <div class="arg-hero">
+    <div class="arg-back-wrapper">
+      <button class="arg-back" onclick="closeArgPage()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Volver al inicio
+      </button>
+    </div>
+    <div class="arg-flag">🇦🇷</div>
+    <h2>Selección <span>Argentina</span></h2>
+    <p>Todo lo que tenés que saber del campeón del mundo en el Mundial 2026</p>
+  </div>
+
+  <div class="arg-inner">
+
+  <!-- Big countdown -->
+  <div class="big-countdown">
+    <div class="big-countdown-left">
+      <div class="big-countdown-match">🇦🇷 Argentina vs Argelia 🇩🇿</div>
+      <div class="big-countdown-meta">Martes 16 de junio · 22:00 ARG · Arrowhead Stadium, Kansas City · Grupo J</div>
+    </div>
+    <div class="big-countdown-timer">
+      <div class="cd-unit"><span class="cd-num" id="cd-days">--</span><span class="cd-label">días</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-hours">--</span><span class="cd-label">horas</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-mins">--</span><span class="cd-label">min</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-secs">--</span><span class="cd-label">seg</span></div>
+    </div>
+  </div>
+
+  <!-- Fixture Grupo J -->
+  <div class="section-title">📅 Fixture — Grupo J · Argentina</div>
+  <div class="fixture-list">
+    <div class="fixture-card">
+      <div class="fixture-card-left">
+        <div class="fixture-date">Mar 31 de marzo 2026 · Amistoso</div>
+        <div class="fixture-teams">🇦🇷 Argentina <span class="vs">vs</span> Zambia 🇿🇲</div>
+      </div>
+      <div class="fixture-right">
+        <div class="fixture-venue">La Bombonera, Buenos Aires</div>
+        <div class="result-badge">5 – 0 ✅</div>
+      </div>
+    </div>
+    <div class="fixture-card next-up">
+      <div class="fixture-card-left">
+        <div class="fixture-date">Mar 16 de junio 2026 · Copa del Mundo · Grupo J</div>
+        <div class="fixture-teams">🇦🇷 Argentina <span class="vs">vs</span> Argelia 🇩🇿</div>
+      </div>
+      <div class="fixture-right">
+        <div class="fixture-venue">Arrowhead Stadium, Kansas City</div>
+        <div class="fixture-time">22:00 ARG</div>
+        <span class="fixture-badge">Próximo</span>
+      </div>
+    </div>
+    <div class="fixture-card">
+      <div class="fixture-card-left">
+        <div class="fixture-date">Lun 22 de junio 2026 · Copa del Mundo · Grupo J</div>
+        <div class="fixture-teams">🇦🇷 Argentina <span class="vs">vs</span> Austria 🇦🇹</div>
+      </div>
+      <div class="fixture-right">
+        <div class="fixture-venue">AT&T Stadium, Dallas</div>
+        <div class="fixture-time">14:00 ARG</div>
+      </div>
+    </div>
+    <div class="fixture-card">
+      <div class="fixture-card-left">
+        <div class="fixture-date">Dom 28 de junio 2026 · Copa del Mundo · Grupo J</div>
+        <div class="fixture-teams">🇦🇷 Argentina <span class="vs">vs</span> Jordania 🇯🇴</div>
+      </div>
+      <div class="fixture-right">
+        <div class="fixture-venue">AT&T Stadium, Dallas</div>
+        <div class="fixture-time">23:00 ARG</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MUNDIAL 2026 ===== -->
+  <div class="section-title">🌍 FIFA World Cup 2026 — EE.UU, México y Canadá</div>
+
+  <div class="mundial-tabs">
+    <button class="mundial-tab active" onclick="switchMundialTab('grupos', this)">🗂️ Grupos</button>
+    <button class="mundial-tab" onclick="switchMundialTab('partidos', this)">📅 Próximos partidos</button>
+    <button class="mundial-tab" onclick="switchMundialTab('info', this)">ℹ️ Info & Sedes</button>
+  </div>
+
+  <!-- PANEL: GRUPOS -->
+  <div class="mundial-panel active" id="mundial-grupos">
+    <div class="groups-grid" id="mundial-groups-grid"></div>
+  </div>
+
+  <!-- PANEL: PRÓXIMOS PARTIDOS -->
+  <div class="mundial-panel" id="mundial-partidos">
+    <div class="mundial-matches" id="mundial-matches-list"></div>
+  </div>
+
+  <!-- PANEL: INFO -->
+  <div class="mundial-panel" id="mundial-info">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:32px">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--arg);margin-bottom:10px">📌 Datos clave</div>
+        <div style="font-size:13px;color:var(--text-muted);line-height:2">
+          📅 <b style="color:var(--text)">11 Jun – 19 Jul 2026</b><br>
+          🌎 <b style="color:var(--text)">EE.UU · México · Canadá</b><br>
+          🏟️ <b style="color:var(--text)">16 estadios</b><br>
+          ⚽ <b style="color:var(--text)">48 selecciones</b><br>
+          🎮 <b style="color:var(--text)">104 partidos</b><br>
+          🏆 <b style="color:var(--text)">Final: MetLife Stadium, NJ</b>
+        </div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--arg);margin-bottom:10px">🏟️ Sedes Argentina</div>
+        <div style="font-size:13px;color:var(--text-muted);line-height:2.1">
+          🏟️ <b style="color:var(--text)">Arrowhead Stadium</b> — Kansas City<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size:11px">vs Argelia · 16 Jun</span><br>
+          🏟️ <b style="color:var(--text)">AT&T Stadium</b> — Dallas<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size:11px">vs Austria · 22 Jun · vs Jordania · 28 Jun</span>
+        </div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--arg);margin-bottom:10px">🇦🇷 Grupo J</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(116,170,219,0.1);border-radius:8px;padding:8px 10px;border:1px solid rgba(116,170,219,0.25)">🇦🇷 <b>Argentina</b> <span style="margin-left:auto;font-size:10px;color:var(--arg);font-weight:700">CAMPEÓN</span></div>
+          <div style="display:flex;align-items:center;gap:8px;background:var(--surface);border-radius:8px;padding:8px 10px">🇩🇿 <b>Argelia</b></div>
+          <div style="display:flex;align-items:center;gap:8px;background:var(--surface);border-radius:8px;padding:8px 10px">🇦🇹 <b>Austria</b></div>
+          <div style="display:flex;align-items:center;gap:8px;background:var(--surface);border-radius:8px;padding:8px 10px">🇯🇴 <b>Jordania</b></div>
+        </div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--arg);margin-bottom:10px">📺 TV en Argentina</div>
+        <div style="font-size:13px;color:var(--text-muted);line-height:2">
+          📡 <b style="color:var(--text)">Telefe</b> (abierta) · todos los partidos<br>
+          📡 <b style="color:var(--text)">TyC Sports</b> · todos los partidos<br>
+          📡 <b style="color:var(--text)">TV Pública</b> · seleccionados<br>
+          📡 <b style="color:var(--text)">ESPN / Fox Sports</b> · cable
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formación -->
+  <div class="section-title">👕 Formación — último partido (vs Zambia 5-0)</div>
+  <div class="formation-wrap">
+    <div class="formation-field">
+      <div class="formation-row">
+        <div class="player-dot"><div class="player-circle captain">10</div><div class="player-name-tag">Messi</div></div>
+        <div class="player-dot"><div class="player-circle">9</div><div class="player-name-tag">J. Álvarez</div></div>
+      </div>
+      <div class="formation-row">
+        <div class="player-dot"><div class="player-circle">22</div><div class="player-name-tag">Simeone</div></div>
+        <div class="player-dot"><div class="player-circle">10</div><div class="player-name-tag">Almada</div></div>
+        <div class="player-dot"><div class="player-circle">5</div><div class="player-name-tag">Mac Allister</div></div>
+        <div class="player-dot"><div class="player-circle">8</div><div class="player-name-tag">E. Fernández</div></div>
+      </div>
+      <div class="formation-row">
+        <div class="player-dot"><div class="player-circle">26</div><div class="player-name-tag">Barco</div></div>
+        <div class="player-dot"><div class="player-circle">25</div><div class="player-name-tag">Senesi</div></div>
+        <div class="player-dot"><div class="player-circle">13</div><div class="player-name-tag">Otamendi</div></div>
+        <div class="player-dot"><div class="player-circle">2</div><div class="player-name-tag">Molina</div></div>
+      </div>
+      <div class="formation-row">
+        <div class="player-dot"><div class="player-circle">1</div><div class="player-name-tag">Dibu Martínez</div></div>
+      </div>
+    </div>
+    <div class="formation-label">4-4-2 · DT: Lionel Scaloni · Fuente: último partido vs Zambia (31/03)</div>
+  </div>
+
+  </div><!-- /.arg-inner -->
+</div>
+
+<script>
+  // ===== CHANNELS DATA =====
+  const BASE_URL = 'https://streamtp10.com/';
+
+  // ===== LOGO URLS =====
+  const LOGOS = {
+    espn:     'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/200px-ESPN_wordmark.svg.png',
+    fox:      'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/FOX_Sports_logo.svg/200px-FOX_Sports_logo.svg.png',
+    dsports:  'https://commons.wikimedia.org/wiki/Special:FilePath/DSports_logo_2022.svg',
+    tnt:      'https://commons.wikimedia.org/wiki/Special:FilePath/TNT_Sports_Logo.svg',
+    tyc:      'https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/TyC_Sports_logo.svg/200px-TyC_Sports_logo.svg.png',
+    win:      'https://commons.wikimedia.org/wiki/Special:FilePath/Win_Sports_nuevo_logo.svg',
+    telefe:   'https://commons.wikimedia.org/wiki/Special:FilePath/Logo_telefe_argentina.svg',
+    tvpublica:'https://commons.wikimedia.org/wiki/Special:FilePath/TVP_-_Televisi%C3%B3n_P%C3%BAblica_(2021).svg',
+    liga1:    'https://commons.wikimedia.org/wiki/Special:FilePath/L1MAX-LOGO.svg',
+    tudn:     'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/TUDN_Logo.svg/200px-TUDN_Logo.svg.png',
+    univision:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_Univision_2013.svg/200px-Logo_Univision_2013.svg.png',
+    universo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/NBC_Universo_logo.svg/200px-NBC_Universo_logo.svg.png',
+    usa_net:  'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/USA_Network_logo_%282016%29.svg/200px-USA_Network_logo_%282016%29.svg.png',
+    azteca7:  'https://commons.wikimedia.org/wiki/Special:FilePath/Azteca72024.png',
+    canal5:   'https://commons.wikimedia.org/wiki/Special:FilePath/Canal_5_Mexico_logo_2014.svg',
+    sportv:   'https://commons.wikimedia.org/wiki/Special:FilePath/SporTV_2021.png',
+    premiere: 'https://commons.wikimedia.org/wiki/Special:FilePath/Premiere_(2017)_logo.png',
+    laliga:   'https://commons.wikimedia.org/wiki/Special:FilePath/LaLiga_TV_Hypermotion_2023_Logo.svg',
+    tigo:     'https://commons.wikimedia.org/wiki/Special:FilePath/Tigo_Sports_2025.png',
+    futv:     'https://commons.wikimedia.org/wiki/Special:FilePath/Logo_de_FUTV.svg',
+    tn:       'https://commons.wikimedia.org/wiki/Special:FilePath/TN_todo_noticias_logo.svg',
+    trece:    'https://commons.wikimedia.org/wiki/Special:FilePath/Isotipo_eltrece_2016.png',
+    bein:     'https://commons.wikimedia.org/wiki/Special:FilePath/BeIN_Sports_logo_(horizontal_version).svg',
+    redbull:  'https://commons.wikimedia.org/wiki/Special:FilePath/Logo_of_Red_bull.svg',
+    realmadridtv: 'https://commons.wikimedia.org/wiki/Special:FilePath/Realmadrid_Television_Logo.svg',
+    rta:      'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/RTA_logo.svg/200px-RTA_logo.svg.png',
+    telemundo:'https://commons.wikimedia.org/wiki/Special:FilePath/Telemundo_Logo.svg',
+    rtve:     'https://upload.wikimedia.org/wikipedia/commons/b/b1/TVE1_logo.svg',
+    movistar: 'https://commons.wikimedia.org/wiki/Special:FilePath/Movistar_Deportes_logo.svg',
+    mutv:     'https://commons.wikimedia.org/wiki/Special:FilePath/Manchester_United_FC_crest.svg',
+    novasport1:'https://upload.wikimedia.org/wikipedia/commons/c/c9/Nova_Sport_1_2024.png',
+    novasport2:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Nova_Sport_1_2024.png/200px-Nova_Sport_1_2024.png',
+    rtvs:     'https://upload.wikimedia.org/wikipedia/commons/9/95/Rozhlas_a_telev%C3%ADzia_Slovenska_Logo_%282011-present%29.svg',
+    jojsport: 'https://upload.wikimedia.org/wikipedia/commons/6/64/Jojsport.png',
+    itvdep:   'https://commons.wikimedia.org/wiki/Special:FilePath/ITV_logo.svg',
+    fastwomen:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Tubi_logo_2024.svg/200px-Tubi_logo_2024.svg.png',
+    cartoon:  'https://commons.wikimedia.org/wiki/Special:FilePath/Cartoon_Network_2010_logo.svg',
+    disney:   'https://upload.wikimedia.org/wikipedia/commons/f/ff/2024_Disney_Channel_text_logo.svg',
+    nick:     'https://commons.wikimedia.org/wiki/Special:FilePath/Nickelodeon_2009_logo.svg',
+    star:     'https://upload.wikimedia.org/wikipedia/commons/c/cd/Star_Channel_2023.svg',
+    comedy:   'https://upload.wikimedia.org/wikipedia/commons/a/aa/Comedy_Central_2018.svg',
+    nbatv:    'https://upload.wikimedia.org/wikipedia/en/d/d2/NBA_TV.svg',
+    deportv:  'https://commons.wikimedia.org/wiki/Special:FilePath/Deportv.svg',
+    ln:       'https://upload.wikimedia.org/wikipedia/commons/a/ae/La-Nacion-Mas-Logo.svg',
+    canal26:  'https://upload.wikimedia.org/wikipedia/commons/c/c5/Canal_26_logo_%282022%29.svg',
+    a24:      'https://commons.wikimedia.org/wiki/Special:FilePath/A24_%282025%29.svg',
+    c5n:      'https://upload.wikimedia.org/wikipedia/commons/0/07/C5N_logo.svg',
+    cronica:  'https://commons.wikimedia.org/wiki/Special:FilePath/Cr%C3%B3nica_TV_logotipo_%282016%29.png',
+    america:  'https://upload.wikimedia.org/wikipedia/commons/9/99/Logotipo_de_America_TV.svg',
+    nueve:    'https://commons.wikimedia.org/wiki/Special:FilePath/Canal_9_2015.png',
+    adultswim:'https://commons.wikimedia.org/wiki/Special:FilePath/Adult_Swim_2003_logo.svg',
+    hbo:      'https://commons.wikimedia.org/wiki/Special:FilePath/HBO_logo.svg',
+    sony:     'https://commons.wikimedia.org/wiki/Special:FilePath/Sony_Channel_logo.svg',
+    axn:      'https://commons.wikimedia.org/wiki/Special:FilePath/AXN_logo.svg',
+    amc:      'https://commons.wikimedia.org/wiki/Special:FilePath/AMC_logo_2016.svg',
+    space:    'https://upload.wikimedia.org/wikipedia/commons/1/1a/SpaceLogo.svg',
+    cinemax:  'https://commons.wikimedia.org/wiki/Special:FilePath/Cinemax.svg',
+    fx:       'https://upload.wikimedia.org/wikipedia/commons/4/4d/FX_International_logo.svg',
+    tnt_ent:  'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/TNT_%28TV_Channel%29.svg/250px-TNT_%28TV_Channel%29.svg.png',
+    history:  'https://upload.wikimedia.org/wikipedia/commons/0/01/History_%282021%29.svg',
+    dischyh:  'https://upload.wikimedia.org/wikipedia/commons/a/a3/Discovery_Home_%26_Health_logo.svg',
+    discovery:'https://upload.wikimedia.org/wikipedia/commons/2/27/Discovery_Channel_-_Logo_2019.svg',
+  };
+
+  const channels = [
+    // Argentina
+    { id:'espn',            name:'ESPN 1',            icon:'E1', color:'#e53e3e', region:'arg',    logo: LOGOS.espn,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=espn', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RVNQTjJIRA&lang=1', type: 'iframe' },
+      ]},
+    { id:'espn2',           name:'ESPN 2',            icon:'E2', color:'#e53e3e', region:'arg',    logo: LOGOS.espn,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=espn2', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RVNQTjJfQXJn&lang=1', type: 'iframe' },
+      ]},
+    { id:'espn3',           name:'ESPN 3',            icon:'E3', color:'#e53e3e', region:'arg',    logo: LOGOS.espn,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=espn3', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RVNQTjM&lang=1', type: 'iframe' },
+      ]},
+    { id:'espn4',           name:'ESPN 4',            icon:'E4', color:'#e53e3e', region:'arg',    logo: LOGOS.espn,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=espn4', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RVNQTkhE&lang=1', type: 'iframe' },
+      ]},
+    { id:'espn5',           name:'ESPN 5',            icon:'E5', color:'#e53e3e', region:'arg',    logo: LOGOS.espn,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=espn5', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RVNQTjQ=&lang=1', type: 'iframe' },
+      ]},
+    { id:'espn6',           name:'ESPN 6',            icon:'E6', color:'#e53e3e', region:'arg',    logo: LOGOS.espn,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=espn6', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Rm94U3BvcnRzM19VWQ==&lang=1', type: 'iframe' },
+      ]},
+    { id:'espn7',           name:'ESPN 7',            icon:'E7', color:'#e53e3e', region:'arg',    logo: LOGOS.espn,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=espn7', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Rm94U3BvcnRzMl9VWQ==&lang=1', type: 'iframe' },
+      ]},
+    { id:'espnpremium',     name:'ESPN Premium',      icon:'EP', color:'#c53030', region:'arg',    logo: LOGOS.espn,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=espnpremium', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Rm94X1Nwb3J0c19QcmVtaXVuX0hE&lang=1', type: 'iframe' },
+      ]},
+    { id:'fox1ar',          name:'Fox Sports 1',      icon:'F1', color:'#2b6cb0', region:'arg',    logo: LOGOS.fox },
+    { id:'fox2ar',          name:'Fox Sports 2',      icon:'F2', color:'#2b6cb0', region:'arg',    logo: LOGOS.fox },
+    { id:'fox3ar',          name:'Fox Sports 3',      icon:'F3', color:'#2b6cb0', region:'arg',    logo: LOGOS.fox },
+    { id:'dsports',         name:'DSports',           icon:'DS', color:'#6b46c1', region:'arg',    logo: LOGOS.dsports,
+      customSources: [
+        { url: 'https://embed.ksdjugfsddeports.com/embed/directvsports.html', type: 'iframe' },
+        { url: 'https://embed.ksdjugfsddeports.com/embed2/directvsports.html', type: 'iframe' },
+      ]},
+    { id:'dsports2',        name:'DSports 2',         icon:'D2', color:'#6b46c1', region:'arg',    logo: LOGOS.dsports },
+    { id:'daznf1',          name:'DAZN F1',           icon:'F1', color:'#e60028', region:'int',    logo: 'https://upload.wikimedia.org/wikipedia/commons/0/06/DAZN_Logo_Master.svg',
+      customSources: [
+        { url: 'https://embed.ksdjugfsddeports.com/embed2/daznf1.html', type: 'iframe' },
+        { url: 'https://embed.ksdjugfsddeports.com/embed/daznf1.html', type: 'iframe' },
+      ]},
+    { id:'dsportsplus',     name:'DSports+',          icon:'D+', color:'#6b46c1', region:'arg',    logo: LOGOS.dsports },
+    { id:'tntsports',       name:'TNT Sports AR',     icon:'TN', color:'#d69e2e', region:'arg',    logo: LOGOS.tnt ,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=tntsports', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=VE5UX1Nwb3J0c19IRA&lang=1', type: 'iframe' },
+      ]},
+    { id:'tycsports',       name:'TyC Sports',        icon:'TY', color:'#2d6a4f', region:'arg',    logo: LOGOS.tyc ,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=tycsports', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=VHlDU3BvcnQ&lang=1', type: 'iframe' },
+      ]},
+    { id:'tycinternacional',name:'TyC Internacional', icon:'TI', color:'#2d6a4f', region:'arg',    logo: LOGOS.tyc ,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=tycinternacional', type: 'iframe' },
+        { url: 'https://streamx339.cloud/global1.php?channel=tycint', type: 'iframe' },
+      ]},
+    { id:'winplus',         name:'Win Sports+',       icon:'W+', color:'#276749', region:'arg',    logo: LOGOS.win ,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=winplus', type: 'iframe' },
+        { url: 'https://streamx339.cloud/global1.php?channel=winplus', type: 'iframe' },
+      ]},
+    { id:'winplus2',        name:'Win Sports+ 2',     icon:'W2', color:'#276749', region:'arg',    logo: LOGOS.win ,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=winplus2', type: 'iframe' },
+        { url: 'https://streamx339.cloud/global1.php?channel=winplus2', type: 'iframe' },
+      ]},
+    { id:'winsports',       name:'Win Sports',        icon:'WN', color:'#276749', region:'arg',    logo: LOGOS.win ,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=winsports', type: 'iframe' },
+        { url: 'https://streamx339.cloud/global1.php?channel=winsports', type: 'iframe' },
+      ]},
+    { id:'telefe',          name:'Telefe',            icon:'TF', color:'#744210', region:'arg',    logo: LOGOS.telefe,
+      customSources: [
+        { url: 'https://pelisjuanita.com/tv/telefe.html', type: 'iframe' },
+        { url: 'https://pelisjuanita.com/tv/telefe.html', type: 'iframe' },
+      ]
+    },
+    { id:'tv_publica',      name:'TV Pública',        icon:'TV', color:'#2c5282', region:'arg',    logo: LOGOS.tvpublica,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=tv_publica', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Q2FuYWw3&lang=1', type: 'iframe' },
+      ]},
+    { id:'eltrece',         name:'El Trece',          icon:'13', color:'#c53030', region:'arg',    logo: LOGOS.trece,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=QXJ0ZWFySEQ&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=QXJ0ZWFySEQ&lang=1', type: 'iframe' },
+      ]
+    },
+    { id:'tn',              name:'TN Todo Noticias',  icon:'TN', color:'#1a2744', region:'arg',    logo: LOGOS.tn,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=VG9kb05vdGljaWFz&lang=1', type: 'iframe' },
+        { url: 'https://www.youtube.com/embed/cb12KmMMDJA?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=https://futbol-para-todos-chi.vercel.app', type: 'iframe' },
+      ]
+    },
+    // Argentina — Deportes extra
+    { id:'deportv',         name:'DeporTV',           icon:'DT', color:'#276749', region:'arg',    logo: LOGOS.deportv,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RGVwb3JUVkhE&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RGVwb3JUVkhE&lang=1', type: 'iframe' },
+      ]},
+    { id:'nbatv',           name:'NBA TV',            icon:'NB', color:'#c53030', region:'arg',    logo: LOGOS.nbatv,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=TkJBX1RW&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=TkJBX1RW&lang=1', type: 'iframe' },
+      ]},
+    // Entretenimiento & Noticias
+    { id:'cartoon_network', name:'Cartoon Network',   icon:'CN', color:'#c05621', region:'ent',    logo: LOGOS.cartoon,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Q2FydG9vbk5ldHdvcms=&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Q2FydG9vbk5ldHdvcms=&lang=1', type: 'iframe' },
+      ]},
+    { id:'disney_channel',  name:'Disney Channel',    icon:'DC', color:'#2b6cb0', region:'ent',    logo: LOGOS.disney,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RGlzbmV5Q2hhbm5lbEhE&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RGlzbmV5Q2hhbm5lbEhE&lang=1', type: 'iframe' },
+      ]},
+    { id:'nickelodeon',     name:'Nickelodeon',       icon:'NK', color:'#c05621', region:'ent',    logo: LOGOS.nick,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RGlzY292ZXJ5X0tpZHM=&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RGlzY292ZXJ5X0tpZHM=&lang=1', type: 'iframe' },
+      ]},
+    { id:'star_channel',    name:'Star Channel',      icon:'ST', color:'#1a365d', region:'ent',    logo: LOGOS.star,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Rk9YSEQ=&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Rk9YSEQ=&lang=1', type: 'iframe' },
+      ]},
+    { id:'comedy_central',  name:'Comedy Central',    icon:'CC', color:'#d69e2e', region:'ent',    logo: LOGOS.comedy,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Q29tZWR5Q2VudHJhbA&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Q29tZWR5Q2VudHJhbA&lang=1', type: 'iframe' },
+      ]},
+    // Entretenimiento — canales de cable internacionales
+    { id:'flow_music',      name:'Flow Music',        icon:'FM', color:'#553c9a', region:'ent',    logo: 'https://i.ibb.co/QFrVrtHP/image-removebg-preview.png',
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Rmxvd19NdXNpY19YUA==&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Rmxvd19NdXNpY19YUA==&lang=1', type: 'iframe' },
+      ]},
+    { id:'adult_swim',      name:'Adult Swim',        icon:'AS', color:'#1a1a1a', region:'ent',    logo: LOGOS.adultswim,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=QWR1bHRfU3dpbQ==&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=QWR1bHRfU3dpbQ==&lang=1', type: 'iframe' },
+      ]},
+    { id:'hbo',             name:'HBO',               icon:'HB', color:'#1a1a1a', region:'ent',    logo: LOGOS.hbo,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=SEJPSEQ=&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=SEJPSEQ=&lang=1', type: 'iframe' },
+      ]},
+    { id:'sony_channel',    name:'Sony Channel',      icon:'SC', color:'#1a2744', region:'ent',    logo: LOGOS.sony,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=U29ueUhE&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=U29ueUhE&lang=1', type: 'iframe' },
+      ]},
+    { id:'axn',             name:'AXN',               icon:'AX', color:'#c53030', region:'ent',    logo: LOGOS.axn,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=QVhOSEQ=&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=QVhOSEQ=&lang=1', type: 'iframe' },
+      ]},
+    { id:'amc',             name:'AMC',               icon:'AM', color:'#1a1a1a', region:'ent',    logo: LOGOS.amc,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=QU1D&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=QU1D&lang=1', type: 'iframe' },
+      ]},
+    { id:'space',           name:'Space',             icon:'SP', color:'#1a365d', region:'ent',    logo: LOGOS.space,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=U3BhY2U=&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=U3BhY2U=&lang=1', type: 'iframe' },
+      ]},
+    { id:'cinemax',         name:'Cinemax',           icon:'CX', color:'#c53030', region:'ent',    logo: LOGOS.cinemax,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Q2luZW1heA==&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Q2luZW1heA==&lang=1', type: 'iframe' },
+      ]},
+    { id:'fx',              name:'FX',                icon:'FX', color:'#1a1a1a', region:'ent',    logo: LOGOS.fx,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RlhIRA==&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RlhIRA==&lang=1', type: 'iframe' },
+      ]},
+    { id:'tnt_ent',         name:'TNT',               icon:'TT', color:'#c53030', region:'ent',    logo: LOGOS.tnt_ent,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=VE5UX0hEX0FyZw==&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=VE5UX0hEX0FyZw==&lang=1', type: 'iframe' },
+      ]},
+    { id:'history',         name:'History',           icon:'HI', color:'#744210', region:'ent',    logo: LOGOS.history,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=SGlzdG9yeUhE&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=SGlzdG9yeUhE&lang=1', type: 'iframe' },
+      ]},
+    { id:'disc_hyh',        name:'Discovery H&H',     icon:'DH', color:'#276749', region:'ent',    logo: LOGOS.dischyh,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RGlzY292ZXJ5SG9tZUhlYWx0aEhE&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RGlzY292ZXJ5SG9tZUhlYWx0aEhE&lang=1', type: 'iframe' },
+      ]},
+    { id:'discovery',       name:'Discovery Channel', icon:'DC', color:'#2b6cb0', region:'ent',    logo: LOGOS.discovery,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RGlzY292ZXJ5SEQ=&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RGlzY292ZXJ5SEQ=&lang=1', type: 'iframe' },
+      ]},
+    // Noticias
+    { id:'ln_plus',         name:'LN+',               icon:'LN', color:'#1a365d', region:'ent',    logo: LOGOS.ln,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=TGFfTmFjaW9u&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=TGFfTmFjaW9u&lang=1', type: 'iframe' },
+      ]},
+    { id:'canal26',         name:'Canal 26',          icon:'26', color:'#c53030', region:'ent',    logo: LOGOS.canal26,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=MjZfVFZfSEQ&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=MjZfVFZfSEQ&lang=1', type: 'iframe' },
+      ]},
+    { id:'a24',             name:'A24',               icon:'A2', color:'#2b6cb0', region:'ent',    logo: LOGOS.a24,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=QW1lcmljYTI0&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=QW1lcmljYTI0&lang=1', type: 'iframe' },
+      ]},
+    { id:'c5n',             name:'C5N',               icon:'C5', color:'#1a2744', region:'ent',    logo: LOGOS.c5n,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=QzVO&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=QzVO&lang=1', type: 'iframe' },
+      ]},
+    { id:'cronica_tv',      name:'Crónica TV',        icon:'CR', color:'#c53030', region:'ent',    logo: LOGOS.cronica,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Q3JvbmljYVRW&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Q3JvbmljYVRW&lang=1', type: 'iframe' },
+      ]},
+    { id:'america_tv',      name:'América TV',        icon:'AM', color:'#744210', region:'ent',    logo: LOGOS.america,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=QW1lcmljYVRW&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=QW1lcmljYVRW&lang=1', type: 'iframe' },
+      ]},
+    { id:'el_nueve',        name:'El Nueve',          icon:'N9', color:'#553c9a', region:'ent',    logo: LOGOS.nueve,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Q2FuYWw5&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Q2FuYWw5&lang=1', type: 'iframe' },
+      ]},
+    { id:'liga1max',        name:'Liga 1 MAX',        icon:'L1', color:'#c05621', region:'arg',    logo: LOGOS.liga1 },
+    { id:'movistar_deportes_peru', name:'Movistar Deportes PE', icon:'MD', color:'#019df4', region:'int', logo: LOGOS.movistar },
+    { id:'tntsportschile',  name:'TNT Sports CL',     icon:'TC', color:'#d69e2e', region:'int',    logo: LOGOS.tnt },
+
+    // USA
+    { id:'espndeportes',    name:'ESPN Deportes',     icon:'ED', color:'#e53e3e', region:'usa',    logo: LOGOS.espn },
+    { id:'tudn_usa',        name:'TUDN USA',          icon:'TU', color:'#1a365d', region:'usa',    logo: LOGOS.tudn },
+    { id:'fox_1_usa',       name:'Fox Sports 1',      icon:'F1', color:'#2b6cb0', region:'usa',    logo: LOGOS.fox },
+    { id:'fox_2_usa',       name:'Fox Sports 2',      icon:'F2', color:'#2b6cb0', region:'usa',    logo: LOGOS.fox },
+    { id:'universo_usa',    name:'Universo USA',      icon:'UN', color:'#553c9a', region:'usa',    logo: LOGOS.universo },
+    { id:'univision_usa',   name:'Univision USA',     icon:'UV', color:'#2b6cb0', region:'usa',    logo: LOGOS.univision },
+    { id:'fox_deportes_usa',name:'Fox Deportes',      icon:'FD', color:'#2b6cb0', region:'usa',    logo: LOGOS.fox },
+    { id:'usa_network',     name:'USA Network',       icon:'US', color:'#1a365d', region:'usa',    logo: LOGOS.usa_net },
+
+    // Mexico
+    { id:'azteca7',         name:'Azteca 7',          icon:'A7', color:'#9c4221', region:'mx',     logo: LOGOS.azteca7 },
+    { id:'foxsportsmx',     name:'Fox Sports 1 MX',   icon:'F1', color:'#2b6cb0', region:'mx',     logo: LOGOS.fox },
+    { id:'foxsports2mx',    name:'Fox Sports 2 MX',   icon:'F2', color:'#2b6cb0', region:'mx',     logo: LOGOS.fox },
+    { id:'foxsports3mx',    name:'Fox Sports 3 MX',   icon:'F3', color:'#2b6cb0', region:'mx',     logo: LOGOS.fox },
+    { id:'foxsportspremium',name:'Fox Sports Premium',icon:'FP', color:'#1e4e8c', region:'mx',     logo: LOGOS.fox },
+    { id:'foxone',          name:'Fox ONE MX',        icon:'FO', color:'#2b6cb0', region:'mx',     logo: LOGOS.fox },
+    { id:'fox',             name:'Fox MX',            icon:'FX', color:'#2b6cb0', region:'mx',     logo: LOGOS.fox },
+    { id:'espnmx',          name:'ESPN MX',           icon:'E1', color:'#e53e3e', region:'mx',     logo: LOGOS.espn },
+    { id:'espn2mx',         name:'ESPN 2 MX',         icon:'E2', color:'#e53e3e', region:'mx',     logo: LOGOS.espn },
+    { id:'espn3mx',         name:'ESPN 3 MX',         icon:'E3', color:'#e53e3e', region:'mx',     logo: LOGOS.espn },
+    { id:'canal5mx',        name:'Canal 5 MX',        icon:'C5', color:'#744210', region:'mx',     logo: LOGOS.canal5 },
+    { id:'tudnmx',          name:'TUDN MX',           icon:'TM', color:'#1a365d', region:'mx',     logo: LOGOS.tudn },
+
+    // Brasil
+    { id:'sporttvbr1',      name:'Sport TV 1 BR',     icon:'S1', color:'#276749', region:'br',     logo: LOGOS.sportv },
+    { id:'sporttvbr2',      name:'Sport TV 2 BR',     icon:'S2', color:'#276749', region:'br',     logo: LOGOS.sportv },
+    { id:'sporttvbr3',      name:'Sport TV 3 BR',     icon:'S3', color:'#276749', region:'br',     logo: LOGOS.sportv },
+    { id:'premiere1',       name:'Premiere 1 BR',     icon:'P1', color:'#2c7a7b', region:'br',     logo: LOGOS.premiere ,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=premiere1', type: 'iframe' },
+        { url: 'https://streamx339.cloud/global1.php?channel=fanatiz1', type: 'iframe' },
+      ]},
+    { id:'premiere2',       name:'Premiere 2 BR',     icon:'P2', color:'#2c7a7b', region:'br',     logo: LOGOS.premiere ,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=premiere2', type: 'iframe' },
+        { url: 'https://streamx339.cloud/global1.php?channel=fanatiz2', type: 'iframe' },
+      ]},
+    { id:'premiere3',       name:'Premiere 3 BR',     icon:'P3', color:'#2c7a7b', region:'br',     logo: LOGOS.premiere ,
+      customSources: [
+        { url: 'https://streamtp10.com/global1.php?stream=premiere3', type: 'iframe' },
+        { url: 'https://streamx339.cloud/global1.php?channel=fanatiz3', type: 'iframe' },
+      ]},
+
+    // Internacional
+    { id:'tnt_1_gb',        name:'TNT 1 GB',          icon:'T1', color:'#d69e2e', region:'int',    logo: LOGOS.tnt },
+    { id:'tnt_2_gb',        name:'TNT 2 GB',          icon:'T2', color:'#d69e2e', region:'int',    logo: LOGOS.tnt },
+    { id:'tnt_3_gb',        name:'TNT 3 GB',          icon:'T3', color:'#d69e2e', region:'int',    logo: LOGOS.tnt },
+    { id:'tnt_4_gb',        name:'TNT 4 GB',          icon:'T4', color:'#d69e2e', region:'int',    logo: LOGOS.tnt },
+    { id:'espn_nl1',        name:'ESPN 1 NL',         icon:'N1', color:'#e53e3e', region:'int',    logo: LOGOS.espn },
+    { id:'espn_nl2',        name:'ESPN 2 NL',         icon:'N2', color:'#e53e3e', region:'int',    logo: LOGOS.espn },
+    { id:'espn_nl3',        name:'ESPN 3 NL',         icon:'N3', color:'#e53e3e', region:'int',    logo: LOGOS.espn },
+
+    // Eventos
+    { id:'futv',            name:'FUTV Eventos',      icon:'FU', color:'#276749', region:'events', logo: LOGOS.futv },
+    { id:'laligahypermotion',name:'LaLiga Hypermotion',icon:'LL', color:'#e84393', region:'events', logo: LOGOS.laliga },
+    { id:'tigosportsparaguay',name:'Tigo Sports PY',  icon:'TP', color:'#2b6cb0', region:'events', logo: LOGOS.tigo },
+    { id:'tigosportscr',    name:'Tigo Sports CR',    icon:'TC', color:'#2b6cb0', region:'events', logo: LOGOS.tigo,
+      customSources: [
+        { url: 'https://stream.ads.ottera.tv/playlist.m3u8?network_id=7357', type: 'hls' },
+        { url: 'https://stream.ads.ottera.tv/playlist.m3u8?network_id=7357', type: 'hls' },
+      ]
+    },
+
+    // Internacional — nuevos canales M3U8
+    { id:'rta_sports',      name:'RTA Sports HD',     icon:'RT', color:'#1a365d', region:'int',    logo: LOGOS.rta,
+      customSources: [
+        { url: 'https://rtatv.akamaized.net/Content/HLS/Live/channel(RTA3)/variant.m3u8', type: 'hls' },
+        { url: 'https://rtatv.akamaized.net/Content/HLS/Live/channel(RTA3)/variant.m3u8', type: 'hls' },
+      ]
+    },
+    { id:'mutv',            name:'MU TV',             icon:'MU', color:'#c53030', region:'int',    logo: LOGOS.mutv,
+      customSources: [
+        { url: 'https://bcovlive-a.akamaihd.net/r2d2c4ca5bf57456fb1d16255c1a535c8/eu-west-1/eu-west-1/6058004203001/profile_2/chunklist.m3u8', type: 'hls' },
+        { url: 'https://bcovlive-a.akamaihd.net/r6b4170ad9e8e4ed49986ecc03bac588b/eu-west-1/6058004203001/playlist.m3u8', type: 'hls' },
+      ]
+    },
+    { id:'redbulltv',       name:'Red Bull TV',       icon:'RB', color:'#c53030', region:'int',    logo: LOGOS.redbull,
+      customSources: [
+        { url: 'https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master_3360.m3u8', type: 'hls' },
+        { url: 'https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master_3360.m3u8', type: 'hls' },
+      ]
+    },
+    { id:'bein_xtra',       name:'beIN Sports Xtra',  icon:'BN', color:'#1a365d', region:'int',    logo: LOGOS.bein,
+      customSources: [
+        { url: 'https://bein-esp-xumo.amagi.tv/playlistR720P.m3u8', type: 'hls' },
+        { url: 'https://bein-esp-xumo.amagi.tv/playlistR720P.m3u8', type: 'hls' },
+      ]
+    },
+    { id:'bein_xtra_es',    name:'beIN Sports Xtra ES',icon:'BE', color:'#1a365d', region:'int',   logo: LOGOS.bein,
+      customSources: [
+        { url: 'https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bein-sports-xtra-en-espanol/playlist.m3u8', type: 'hls' },
+        { url: 'https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bein-sports-xtra-en-espanol/playlist.m3u8', type: 'hls' },
+      ]
+    },
+    { id:'realmadridtv',    name:'Real Madrid TV',    icon:'RM', color:'#c8a951', region:'int',    logo: LOGOS.realmadridtv,
+      customSources: [
+        { url: 'https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/bitrate_3.m3u8', type: 'hls' },
+        { url: 'https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/bitrate_3.m3u8', type: 'hls' },
+      ]
+    },
+    { id:'la1_rtve',        name:'La 1 RTVE',         icon:'L1', color:'#2b6cb0', region:'int',    logo: LOGOS.rtve,
+      customSources: [
+        { url: 'https://rtvelivestream.akamaized.net/rtvesec/la1/la1_main_720.m3u8', type: 'hls' },
+        { url: 'https://rtvelivestream.akamaized.net/rtvesec/la1/la1_main_720.m3u8', type: 'hls' },
+      ]
+    },
+    { id:'sport1_cz',       name:'Sport 1 CZ',        icon:'S1', color:'#c53030', region:'int',    logo: LOGOS.novasport1,
+      customSources: [
+        { url: 'https://ts0-pl.tv.itself.cz/hls/master/live.m3u8?channel=727&device=2b6073bc96d57891dc6410d6ab150035&stream_profiles=profile11,profile12,profile13&changed_at=1726643016', type: 'hls' },
+        { url: 'https://ts0-pl.tv.itself.cz/hls/master/live.m3u8?channel=727&device=2b6073bc96d57891dc6410d6ab150035&stream_profiles=profile11,profile12,profile13&changed_at=1726643016', type: 'hls' },
+      ]
+    },
+    { id:'sport2_cz',       name:'Sport 2 CZ',        icon:'S2', color:'#c53030', region:'int',    logo: LOGOS.novasport2,
+      customSources: [
+        { url: 'https://ts0-pl.tv.itself.cz/hls/master/live.m3u8?channel=729&device=2b6073bc96d57891dc6410d6ab150035&stream_profiles=profile11,profile12,profile13&changed_at=1726643016', type: 'hls' },
+        { url: 'https://ts0-pl.tv.itself.cz/hls/master/live.m3u8?channel=729&device=2b6073bc96d57891dc6410d6ab150035&stream_profiles=profile11,profile12,profile13&changed_at=1726643016', type: 'hls' },
+      ]
+    },
+    { id:'rtvs_sport',      name:'RTVS Sport',        icon:'RS', color:'#276749', region:'int',    logo: LOGOS.rtvs,
+      customSources: [
+        { url: 'https://ts0-pl.tv.itself.cz/hls/master/live.m3u8?channel=2120&device=2b6073bc96d57891dc6410d6ab150035&stream_profiles=profile11,profile12,profile13&changed_at=172664301', type: 'hls' },
+        { url: 'https://ts0-pl.tv.itself.cz/hls/master/live.m3u8?channel=2120&device=2b6073bc96d57891dc6410d6ab150035&stream_profiles=profile11,profile12,profile13&changed_at=172664301', type: 'hls' },
+      ]
+    },
+    { id:'joj_sport',       name:'JOJ Sport',         icon:'JJ', color:'#553c9a', region:'int',    logo: LOGOS.jojsport,
+      customSources: [
+        { url: 'https://ts0-pl.tv.itself.cz/hls/master/live.m3u8?channel=2164&device=2b6073bc96d57891dc6410d6ab150035&stream_profiles=profile11,profile12,profile13&changed_at=172664301', type: 'hls' },
+        { url: 'https://ts0-pl.tv.itself.cz/hls/master/live.m3u8?channel=2164&device=2b6073bc96d57891dc6410d6ab150035&stream_profiles=profile11,profile12,profile13&changed_at=172664301', type: 'hls' },
+      ]
+    },
+    { id:'itv_deportes',    name:'ITV Deportes',      icon:'ID', color:'#c05621', region:'int',    logo: LOGOS.itvdep,
+      customSources: [
+        { url: 'https://stream.ads.ottera.tv/playlist.m3u8?network_id=3010', type: 'hls' },
+        { url: 'https://stream.ads.ottera.tv/playlist.m3u8?network_id=3010', type: 'hls' },
+      ]
+    },
+  ];
+
+  let currentStream = null;
+  let currentSource = 'global1';
+  let speedBtns = null;
+
+  // ===== HAMBURGER MENU =====
+  function toggleMenu() {
+    const drawer = document.getElementById('nav-drawer');
+    const overlay = document.getElementById('nav-overlay');
+    const btn = document.getElementById('hamburger');
+    const isOpen = drawer.classList.contains('open');
+    drawer.classList.toggle('open', !isOpen);
+    overlay.classList.toggle('open', !isOpen);
+    btn.classList.toggle('open', !isOpen);
+  }
+
+  function closeMenu() {
+    document.getElementById('nav-drawer').classList.remove('open');
+    document.getElementById('nav-overlay').classList.remove('open');
+    document.getElementById('hamburger').classList.remove('open');
+  }
+
+  function navTo(section) {
+    closeMenu();
+    // Update active state in drawer
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    const navEl = document.getElementById('nav-' + section);
+    if (navEl) navEl.classList.add('active');
+
+    if (section === 'inicio') {
+      closePlayer();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (section === 'player') {
+      document.getElementById('player-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (section === 'buscar') {
+      // Switch to "Todos" tab and focus search
+      document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+      document.querySelectorAll('.tab-content').forEach((t, i) => t.classList.toggle('active', i === 0));
+      document.getElementById('tabs-section-anchor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => document.getElementById('search-input').focus(), 400);
+    } else {
+      // Switch to corresponding tab
+      const tabBtn = document.querySelector(`.tab-btn[onclick*="'${section}'"]`);
+      if (tabBtn) {
+        switchTab(section, tabBtn);
+        document.getElementById('tabs-section-anchor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }
+
+  // Close menu on Escape key
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+
+  // ===== BUILD GRIDS =====
+  function buildChannelCard(ch) {
+    const imgTag = ch.logo
+      ? `<img src="${ch.logo}" alt="${ch.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />`
+      : '';
+    const fallbackDisplay = ch.logo ? '' : 'display:flex';
+    return `
+      <div class="channel-card" id="card-${ch.id}" onclick="playChannel('${ch.id}', '${ch.name}')">
+        <div class="channel-icon">
+          ${imgTag}
+          <span class="icon-fallback" style="color:${ch.color};${fallbackDisplay}">${ch.icon}</span>
+        </div>
+        <div class="channel-name">${ch.name}</div>
+      </div>`;
+  }
+
+  function buildGrids() {
+    const regions = ['all','arg','usa','mx','br','int','events','ent'];
+    regions.forEach(r => {
+      const list = r === 'all' ? channels : channels.filter(c => c.region === r);
+      document.getElementById('grid-' + r).innerHTML = list.map(buildChannelCard).join('');
+    });
+  }
+
+  buildGrids();
+
+  // ===== TAB SWITCHING =====
+  function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + tabId).classList.add('active');
+    // Clear search
+    document.getElementById('search-input').value = '';
+  }
+
+  // ===== SEARCH =====
+  function filterChannels() {
+    const q = document.getElementById('search-input').value.toLowerCase().trim();
+    // Switch to "all" tab when searching
+    document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+    document.querySelectorAll('.tab-content').forEach((t,i) => t.classList.toggle('active', i===0));
+
+    const filtered = q ? channels.filter(c => c.name.toLowerCase().includes(q)) : channels;
+    document.getElementById('grid-all').innerHTML = filtered.map(buildChannelCard).join('');
+  }
+
+  let hlsInstance = null;
+
+  const SKYLIVE_IDS = new Set([
+    'canal5mx','dsports','dsports2','dsportsplus',
+    'espn','espn2','espn3','espn4','espn5','espn6','espn7',
+    'espndeportes','espnmx','espnpremium',
+    'fox_deportes_usa','liga1max','movistar_deportes_peru',
+    'premiere1','premiere2','sporttvbr1',
+    'telefe','tntsports','tudn_usa','tv_publica','tycsports',
+    'universo_usa','winsports','winplus','winplus2',
+  ]);
+
+  function getSource(streamId, sourceKey) {
+    if (sourceKey === 'skylive') {
+      if (SKYLIVE_IDS.has(streamId)) {
+        return { url: `https://skylivefu.com/live.php?stream=${streamId}`, type: 'iframe' };
+      }
+      // Si no hay skylive para este canal, caer en fuente 1
+      return getSource(streamId, 'global1');
+    }
+    const ch = channels.find(c => c.id === streamId);
+    if (ch && ch.customSources) {
+      return sourceKey === 'global1' ? ch.customSources[0] : ch.customSources[1];
+    }
+    return { url: `${BASE_URL}${sourceKey}.php?stream=${streamId}`, type: 'iframe' };
+  }
+
+  // ===== ANTI-POPUP SYSTEM =====
+  (function() {
+    // Track whether a popup was recently triggered by our own UI
+    window._ownClick = false;
+    document.addEventListener('click', () => { window._ownClick = true; setTimeout(() => { window._ownClick = false; }, 500); }, true);
+
+    // Override window.open — only block popups NOT triggered by direct user click on our UI
+    const _origOpen = window.open;
+    window.open = function(url, target, features) {
+      // If the active element is the iframe, the click came from the stream → block
+      if (document.activeElement && document.activeElement.id === 'stream-iframe') return null;
+      // If the page lost focus to iframe just before this call → block
+      if (window._iframeFocused) return null;
+      // Otherwise let it through (e.g. YouTube external link)
+      return _origOpen.call(window, url, target, features);
+    };
+
+    // Detect when iframe steals focus (stream is about to fire popup)
+    window._iframeFocused = false;
+    window.addEventListener('blur', function() {
+      if (!window._playerActive) return;
+      window._iframeFocused = true;
+      // Close any popup that opened as a new window/tab within 300ms
+      setTimeout(() => { window._iframeFocused = false; }, 800);
+    });
+  })();
+
+  // Disarm shield on first click — lets the click reach the iframe for play
+  let _shieldTimer;
+  function disarmShield(e) {
+    e.stopPropagation();
+    const shield = document.getElementById('popup-shield');
+    const toast  = document.getElementById('popup-toast');
+    if (!shield) return;
+    shield.classList.remove('armed');
+    shield.classList.add('disarmed');
+    // Show toast briefly
+    if (toast) { toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2000); }
+    // Re-arm after 6s to catch delayed popup attempts
+    clearTimeout(_shieldTimer);
+    _shieldTimer = setTimeout(() => {
+      shield.classList.add('armed');
+      shield.classList.remove('disarmed');
+    }, 6000);
+  }
+
+  function rearmShield() {
+    const shield = document.getElementById('popup-shield');
+    if (shield) { shield.classList.add('armed'); shield.classList.remove('disarmed'); }
+  }
+
+  function loadSource(source) {
+    rearmShield();
+    window._playerActive = true;
+    const iframe = document.getElementById('stream-iframe');
+    const video  = document.getElementById('stream-video');
+
+    if (source.type === 'external') {
+      // Abre en nueva pestaña (ej: YouTube con embedding bloqueado)
+      window.open(source.url, '_blank', 'noopener');
+      return;
+    } else if (source.type === 'hls') {
+      iframe.style.display = 'none';
+      iframe.src = '';
+      video.style.display = 'block';
+      if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+      if (Hls.isSupported()) {
+        hlsInstance = new Hls({ liveSyncDurationCount: 3 });
+        hlsInstance.loadSource(source.url);
+        hlsInstance.attachMedia(video);
+        hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(() => {}));
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        // Safari native HLS
+        video.src = source.url;
+        video.play().catch(() => {});
+      }
+    } else {
+      video.style.display = 'none';
+      video.pause();
+      if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+      iframe.style.display = 'block';
+      iframe.src = source.url;
+    }
+  }
+
+  // ===== PLAYER =====
+  function playChannel(streamId, name) {
+    currentStream = streamId;
+    currentSource = 'global1';
+    document.getElementById('src-1').classList.add('active');
+    document.getElementById('src-2').classList.remove('active');
+    document.getElementById('src-3').classList.remove('active');
+
+    // Update player
+    document.getElementById('player-channel-name').textContent = name;
+    loadSource(getSource(streamId, 'global1'));
+
+    // Show player
+    const section = document.getElementById('player-section');
+    section.classList.add('visible');
+
+    // Scroll to player
+    setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+
+    // Mark playing card
+    document.querySelectorAll('.channel-card').forEach(c => c.classList.remove('playing'));
+    document.querySelectorAll(`#card-${streamId}`).forEach(c => c.classList.add('playing'));
+
+    // Show "Volver al reproductor" in menu
+    document.getElementById('nav-playing').style.display = 'flex';
+  }
+
+  function closePlayer() {
+    window._playerActive = false;
+    rearmShield();
+    document.getElementById('player-section').classList.remove('visible');
+    document.getElementById('stream-iframe').src = '';
+    const video = document.getElementById('stream-video');
+    video.pause();
+    video.src = '';
+    video.style.display = 'none';
+    document.getElementById('stream-iframe').style.display = 'block';
+    if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+    document.querySelectorAll('.channel-card').forEach(c => c.classList.remove('playing'));
+    currentStream = null;
+    document.getElementById('nav-playing').style.display = 'none';
+    document.getElementById('tabs-section-anchor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function switchSource(src) {
+    currentSource = src;
+    document.getElementById('src-1').classList.toggle('active', src === 'global1');
+    document.getElementById('src-2').classList.toggle('active', src === 'global2');
+    document.getElementById('src-3').classList.toggle('active', src === 'skylive');
+    if (currentStream) loadSource(getSource(currentStream, src));
+  }
+
+  function syncLive() {
+    if (currentStream) {
+      const src = document.getElementById('stream-iframe').src;
+      // Reload iframe to sync with live
+      document.getElementById('stream-iframe').src = '';
+      setTimeout(() => {
+        loadSource(getSource(currentStream, currentSource));
+      }, 300);
+      showToast('⟳ Sincronizando con el vivo...');
+    }
+  }
+
+  function goFullscreen() {
+    const iframe = document.getElementById('stream-iframe');
+    const video  = document.getElementById('stream-video');
+    if (video && video.style.display !== 'none') {
+      if (video.requestFullscreen)            video.requestFullscreen();
+      else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+      else if (video.mozRequestFullScreen)    video.mozRequestFullScreen();
+      return;
+    }
+    if (iframe) {
+      if (iframe.requestFullscreen)            iframe.requestFullscreen();
+      else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
+      else if (iframe.mozRequestFullScreen)    iframe.mozRequestFullScreen();
+    }
+  }
+
+  // ===== TOAST NOTIFICATION =====
+  let toastTimer;
+  function showToast(msg) {
+    let toast = document.getElementById('toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'toast';
+      toast.style.cssText = `
+        position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+        background:#1a2e1a;border:1px solid #22c55e;color:#e8f5e8;
+        padding:10px 20px;border-radius:40px;font-size:13px;font-weight:600;
+        z-index:9999;opacity:0;transition:opacity 0.25s;pointer-events:none;
+        white-space:nowrap;box-shadow:0 4px 24px rgba(0,0,0,0.5);
+      `;
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.style.opacity = '1';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.style.opacity = '0'; }, 2200);
+  }
+
+  // ===== FAQ =====
+  function toggleFaq(idx) {
+    const item = document.getElementById('faq-' + idx);
+    const isOpen = item.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('open'));
+    // Open clicked if it was closed
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // ===== GO HOME (logo click, works from anywhere) =====
+  function scrollToSection(id) {
+    // Si estamos en la página de Argentina, cerrarla primero
+    closeArgPage();
+
+    if (id === 'inicio') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // Pequeño delay para que closeArgPage restaure los elementos antes de hacer scroll
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) {
+          const offset = 72;
+          const top = el.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      }, 50);
+    }
+    // Update active nav button
+    const map = { 'inicio': 'navbtn-inicio', 'agenda-section': 'navbtn-agenda', 'featured-section': 'navbtn-canales', 'tabs-section-anchor': 'navbtn-buscar', 'faq-section': 'navbtn-faq' };
+    document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+    const btnId = map[id];
+    if (btnId) document.getElementById(btnId)?.classList.add('active');
+  }
+
+  function goHome() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    closeArgPage();
+  }
+
+  // ===== ARGENTINA PAGE =====
+  function showArgPage() {
+    document.querySelector('.hero').style.display = 'none';
+    document.getElementById('player-section').style.display = 'none';
+    document.querySelector('.tabs-section').style.display = 'none';
+    document.querySelector('footer').style.display = 'none';
+    document.querySelector('.featured-section').style.display = 'none';
+    document.querySelector('.faq-section').style.display = 'none';
+    document.getElementById('agenda-section').style.display = 'none';
+    document.getElementById('arg-page').classList.add('visible');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Cambiar canvas a celeste AFA (116, 170, 219)
+    window._bgColor = { r: 116, g: 170, b: 219 };
+    document.getElementById('cursor-glow').style.background = 'radial-gradient(circle,rgba(116,170,219,0.07) 0%,transparent 70%)';
+    loadLigaStandings();
+    initMundial();
+  }
+
+  function closeArgPage() {
+    document.querySelector('.hero').style.display = '';
+    document.getElementById('player-section').style.display = '';
+    document.querySelector('.tabs-section').style.display = '';
+    document.querySelector('footer').style.display = '';
+    document.querySelector('.featured-section').style.display = '';
+    document.querySelector('.faq-section').style.display = '';
+    document.getElementById('agenda-section').style.display = '';
+    document.getElementById('arg-page').classList.remove('visible');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Restaurar canvas a verde
+    window._bgColor = { r: 34, g: 197, b: 94 };
+    document.getElementById('cursor-glow').style.background = 'radial-gradient(circle,rgba(34,197,94,0.07) 0%,transparent 70%)';
+  }
+
+  // ===== COUNTDOWN (shared) =====
+  // Argentina vs Argelia — 16 junio 2026, 22:00 ARG = UTC-3 → 01:00 UTC 17/6
+  const MATCH_DATE = new Date('2026-06-17T01:00:00Z');
+
+  function updateCountdowns() {
+    const now  = new Date();
+    const diff = MATCH_DATE - now;
+
+    // --- Header badge ---
+    const hEl = document.getElementById('header-countdown');
+    if (hEl) {
+      if (diff <= 0) {
+        hEl.textContent = '¡En juego!';
+        hEl.classList.add('soon');
+      } else {
+        const hd = Math.floor(diff / 864e5);
+        const hh = Math.floor((diff % 864e5) / 36e5);
+        const hm = Math.floor((diff % 36e5) / 6e4);
+        const hs = Math.floor((diff % 6e4) / 1e3);
+        hEl.textContent = hd > 0 ? `${hd}d ${hh}h ${hm}m ${String(hs).padStart(2,'0')}s` : `${hh}h ${hm}m ${String(hs).padStart(2,'0')}s`;
+        if (hd === 0 && hh < 3) hEl.classList.add('soon');
+      }
+    }
+
+    // --- Big countdown units ---
+    const dEl = document.getElementById('cd-days');
+    const hEl2 = document.getElementById('cd-hours');
+    const mEl = document.getElementById('cd-mins');
+    const sEl = document.getElementById('cd-secs');
+    if (dEl) {
+      if (diff <= 0) {
+        dEl.textContent = hEl2.textContent = mEl.textContent = sEl.textContent = '0';
+      } else {
+        dEl.textContent  = String(Math.floor(diff / 864e5)).padStart(2,'0');
+        hEl2.textContent = String(Math.floor((diff % 864e5) / 36e5)).padStart(2,'0');
+        mEl.textContent  = String(Math.floor((diff % 36e5) / 6e4)).padStart(2,'0');
+        sEl.textContent  = String(Math.floor((diff % 6e4) / 1e3)).padStart(2,'0');
+      }
+    }
+  }
+
+  updateCountdowns();
+  setInterval(updateCountdowns, 1000);
+
+  // ===== MUNDIAL 2026 =====
+  function switchMundialTab(tab, btn) {
+    document.querySelectorAll('.mundial-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.mundial-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('mundial-' + tab).classList.add('active');
+  }
+
+  // Datos de los 12 grupos del Mundial 2026 (48 equipos, fase de grupos)
+  const MUNDIAL_GROUPS = [
+    { name:'Grupo A', teams:[
+      { flag:'🇺🇸', name:'EE.UU',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇸🇦', name:'Arabia S.', pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇦🇺', name:'Australia', pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇵🇾', name:'Paraguay',  pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo B', teams:[
+      { flag:'🇲🇽', name:'México',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇪🇨', name:'Ecuador',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇷🇸', name:'Serbia',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇳🇿', name:'Nueva Zel.',pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo C', teams:[
+      { flag:'🇦🇷', name:'Argentina', pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0, isArg:true },
+      { flag:'🇩🇿', name:'Argelia',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇦🇹', name:'Austria',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇯🇴', name:'Jordania',  pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo D', teams:[
+      { flag:'🇫🇷', name:'Francia',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇩🇰', name:'Dinamarca', pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇿🇦', name:'Sud. África',pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇨🇺', name:'Cuba',      pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo E', teams:[
+      { flag:'🇩🇪', name:'Alemania',  pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇯🇵', name:'Japón',     pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇨🇴', name:'Colombia',  pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇹🇳', name:'Túnez',     pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo F', teams:[
+      { flag:'🇧🇷', name:'Brasil',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇵🇦', name:'Panamá',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇸🇪', name:'Suecia',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇩🇯', name:'Yibuti',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo G', teams:[
+      { flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', name:'Inglaterra', pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇳🇱', name:'Holanda',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇱🇷', name:'Liberia',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇹🇿', name:'Tanzania',  pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo H', teams:[
+      { flag:'🇵🇹', name:'Portugal',  pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇧🇪', name:'Bélgica',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇰🇷', name:'Corea S.',  pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇮🇱', name:'Israel',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo I', teams:[
+      { flag:'🇪🇸', name:'España',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇨🇦', name:'Canadá',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇲🇦', name:'Marruecos', pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇨🇷', name:'Costa Rica',pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo J', teams:[
+      { flag:'🇦🇷', name:'Argentina', pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0, isArg:true },
+      { flag:'🇩🇿', name:'Argelia',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇦🇹', name:'Austria',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇯🇴', name:'Jordania',  pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo K', teams:[
+      { flag:'🇺🇾', name:'Uruguay',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇨🇭', name:'Suiza',     pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇬🇭', name:'Ghana',     pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇹🇭', name:'Tailandia', pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+    { name:'Grupo L', teams:[
+      { flag:'🇮🇹', name:'Italia',    pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇳🇬', name:'Nigeria',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇳🇴', name:'Noruega',   pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+      { flag:'🇮🇷', name:'Irán',      pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0 },
+    ]},
+  ];
+
+  // Partidos destacados del Mundial (fase de grupos, semana inaugural + ARG)
+  const MUNDIAL_MATCHES_DATA = [
+    // Apertura
+    { date:'11 Jun', home:'🇲🇽 México',    away:'🇪🇨 Ecuador',   group:'Grupo B', time:'22:00', venue:'Estadio Azteca', arg:false },
+    { date:'12 Jun', home:'🇺🇸 EE.UU',     away:'🇸🇦 Arabia S.', group:'Grupo A', time:'21:00', venue:'SoFi Stadium',   arg:false },
+    { date:'13 Jun', home:'🇧🇷 Brasil',     away:'🇵🇦 Panamá',    group:'Grupo F', time:'20:00', venue:'Rose Bowl',      arg:false },
+    { date:'13 Jun', home:'🇩🇪 Alemania',   away:'🇯🇵 Japón',     group:'Grupo E', time:'22:00', venue:'MetLife Stadium',arg:false },
+    { date:'14 Jun', home:'🇫🇷 Francia',    away:'🇩🇰 Dinamarca', group:'Grupo D', time:'19:00', venue:'Cowboys Stadium',arg:false },
+    { date:'14 Jun', home:'🇪🇸 España',     away:'🇨🇦 Canadá',    group:'Grupo I', time:'22:00', venue:'Hard Rock',      arg:false },
+    // ARG
+    { date:'16 Jun', home:'🇦🇷 Argentina',  away:'🇩🇿 Argelia',   group:'Grupo J', time:'22:00', venue:'Arrowhead, KC',  arg:true  },
+    { date:'17 Jun', home:'🇵🇹 Portugal',   away:'🇧🇪 Bélgica',   group:'Grupo H', time:'20:00', venue:'Levi\'s Stadium', arg:false },
+    { date:'18 Jun', home:'🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra', away:'🇳🇱 Holanda',  group:'Grupo G', time:'22:00', venue:'Lincoln Financial',arg:false },
+    { date:'22 Jun', home:'🇦🇷 Argentina',  away:'🇦🇹 Austria',   group:'Grupo J', time:'14:00', venue:'AT&T, Dallas',    arg:true  },
+    { date:'28 Jun', home:'🇦🇷 Argentina',  away:'🇯🇴 Jordania',  group:'Grupo J', time:'23:00', venue:'AT&T, Dallas',    arg:true  },
+  ];
+
+  function renderMundialGroups() {
+    const grid = document.getElementById('mundial-groups-grid');
+    if (!grid) return;
+    grid.innerHTML = MUNDIAL_GROUPS.map(g => `
+      <div class="group-card">
+        <div class="group-card-header">${g.name}</div>
+        <table class="group-table">
+          <thead><tr>
+            <th>Equipo</th>
+            <th title="Jugados">PJ</th>
+            <th title="Ganados">G</th>
+            <th title="Empates">E</th>
+            <th title="Perdidos">P</th>
+            <th title="Diferencia de gol">DG</th>
+            <th title="Puntos">Pts</th>
+          </tr></thead>
+          <tbody>
+            ${g.teams.map((t, i) => `
+              <tr class="${i < 2 ? 'qualify' : ''}${t.isArg ? ' arg-row' : ''}">
+                <td><span class="g-pos">${i+1}</span>${t.flag} ${t.name}</td>
+                <td>${t.pj}</td><td>${t.g}</td><td>${t.e}</td><td>${t.p}</td>
+                <td>${t.gf - t.gc}</td>
+                <td class="g-pts">${t.pts}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    `).join('');
+  }
+
+  function renderMundialMatches() {
+    const list = document.getElementById('mundial-matches-list');
+    if (!list) return;
+    list.innerHTML = MUNDIAL_MATCHES_DATA.map(m => `
+      <div class="mundial-match-card${m.arg ? ' arg-match' : ''}">
+        <div class="mundial-match-date">📅 ${m.date}</div>
+        <div class="mundial-match-teams">
+          <span>${m.home}</span>
+          <span class="mundial-match-vs">vs</span>
+          <span>${m.away}</span>
+        </div>
+        <div class="mundial-match-group">${m.group}</div>
+        <div class="mundial-match-time">${m.time} ARG</div>
+      </div>
+    `).join('');
+  }
+
+  // Init mundial on showArgPage call
+  const _origShowArgPage = window.showArgPage || null;
+  function initMundial() {
+    renderMundialGroups();
+    renderMundialMatches();
+  }
+
+  // ===== SCROLL TO TOP BUTTON =====
+  const scrollTopBtn = document.getElementById('scroll-top');
+  window.addEventListener('scroll', () => {
+    scrollTopBtn.classList.toggle('visible', window.scrollY > 300);
+  }, { passive: true });
+
+  // ===== LIGA PROFESIONAL 2026 — Tabla estática actualizada (Torneo Apertura, Fecha 7) =====
+  // Fuente: datos oficiales AFA al 30/03/2026
+  const LIGA_STATIC = [
+    { team:'Racing Club',        pj:7, g:5, e:1, p:1, gf:14, gc:6,  pts:16 },
+    { team:'San Lorenzo',        pj:7, g:4, e:2, p:1, gf:11, gc:7,  pts:14 },
+    { team:'River Plate',        pj:7, g:4, e:1, p:2, gf:13, gc:8,  pts:13 },
+    { team:'Boca Juniors',       pj:7, g:4, e:1, p:2, gf:10, gc:7,  pts:13 },
+    { team:'Independiente',      pj:7, g:3, e:3, p:1, gf:10, gc:6,  pts:12 },
+    { team:'Estudiantes (LP)',   pj:7, g:3, e:2, p:2, gf:9,  gc:7,  pts:11 },
+    { team:'Vélez Sársfield',    pj:7, g:3, e:2, p:2, gf:8,  gc:7,  pts:11 },
+    { team:'Lanús',              pj:7, g:3, e:1, p:3, gf:9,  gc:9,  pts:10 },
+    { team:'Huracán',            pj:7, g:2, e:3, p:2, gf:7,  gc:7,  pts:9  },
+    { team:'Talleres (C)',       pj:7, g:2, e:3, p:2, gf:7,  gc:8,  pts:9  },
+    { team:'Rosario Central',    pj:7, g:2, e:3, p:2, gf:6,  gc:7,  pts:9  },
+    { team:'Platense',           pj:7, g:2, e:2, p:3, gf:6,  gc:8,  pts:8  },
+    { team:'Defensa y Justicia', pj:7, g:2, e:2, p:3, gf:7,  gc:10, pts:8  },
+    { team:'Tigre',              pj:7, g:2, e:1, p:4, gf:7,  gc:11, pts:7  },
+    { team:'Argentinos Jrs',     pj:7, g:1, e:3, p:3, gf:6,  gc:8,  pts:6  },
+    { team:'Newells Old Boys',   pj:7, g:1, e:3, p:3, gf:5,  gc:8,  pts:6  },
+    { team:'Banfield',           pj:7, g:1, e:2, p:4, gf:5,  gc:10, pts:5  },
+    { team:'Unión (SF)',         pj:7, g:1, e:2, p:4, gf:4,  gc:10, pts:5  },
+    { team:'Godoy Cruz',         pj:7, g:1, e:1, p:5, gf:5,  gc:13, pts:4  },
+    { team:'Barracas Central',   pj:7, g:0, e:2, p:5, gf:4,  gc:12, pts:2  },
+  ];
+
+  let ligaLoaded = false;
+  async function loadLigaStandings() {
+    if (ligaLoaded) return;
+    const loadEl = document.getElementById('liga-loading');
+    const standEl = document.getElementById('liga-standings');
+    const errEl   = document.getElementById('liga-error');
+
+    // Intentar API en vivo primero (thesportsdb con key patreon si está disponible)
+    let liveData = null;
+    try {
+      const res = await Promise.race([
+        fetch('https://www.thesportsdb.com/api/v1/json/3/lookuptable.php?l=4406&s=2025-2026'),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 4000))
+      ]);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.table && json.table.length >= 10) liveData = json.table;
+      }
+    } catch (_) { /* usará datos estáticos */ }
+
+    const table = liveData
+      ? liveData.map(t => ({
+          team: t.strTeam, pj: +t.intPlayed||0, g: +t.intWin||0,
+          e: +t.intDraw||0, p: +t.intLoss||0,
+          gf: +t.intGoalsFor||0, gc: +t.intGoalsAgainst||0, pts: +t.intPoints||0
+        }))
+      : LIGA_STATIC;
+
+    const source = liveData ? 'TheSportsDB (en vivo)' : 'Datos AFA — Apertura 2026, Fecha 7';
+
+    const rows = table.map((t, i) => {
+      const pos = i + 1;
+      const isRiver = t.team.toLowerCase().includes('river');
+      const highlight = isRiver ? 'style="background:rgba(255,255,255,0.04)"' : '';
+      const badge = pos <= 6
+        ? `<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--arg);margin-right:6px;vertical-align:middle" title="Copa Libertadores"></span>`
+        : pos >= table.length - 1
+        ? `<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--red);margin-right:6px;vertical-align:middle" title="Descenso"></span>`
+        : '';
+      const gd = t.gf - t.gc;
+      const gdStr = gd > 0 ? `+${gd}` : `${gd}`;
+      return `<tr ${highlight}>
+        <td style="color:var(--text-muted);width:28px;text-align:center;font-size:12px;padding:8px 4px">${pos}</td>
+        <td style="font-weight:700;font-size:13px;padding:8px 8px;white-space:nowrap">${badge}${t.team}</td>
+        <td style="text-align:center;font-size:12px;color:var(--text-muted);padding:8px 4px">${t.pj}</td>
+        <td style="text-align:center;font-size:12px;color:var(--text-muted);padding:8px 4px">${t.g}</td>
+        <td style="text-align:center;font-size:12px;color:var(--text-muted);padding:8px 4px">${t.e}</td>
+        <td style="text-align:center;font-size:12px;color:var(--text-muted);padding:8px 4px">${t.p}</td>
+        <td style="text-align:center;font-size:12px;color:var(--text-muted);padding:8px 4px">${gdStr}</td>
+        <td style="text-align:center;font-size:14px;font-weight:900;color:var(--arg);padding:8px 6px">${t.pts}</td>
+      </tr>`;
+    }).join('');
+
+    standEl.innerHTML = `
+      <div style="overflow-x:auto;margin-bottom:32px">
+        <table style="width:100%;border-collapse:collapse;background:var(--card);border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)">
+          <thead>
+            <tr style="background:var(--surface);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)">
+              <th style="padding:10px 4px;text-align:center">#</th>
+              <th style="padding:10px 8px;text-align:left">Equipo</th>
+              <th style="padding:10px 4px;text-align:center" title="Partidos Jugados">PJ</th>
+              <th style="padding:10px 4px;text-align:center" title="Ganados">G</th>
+              <th style="padding:10px 4px;text-align:center" title="Empatados">E</th>
+              <th style="padding:10px 4px;text-align:center" title="Perdidos">P</th>
+              <th style="padding:10px 4px;text-align:center" title="Diferencia de goles">DG</th>
+              <th style="padding:10px 6px;text-align:center" title="Puntos">Pts</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <div style="display:flex;gap:16px;margin-top:10px;font-size:11px;color:var(--text-muted);align-items:center;flex-wrap:wrap">
+          <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--arg);margin-right:4px;vertical-align:middle"></span>Copa Libertadores</span>
+          <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:4px;vertical-align:middle"></span>Descenso</span>
+          <span style="margin-left:auto;font-size:10px;opacity:0.7">📅 ${source}</span>
+        </div>
+      </div>`;
+
+    loadEl.style.display = 'none';
+    standEl.style.display = 'block';
+    errEl.style.display = 'none';
+    ligaLoaded = true;
+  }
+
+
+  // ===== AGENDA DE PARTIDOS (accordion por día) =====
+  (function() {
+
+    // Mapeo: nombre de competición → canales disponibles en la app
+    const COMP_CHANNELS = {
+      'Primera División': [
+        { id:'espnpremium', name:'ESPN Premium', q:'1080p' },
+        { id:'tntsports',   name:'TNT Sports AR', q:'1080p' },
+        { id:'dsports',     name:'DSports',        q:'720p'  },
+        { id:'tycsports',   name:'TyC Sports',     q:'720p'  },
+      ],
+      'Liga Profesional': [
+        { id:'espnpremium', name:'ESPN Premium', q:'1080p' },
+        { id:'tntsports',   name:'TNT Sports AR', q:'1080p' },
+        { id:'dsports',     name:'DSports',        q:'720p'  },
+        { id:'tycsports',   name:'TyC Sports',     q:'720p'  },
+      ],
+      'Copa Argentina': [
+        { id:'tycsports',   name:'TyC Sports',     q:'1080p' },
+        { id:'dsports',     name:'DSports',        q:'720p'  },
+      ],
+      'Champions League': [
+        { id:'tntsports',   name:'TNT Sports AR', q:'1080p' },
+        { id:'espnpremium', name:'ESPN Premium',   q:'720p'  },
+        { id:'fox1ar',      name:'Fox Sports 1',   q:'720p'  },
+      ],
+      'Europa League': [
+        { id:'espnpremium', name:'ESPN Premium',  q:'1080p' },
+        { id:'fox1ar',      name:'Fox Sports 1',  q:'720p'  },
+      ],
+      'Copa Libertadores': [
+        { id:'espnpremium', name:'ESPN Premium',  q:'1080p' },
+        { id:'tntsports',   name:'TNT Sports AR', q:'1080p' },
+        { id:'fox1ar',      name:'Fox Sports 1',  q:'720p'  },
+      ],
+      'Copa Sudamericana': [
+        { id:'espnpremium', name:'ESPN Premium',  q:'1080p' },
+        { id:'tntsports',   name:'TNT Sports AR', q:'720p'  },
+      ],
+      'Premier League': [
+        { id:'espnpremium', name:'ESPN Premium',  q:'1080p' },
+        { id:'dsports',     name:'DSports',        q:'720p'  },
+      ],
+      'La Liga': [
+        { id:'espnpremium', name:'ESPN Premium',  q:'1080p' },
+        { id:'dsports',     name:'DSports',        q:'720p'  },
+        { id:'dsports2',    name:'DSports 2',      q:'720p'  },
+      ],
+      'Bundesliga': [
+        { id:'fox1ar',  name:'Fox Sports 1', q:'1080p' },
+        { id:'fox2ar',  name:'Fox Sports 2', q:'720p'  },
+      ],
+      'Serie A': [
+        { id:'espnpremium', name:'ESPN Premium', q:'1080p' },
+        { id:'fox1ar',      name:'Fox Sports 1', q:'720p'  },
+      ],
+      'Ligue 1': [
+        { id:'dsports',  name:'DSports',   q:'720p' },
+        { id:'dsports2', name:'DSports 2', q:'720p' },
+      ],
+      'default': [
+        { id:'espnpremium', name:'ESPN Premium',  q:'720p' },
+        { id:'tycsports',   name:'TyC Sports',    q:'720p' },
+      ],
+    };
+
+    function getChannels(compName) {
+      for (const key of Object.keys(COMP_CHANNELS)) {
+        if (key !== 'default' && compName && compName.toLowerCase().includes(key.toLowerCase()))
+          return COMP_CHANNELS[key];
+      }
+      return COMP_CHANNELS['default'];
+    }
+
+    // Competitions to fetch from football-data.org
+    const COMPETITIONS = [
+      { id: 2021, name: 'Premier League',     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+      { id: 2014, name: 'La Liga',            flag: '🇪🇸' },
+      { id: 2002, name: 'Bundesliga',         flag: '🇩🇪' },
+      { id: 2019, name: 'Serie A',            flag: '🇮🇹' },
+      { id: 2015, name: 'Ligue 1',            flag: '🇫🇷' },
+      { id: 2001, name: 'Champions League',   flag: '🏆' },
+      { id: 2018, name: 'Europa League',      flag: '🏆' },
+      { id: 2000, name: 'Mundial 2026',       flag: '🌍' },
+    ];
+
+    // Selección Argentina — Mundial 2026 (partidos de fase de grupos confirmados)
+    const ARG_MATCHES = [
+      { date:'2026-06-16', time:'22:00', home:'Argentina', away:'Argelia',  comp:'Mundial 2026', flag:'🌍', status:'SCHEDULED' },
+      { date:'2026-06-22', time:'14:00', home:'Argentina', away:'Austria',  comp:'Mundial 2026', flag:'🌍', status:'SCHEDULED' },
+      { date:'2026-06-28', time:'23:00', home:'Argentina', away:'Jordania', comp:'Mundial 2026', flag:'🌍', status:'SCHEDULED' },
+    ];
+
+    function fmtDateLabel(dateStr) {
+      const [y, m, d] = dateStr.split('-').map(Number);
+      const dt = new Date(y, m - 1, d);
+      const today = new Date(); today.setHours(0,0,0,0);
+      const diff = Math.round((dt - today) / 86400000);
+      const weekday = dt.toLocaleDateString('es-AR', { weekday:'long' });
+      const dateLabel = dt.toLocaleDateString('es-AR', { day:'numeric', month:'long' });
+      const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+      if (diff === 0) return `Hoy — ${cap(weekday)} ${dateLabel}`;
+      if (diff === 1) return `Mañana — ${cap(weekday)} ${dateLabel}`;
+      return `${cap(weekday)} ${dateLabel}`;
+    }
+
+    function fmtTime(utcStr) {
+      const d = new Date(utcStr);
+      return d.toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit' });
+    }
+
+    function matchCompName(m) {
+      return m.competition?.name || m.comp || '—';
+    }
+
+    function matchFlag(m, apiComps) {
+      if (m.flag) return m.flag;
+      const c = apiComps?.find(c => c.id === m.competition?.id);
+      return c?.flag || '⚽';
+    }
+
+    function matchStatus(m) {
+      const s = m.status;
+      if (s === 'FINISHED')  return 'finished';
+      if (s === 'IN_PLAY' || s === 'PAUSED') return 'live';
+      return '';
+    }
+
+    function matchTitle(m) {
+      const home = m.homeTeam?.shortName || m.homeTeam?.name || m.home || '?';
+      const away = m.awayTeam?.shortName || m.awayTeam?.name || m.away || '?';
+      const homeBadge = teamBadge(m, 'home');
+      const awayBadge = teamBadge(m, 'away');
+      return `<span style="display:inline-flex;align-items:center;gap:5px">${homeBadge}<span>${home}</span></span> <span style="color:var(--text-muted);font-weight:400;font-size:11px">vs</span> <span style="display:inline-flex;align-items:center;gap:5px">${awayBadge}<span>${away}</span></span>`;
+    }
+
+    // Mapa de escudos livianos (SVG/PNG desde fuentes públicas)
+    const TEAM_BADGES = {
+      // Liga Profesional Argentina
+      'River Plate':        'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/River_Plate_logo.svg/32px-River_Plate_logo.svg.png',
+      'Boca Juniors':       'https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Boca_Juniors_logo.svg/32px-Boca_Juniors_logo.svg.png',
+      'Racing Club':        'https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Racing_Club_de_Avellaneda_logo.svg/32px-Racing_Club_de_Avellaneda_logo.svg.png',
+      'Independiente':      'https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Club_Atlético_Independiente_logo.svg/32px-Club_Atlético_Independiente_logo.svg.png',
+      'San Lorenzo':        'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/San_Lorenzo_de_Almagro_logo.svg/32px-San_Lorenzo_de_Almagro_logo.svg.png',
+      'Huracán':            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Huracan_logo.svg/32px-Huracan_logo.svg.png',
+      'Vélez Sársfield':    'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Vélez_Sársfield_logo.svg/32px-Vélez_Sársfield_logo.svg.png',
+      'Estudiantes (LP)':   'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Estudiantes_de_la_plata_logo.svg/32px-Estudiantes_de_la_plata_logo.svg.png',
+      'Lanús':              'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Club_Atlético_Lanús_logo.svg/32px-Club_Atlético_Lanús_logo.svg.png',
+      'Rosario Central':    'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Rosario_Central_logo.svg/32px-Rosario_Central_logo.svg.png',
+      'Defensa y Justicia': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Defensa_y_Justicia.svg/32px-Defensa_y_Justicia.svg.png',
+      'Talleres (C)':       'https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Talleres_%28Córdoba%29_logo.svg/32px-Talleres_%28Córdoba%29_logo.svg.png',
+      'Tigre':              'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Club_Atletico_Tigre.svg/32px-Club_Atletico_Tigre.svg.png',
+      'Argentinos Jrs':     'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Argentinos_Juniors_logo.svg/32px-Argentinos_Juniors_logo.svg.png',
+      'Newells Old Boys':   'https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Newell%27s_Old_Boys_logo.svg/32px-Newell%27s_Old_Boys_logo.svg.png',
+      'Banfield':           'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Club_Atlético_Banfield_logo.svg/32px-Club_Atlético_Banfield_logo.svg.png',
+      'Platense':           'https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Club_Atletico_Platense.svg/32px-Club_Atletico_Platense.svg.png',
+      'Unión (SF)':         'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Unión_de_Santa_Fe_logo.svg/32px-Unión_de_Santa_Fe_logo.svg.png',
+      'Godoy Cruz':         'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Godoy_Cruz_Antonio_Tomba_logo.svg/32px-Godoy_Cruz_Antonio_Tomba_logo.svg.png',
+      'Barracas Central':   'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Barracas_Central_logo.svg/32px-Barracas_Central_logo.svg.png',
+      // Selección
+      'Argentina':          'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Argentina_national_football_team_crest.svg/32px-Argentina_national_football_team_crest.svg.png',
+      'Argelia':            'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Flag_of_Algeria.svg/32px-Flag_of_Algeria.svg.png',
+      'Austria':            'https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Flag_of_Austria.svg/32px-Flag_of_Austria.svg.png',
+      'Jordania':           'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Flag_of_Jordan.svg/32px-Flag_of_Jordan.svg.png',
+      // Copa Libertadores / internacional
+      'Flamengo':           'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Flamengo_braz_logo.svg/32px-Flamengo_braz_logo.svg.png',
+      'Nacional (URU)':     'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Nacional_logo.svg/32px-Nacional_logo.svg.png',
+      'Atlético Mineiro':   'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Atletico_mineiro_galo.svg/32px-Atletico_mineiro_galo.svg.png',
+    };
+
+    function teamBadge(m, side) {
+      let url = '';
+      // ESPN logo (LPF via ESPN API)
+      if (side === 'home' && m.homeLogo) url = m.homeLogo;
+      else if (side === 'away' && m.awayLogo) url = m.awayLogo;
+      // football-data.org crest
+      else {
+        const teamObj = side === 'home' ? m.homeTeam : m.awayTeam;
+        if (teamObj?.crest) url = teamObj.crest;
+      }
+      // Fallback: diccionario estático
+      if (!url) {
+        const name = side === 'home' ? (m.home || '') : (m.away || '');
+        url = TEAM_BADGES[name] || '';
+      }
+      if (!url) return '';
+      return `<img src="${url}" alt="" width="18" height="18" style="object-fit:contain;flex-shrink:0;border-radius:2px" loading="lazy" onerror="this.style.display='none'">`;
+    }
+
+    function matchScore(m) {
+      // football-data.org format
+      const hs = m.score?.fullTime?.home ?? m.score?.halfTime?.home;
+      const as = m.score?.fullTime?.away ?? m.score?.halfTime?.away;
+      if (hs !== undefined && as !== undefined) return `${hs} - ${as}`;
+      // TheSportsDB format
+      if (m.scoreHome !== null && m.scoreHome !== undefined &&
+          m.scoreAway !== null && m.scoreAway !== undefined) {
+        return `${m.scoreHome} - ${m.scoreAway}`;
+      }
+      return '';
+    }
+
+    function matchDateKey(m) {
+      if (m.date) return m.date; // Argentine static
+      return m.utcDate ? m.utcDate.slice(0, 10) : '?';
+    }
+
+    function matchTimeStr(m) {
+      if (m.time) return m.time;
+      if (m.utcDate) return fmtTime(m.utcDate);
+      return '--:--';
+    }
+
+    let openDays = new Set([0]); // first day open by default
+    let openMatches = new Set();
+
+    function toggleDay(dayIdx) {
+      if (openDays.has(dayIdx)) openDays.delete(dayIdx);
+      else openDays.add(dayIdx);
+      renderDom(window._agendaData || []);
+    }
+
+    function toggleMatch(matchId) {
+      if (openMatches.has(matchId)) openMatches.delete(matchId);
+      else openMatches.add(matchId);
+      renderDom(window._agendaData || []);
+    }
+
+    function renderDom(allMatches) {
+      const loadEl  = document.getElementById('agenda-loading');
+      const emptyEl = document.getElementById('agenda-empty');
+      const listEl  = document.getElementById('agenda-list');
+      loadEl.style.display = 'none';
+
+      if (!allMatches.length) {
+        emptyEl.style.display = 'block';
+        listEl.innerHTML = '';
+        return;
+      }
+      emptyEl.style.display = 'none';
+
+      // Group by date
+      const byDay = {};
+      allMatches.forEach(m => {
+        const dk = matchDateKey(m);
+        if (!byDay[dk]) byDay[dk] = [];
+        byDay[dk].push(m);
+      });
+
+      const sortedDays = Object.keys(byDay).sort();
+      listEl.innerHTML = sortedDays.map((dk, dayIdx) => {
+        const matches = byDay[dk];
+        const isOpen = openDays.has(dayIdx);
+        const hasLive = matches.some(m => matchStatus(m) === 'live');
+        const countLabel = `${matches.length} partido${matches.length !== 1 ? 's' : ''}`;
+
+        const matchesHtml = matches.map((m, mi) => {
+          const uid = `${dayIdx}-${mi}`;
+          const status = matchStatus(m);
+          const score = matchScore(m);
+          const compName = matchCompName(m);
+          const channels = getChannels(compName);
+          const isMatchOpen = openMatches.has(uid);
+          const flag = matchFlag(m, COMPETITIONS);
+
+          const channelsHtml = channels.map(ch =>
+            `<div class="agenda-channel-item" onclick="playChannel('${ch.id}','${ch.name}')">
+              <div class="agenda-channel-item-name">${ch.name}</div>
+              <div class="agenda-quality-badge">${ch.q}</div>
+            </div>`
+          ).join('');
+
+          return `
+            <div class="agenda-match-row agenda-match ${status}" id="amrow-${uid}">
+              <div class="agenda-match-summary" onclick="window._agendaToggleMatch('${uid}')">
+                <div class="agenda-match-time">${matchTimeStr(m)}</div>
+                <div class="agenda-match-live-dot"></div>
+                <div class="agenda-match-flag">${flag}</div>
+                <div class="agenda-match-title">
+                  <div>${matchTitle(m)}</div>
+                  <div style="font-size:10px;font-weight:600;color:var(--text-muted);margin-top:2px;text-transform:uppercase;letter-spacing:0.8px">${compName}</div>
+                </div>
+                ${score ? `<div class="agenda-match-score">${score}</div>` : ''}
+                <div class="agenda-expand-arrow">▼</div>
+              </div>
+              <div class="agenda-channels ${isMatchOpen ? 'open' : ''}" style="${isMatchOpen ? 'max-height:600px' : ''}">
+                ${channelsHtml}
+              </div>
+            </div>`;
+        }).join('');
+
+        return `
+          <div class="agenda-day ${isOpen ? 'open' : ''}" id="aday-${dayIdx}">
+            <div class="agenda-day-header" onclick="window._agendaToggleDay(${dayIdx})">
+              <div class="agenda-day-left">
+                ${hasLive ? '<span style="width:8px;height:8px;border-radius:50%;background:var(--red);animation:pulse 1.4s infinite;flex-shrink:0;display:inline-block"></span>' : ''}
+                <span class="agenda-day-label">${fmtDateLabel(dk)}</span>
+                <span class="agenda-day-count">${countLabel}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <span class="agenda-day-meta">${matches.map(m => matchFlag(m, COMPETITIONS)).filter((v,i,a) => a.indexOf(v)===i).join(' ')}</span>
+                <span class="agenda-day-arrow">▼</span>
+              </div>
+            </div>
+            <div class="agenda-day-body" style="${isOpen ? 'max-height:4000px' : ''}">
+              ${matchesHtml}
+            </div>
+          </div>`;
+      }).join('');
+
+      // Re-apply open state for matches (CSS class needed after re-render)
+      openMatches.forEach(uid => {
+        const row = document.getElementById(`amrow-${uid}`);
+        if (row) row.classList.add('open');
+      });
+    }
+
+    window._agendaToggleDay = function(dayIdx) {
+      if (openDays.has(dayIdx)) openDays.delete(dayIdx);
+      else openDays.add(dayIdx);
+      const el = document.getElementById('aday-' + dayIdx);
+      if (!el) return;
+      if (openDays.has(dayIdx)) {
+        el.classList.add('open');
+        el.querySelector('.agenda-day-body').style.maxHeight = '4000px';
+      } else {
+        el.classList.remove('open');
+        el.querySelector('.agenda-day-body').style.maxHeight = '0';
+      }
+    };
+
+    window._agendaToggleMatch = function(uid) {
+      const row = document.getElementById('amrow-' + uid);
+      if (!row) return;
+      const channels = row.querySelector('.agenda-channels');
+      if (openMatches.has(uid)) {
+        openMatches.delete(uid);
+        row.classList.remove('open');
+        channels.style.maxHeight = '0';
+      } else {
+        openMatches.add(uid);
+        row.classList.add('open');
+        channels.style.maxHeight = '600px';
+      }
+    };
+
+    async function fetchAgenda() {
+      const now = new Date();
+      // Argentina is always UTC-3 (no DST). Use local AR date so today's matches
+      // stay visible for the full day even after midnight UTC.
+      const arNow = new Date(now.getTime() - 3 * 60 * 60 * 1000);
+      const dates = [];
+      for (let i = 0; i < 20; i++) {
+        const d = new Date(arNow);
+        d.setUTCDate(arNow.getUTCDate() + i);
+        dates.push(d.toISOString().slice(0, 10));
+      }
+      const dateFrom = dates[0];
+      const dateTo   = dates[dates.length - 1];
+
+      // --- European leagues via football-data.org (free, no key needed) ---
+      let apiMatches = [];
+      try {
+        const fetches = COMPETITIONS.map(comp =>
+          fetch(`https://api.football-data.org/v4/competitions/${comp.id}/matches?dateFrom=${dateFrom}&dateTo=${dateTo}`)
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+              if (data?.matches) {
+                data.matches.forEach(m => { m.competition = { id: comp.id, name: comp.name }; m.flag = comp.flag; });
+                apiMatches.push(...data.matches);
+              }
+            })
+            .catch(() => null)
+        );
+        await Promise.allSettled(fetches);
+      } catch(_) {}
+
+      // --- Liga Profesional Argentina via ESPN API (real-time, no key needed) ---
+      function parseEspnEvents(events) {
+        const result = [];
+        for (const ev of (events || [])) {
+          const comp = ev.competitions?.[0];
+          if (!comp) continue;
+          const competitors = comp.competitors || [];
+          const home = competitors.find(c => c.homeAway === 'home');
+          const away = competitors.find(c => c.homeAway === 'away');
+          if (!home || !away) continue;
+
+          // ev.date is UTC — convert to Argentina time (UTC-3)
+          const arMs  = new Date(ev.date).getTime() - 3 * 60 * 60 * 1000;
+          const arDt  = new Date(arMs);
+          const dateStr = arDt.toISOString().slice(0, 10);
+          const timeStr = arDt.toISOString().slice(11, 16);
+
+          const state = ev.status?.type?.state || '';
+          const sName = ev.status?.type?.name  || '';
+          const status = state === 'post' || sName === 'STATUS_FINAL'       ? 'FINISHED'
+                       : state === 'in'   || sName === 'STATUS_IN_PROGRESS' ? 'IN_PLAY'
+                       : 'SCHEDULED';
+
+          result.push({
+            date:      dateStr,
+            time:      timeStr,
+            home:      home.team?.displayName || home.team?.name || '?',
+            away:      away.team?.displayName || away.team?.name || '?',
+            homeLogo:  home.team?.logo || '',
+            awayLogo:  away.team?.logo || '',
+            comp:      'Liga Profesional',
+            flag:      '🇦🇷',
+            status,
+            scoreHome: state !== 'pre' ? home.score : null,
+            scoreAway: state !== 'pre' ? away.score : null,
+            venue:     comp.venue?.fullName || '',
+          });
+        }
+        return result;
+      }
+
+      let lpfMatches = [];
+      try {
+        // Fetch LPF for each day in our window (ESPN returns per-day data)
+        const lpfFetches = dates.slice(0, 14).map(d => {
+          const espnDate = d.replace(/-/g, '');
+          return fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/arg.1/scoreboard?dates=${espnDate}`)
+            .then(r => r.ok ? r.json() : null)
+            .then(data => { if (data?.events) lpfMatches.push(...parseEspnEvents(data.events)); })
+            .catch(() => null);
+        });
+        await Promise.allSettled(lpfFetches);
+      } catch(_) {}
+
+      // --- Copa Argentina via TheSportsDB (free, ID 4500, key 123) ---
+      function parseSportsDBEvent(e, comp, flag) {
+        const dateStr = e.dateEvent;
+        let time = '00:00';
+        if (e.strTime) {
+          const [hh, mm] = e.strTime.split(':').map(Number);
+          const arMin = ((hh * 60 + mm - 180) % 1440 + 1440) % 1440;
+          time = `${String(Math.floor(arMin / 60)).padStart(2,'0')}:${String(arMin % 60).padStart(2,'0')}`;
+        }
+        return {
+          date: dateStr, time,
+          home: e.strHomeTeam, away: e.strAwayTeam,
+          comp, flag,
+          status: e.strStatus === 'Match Finished' ? 'FINISHED'
+                : (e.strStatus === 'In Play' || e.strStatus === 'HT') ? 'IN_PLAY'
+                : 'SCHEDULED',
+          scoreHome: e.intHomeScore, scoreAway: e.intAwayScore,
+          venue: e.strVenue || '',
+        };
+      }
+
+      let copaArgMatches = [];
+      try {
+        const res = await Promise.race([
+          fetch('https://www.thesportsdb.com/api/v1/json/123/eventsnextleague.php?id=4500'),
+          new Promise((_, rej) => setTimeout(() => rej(), 5000))
+        ]);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.events) {
+            json.events.forEach(e => {
+              const dateStr = e.dateEvent;
+              if (dateStr >= dateFrom && dateStr <= dateTo) {
+                copaArgMatches.push(parseSportsDBEvent(e, 'Copa Argentina', '🏅'));
+              }
+            });
+          }
+        }
+      } catch(_) {}
+
+      // --- Static Argentine data (Mundial 2026, filtered to window) ---
+      const argFiltered = ARG_MATCHES.filter(m => m.date >= dateFrom && m.date <= dateTo);
+
+      // Merge all sources
+      const allMatches = [...apiMatches, ...lpfMatches, ...copaArgMatches, ...argFiltered];
+
+      // Sort: live first, then chronologically
+      allMatches.sort((a, b) => {
+        const order = { 'IN_PLAY':0, 'PAUSED':1, 'live':0, 'SCHEDULED':2, 'TIMED':2, 'FINISHED':3 };
+        const sa = order[a.status] ?? 2, sb = order[b.status] ?? 2;
+        if (sa !== sb) return sa - sb;
+        const da = a.utcDate || `${a.date}T${a.time || '00:00'}:00`;
+        const db = b.utcDate || `${b.date}T${b.time || '00:00'}:00`;
+        return da.localeCompare(db);
+      });
+
+      window._agendaData = allMatches;
+      renderDom(allMatches);
+    }
+
+    fetchAgenda();
+    setInterval(fetchAgenda, 60000);
+  })();
+
+  // ===== ANIMATED BACKGROUND + PARTICLES + CURSOR =====
+  (function() {
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    const glow = document.getElementById('cursor-glow');
+    let W, H, mouse = { x: -999, y: -999 }, rafId;
+
+    // Color activo — se cambia desde showArgPage/closeArgPage
+    window._bgColor = { r: 34, g: 197, b: 94 }; // verde por defecto
+
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // ---- Cursor tracking ----
+    let cursorVisible = false;
+    document.addEventListener('mousemove', e => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      glow.style.left = e.clientX + 'px';
+      glow.style.top  = e.clientY + 'px';
+      if (!cursorVisible) { glow.style.opacity = '1'; cursorVisible = true; }
+    });
+    document.addEventListener('mouseleave', () => { glow.style.opacity = '0'; cursorVisible = false; });
+
+    // ---- Cursor spark trail ----
+    const sparks = [];
+    document.addEventListener('mousemove', e => {
+      if (Math.random() > 0.55) return;
+      sparks.push({
+        x: e.clientX, y: e.clientY,
+        vx: (Math.random() - 0.5) * 1.2,
+        vy: (Math.random() - 0.5) * 1.2 - 0.4,
+        life: 1, size: Math.random() * 2.5 + 1
+      });
+    });
+
+    // ---- Floating particles ----
+    const PARTICLE_COUNT = 55;
+    const particles = [];
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push({
+        x: Math.random() * 1920,
+        y: Math.random() * 1080,
+        r: Math.random() * 1.6 + 0.3,
+        speed: Math.random() * 0.25 + 0.05,
+        angle: Math.random() * Math.PI * 2,
+        drift: (Math.random() - 0.5) * 0.008,
+        alpha: Math.random() * 0.35 + 0.05,
+      });
+    }
+
+    // ---- Ambient glow orbs (very subtle) ----
+    const orbs = [
+      { x: 0.15, y: 0.2,  r: 0.28, phase: 0 },
+      { x: 0.82, y: 0.6,  r: 0.22, phase: 1.8 },
+      { x: 0.5,  y: 0.85, r: 0.18, phase: 3.5 },
+    ];
+
+    let t = 0;
+    function draw() {
+      t += 0.008;
+      ctx.clearRect(0, 0, W, H);
+
+      const { r, g, b } = window._bgColor;
+
+      // Base dark background
+      ctx.fillStyle = '#0a0e0a';
+      ctx.fillRect(0, 0, W, H);
+
+      // Ambient orbs
+      orbs.forEach(o => {
+        const px = o.x * W + Math.sin(t * 0.4 + o.phase) * 60;
+        const py = o.y * H + Math.cos(t * 0.3 + o.phase) * 40;
+        const rPx = o.r * Math.max(W, H);
+        const grad = ctx.createRadialGradient(px, py, 0, px, py, rPx);
+        grad.addColorStop(0,   `rgba(${r},${g},${b},0.045)`);
+        grad.addColorStop(0.5, `rgba(${r},${g},${b},0.018)`);
+        grad.addColorStop(1,   `rgba(${r},${g},${b},0)`);
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(px, py, rPx, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Floating particles
+      ctx.save();
+      particles.forEach(p => {
+        p.angle += p.drift;
+        p.x += Math.cos(p.angle) * p.speed;
+        p.y += Math.sin(p.angle) * p.speed - 0.08;
+        if (p.x < 0) p.x = W;
+        if (p.x > W) p.x = 0;
+        if (p.y < -10) p.y = H + 10;
+        if (p.y > H + 10) p.y = -10;
+
+        const dx = p.x - mouse.x, dy = p.y - mouse.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 90) {
+          const force = (90 - dist) / 90 * 0.6;
+          p.x += (dx / dist) * force;
+          p.y += (dy / dist) * force;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r},${g},${b},${p.alpha})`;
+        ctx.fill();
+      });
+      ctx.restore();
+
+      // Cursor sparks
+      for (let i = sparks.length - 1; i >= 0; i--) {
+        const s = sparks[i];
+        s.x += s.vx; s.y += s.vy;
+        s.vy += 0.04;
+        s.life -= 0.045;
+        if (s.life <= 0) { sparks.splice(i, 1); continue; }
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.size * s.life, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r},${g},${b},${s.life * 0.7})`;
+        ctx.fill();
+      }
+
+      rafId = requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+
+</script>
+</body>
+</html>
