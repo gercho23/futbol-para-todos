@@ -565,6 +565,12 @@
       color: var(--text);
       line-height: 1.3;
     }
+    .featured-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+      text-align: center;
+    }
     .featured-live {
       display: flex;
       align-items: center;
@@ -1238,6 +1244,7 @@
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/200px-ESPN_wordmark.svg.png" alt="ESPN Premium">
       </div>
       <div class="featured-name">ESPN Premium</div>
+      <div class="featured-desc">No te pierdas los encuentros más importantes de fútbol, análisis en vivo y cobertura especial en ESPN Premium.</div>
       <div class="featured-live"><span class="featured-live-dot"></span> En vivo</div>
     </div>
     <div class="featured-card" onclick="playChannel('tntsports','TNT Sports AR')">
@@ -1245,6 +1252,7 @@
         <img src="https://commons.wikimedia.org/wiki/Special:FilePath/TNT_Sports_Logo.svg" alt="TNT Sports">
       </div>
       <div class="featured-name">TNT Sports AR</div>
+      <div class="featured-desc">Mirá partidos de ligas locales y regionales con TNT Sports, disponible gratis en nuestra plataforma.</div>
       <div class="featured-live"><span class="featured-live-dot"></span> En vivo</div>
     </div>
     <div class="featured-card" onclick="playChannel('fox1ar','Fox Sports Premium')">
@@ -1252,6 +1260,7 @@
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/FOX_Sports_logo.svg/200px-FOX_Sports_logo.svg.png" alt="Fox Sports Premium">
       </div>
       <div class="featured-name">Fox Sports Premium</div>
+      <div class="featured-desc">Disfrutá de competencias globales, entrevistas exclusivas y más a través de Fox Sports en alta definición.</div>
       <div class="featured-live"><span class="featured-live-dot"></span> En vivo</div>
     </div>
     <div class="featured-card" onclick="playChannel('tycsports','TyC Sports')">
@@ -1259,6 +1268,7 @@
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/TyC_Sports_logo.svg/200px-TyC_Sports_logo.svg.png" alt="TyC Sports">
       </div>
       <div class="featured-name">TyC Sports</div>
+      <div class="featured-desc">Disfrutá de los mejores partidos de fútbol argentino y otros deportes a través de TyC Sports con señal en vivo y gratuita.</div>
       <div class="featured-live"><span class="featured-live-dot"></span> En vivo</div>
     </div>
     <div class="featured-card" onclick="playChannel('dsports','DSports')">
@@ -1266,6 +1276,7 @@
         <img src="https://commons.wikimedia.org/wiki/Special:FilePath/DSports_logo_2022.svg" alt="DSports">
       </div>
       <div class="featured-name">DSports</div>
+      <div class="featured-desc">Accedé a transmisiones exclusivas de torneos internacionales y ligas de América Latina en DirecTV Sports.</div>
       <div class="featured-live"><span class="featured-live-dot"></span> En vivo</div>
     </div>
     <div class="featured-card" onclick="playChannel('telefe','Telefe')">
@@ -1273,6 +1284,7 @@
         <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Logo_telefe_argentina.svg" alt="Telefe">
       </div>
       <div class="featured-name">Telefe</div>
+      <div class="featured-desc">Seguí los partidos de la Selección Argentina en abierto y gratuito por Telefe, el canal de todos los argentinos.</div>
       <div class="featured-live"><span class="featured-live-dot"></span> En vivo</div>
     </div>
   </div>
@@ -1377,11 +1389,20 @@
         <p>En Fútbol Para Todos podés ver todos los partidos del fútbol argentino, además de encuentros destacados de Chile, Perú, Paraguay y Estados Unidos. También transmitimos la Copa Libertadores, la Copa Sudamericana y los partidos de la Selección Argentina.</p>
       </div>
     </div>
+    <div class="faq-item" id="faq-4">
+      <button class="faq-question" onclick="toggleFaq(4)">
+        Exención de Responsabilidad
+        <span class="faq-chevron">∧</span>
+      </button>
+      <div class="faq-answer">
+        <p>Fútbol Para Todos no aloja transmisiones en sus servidores. Cualquier enlace o contenido mostrado proviene de fuentes externas. No somos responsables por el contenido transmitido por sitios de terceros.</p>
+      </div>
+    </div>
   </div>
 </div>
 
 <footer>
-  ⚽ Futbol Para Todos &mdash; Todos los partidos en vivo &bull; Solo para uso personal
+  ⚽ Futbol Para Todos &mdash; Todos los partidos en vivo &bull; Solo para uso personal &bull; © 2026 All rights reserved.
 </footer>
 <div id="arg-page">
 
@@ -1676,7 +1697,7 @@
     { id:'tntsports',       name:'TNT Sports AR',     icon:'TN', color:'#d69e2e', region:'arg',    logo: LOGOS.tnt ,
       customSources: [
         { url: 'https://streamtp10.com/global1.php?stream=tntsports', type: 'iframe' },
-        { url: 'https://streamx339.cloud/global1.php?channel=tntar', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=VE5UX1Nwb3J0c19IRA&lang=1', type: 'iframe' },
       ]},
     { id:'tycsports',       name:'TyC Sports',        icon:'TY', color:'#2d6a4f', region:'arg',    logo: LOGOS.tyc ,
       customSources: [
