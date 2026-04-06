@@ -1068,7 +1068,7 @@
     .agenda-match-score.score-updated { animation: scoreFlash 1.2s ease-out; }
     .agenda-match-clock {
       font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
-      color: var(--red); opacity: 0.85; margin-top: 2px; text-align: center;
+      color: var(--red); opacity: 0.85;
     }
     .agenda-match.finished .agenda-match-clock { color: var(--text-muted); }
     .agenda-expand-arrow {
@@ -2601,7 +2601,7 @@
                   <div>${matchTitle(m)}</div>
                   <div style="font-size:10px;font-weight:600;color:var(--text-muted);margin-top:2px;text-transform:uppercase;letter-spacing:0.8px">${compName}</div>
                 </div>
-                ${score ? `<div class="agenda-match-score">${score}${clock ? `<div class="agenda-match-clock">${clock}</div>` : ''}</div>` : ''}
+                ${score ? `<div class="agenda-match-score" style="display:flex;align-items:center;gap:5px;white-space:nowrap">${score}${clock ? `<span class="agenda-match-clock">${clock}</span>` : ''}</div>` : ''}
                 <div class="agenda-expand-arrow">▼</div>
               </div>
               <div class="agenda-channels ${isMatchOpen ? 'open' : ''}" style="${isMatchOpen ? 'max-height:600px' : ''}">
