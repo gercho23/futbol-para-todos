@@ -380,7 +380,7 @@
       cursor: pointer;
       border-bottom: 2px solid transparent;
       white-space: nowrap;
-      transition: all 0.2s;
+      transition: color 0.2s, border-color 0.2s;
       margin-bottom: -1px;
     }
     .tab-btn:hover { color: var(--text); }
@@ -1296,6 +1296,7 @@
     <button class="tab-btn" onclick="switchTab('br', this)">🇧🇷 Brasil</button>
     <button class="tab-btn" onclick="switchTab('int', this)">🌍 Internacional</button>
     <button class="tab-btn" onclick="switchTab('events', this)">🏆 Eventos</button>
+    <button class="tab-btn" onclick="switchTab('ent', this)">📺 Entretenimiento</button>
   </div>
 
   <!-- Tab: ALL (search results + default grid) -->
@@ -1325,6 +1326,10 @@
   <!-- Tab: Eventos -->
   <div class="tab-content" id="tab-events">
     <div class="channels-grid" id="grid-events"></div>
+  </div>
+  <!-- Tab: Entretenimiento -->
+  <div class="tab-content" id="tab-ent">
+    <div class="channels-grid" id="grid-ent"></div>
   </div>
 
 </div>
@@ -1377,8 +1382,6 @@
 
 <footer>
   ⚽ Futbol Para Todos &mdash; Todos los partidos en vivo &bull; Solo para uso personal
-  <br>
-  <span style="font-size:12px;opacity:0.6;margin-top:6px;display:inline-block;">Programa creado por Germán González</span>
 </footer>
 <div id="arg-page">
 
@@ -1549,19 +1552,6 @@
     <div class="formation-label">4-4-2 · DT: Lionel Scaloni · Fuente: último partido vs Zambia (31/03)</div>
   </div>
 
-  <!-- Liga Profesional — API en vivo -->
-  <div class="section-title">🏆 Liga Profesional Argentina — Tabla de posiciones</div>
-  <div id="liga-standings-wrap">
-    <div id="liga-loading" style="text-align:center;padding:32px 0;color:var(--text-muted);font-size:14px;">
-      <span style="font-size:24px;display:block;margin-bottom:8px">⚽</span>
-      Cargando tabla de posiciones...
-    </div>
-    <div id="liga-standings" style="display:none"></div>
-    <div id="liga-error" style="display:none;text-align:center;padding:24px;color:var(--text-muted);font-size:13px;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:32px">
-      No se pudo cargar la tabla. Revisá tu conexión.
-    </div>
-  </div>
-
   </div><!-- /.arg-inner -->
 </div>
 
@@ -1592,35 +1582,47 @@
     tigo:     'https://commons.wikimedia.org/wiki/Special:FilePath/Tigo_Sports_2025.png',
     futv:     'https://commons.wikimedia.org/wiki/Special:FilePath/Logo_de_FUTV.svg',
     tn:       'https://commons.wikimedia.org/wiki/Special:FilePath/TN_todo_noticias_logo.svg',
-    trece:    'https://commons.wikimedia.org/wiki/Special:FilePath/El_Trece_logo.svg',
+    trece:    'https://commons.wikimedia.org/wiki/Special:FilePath/Isotipo_eltrece_2016.png',
     bein:     'https://commons.wikimedia.org/wiki/Special:FilePath/BeIN_Sports_logo_(horizontal_version).svg',
     redbull:  'https://commons.wikimedia.org/wiki/Special:FilePath/Logo_of_Red_bull.svg',
     realmadridtv: 'https://commons.wikimedia.org/wiki/Special:FilePath/Realmadrid_Television_Logo.svg',
     rta:      'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/RTA_logo.svg/200px-RTA_logo.svg.png',
     telemundo:'https://commons.wikimedia.org/wiki/Special:FilePath/Telemundo_Logo.svg',
-    rtve:     'https://commons.wikimedia.org/wiki/Special:FilePath/RTVE_logo_2021.svg',
+    rtve:     'https://upload.wikimedia.org/wikipedia/commons/b/b1/TVE1_logo.svg',
     movistar: 'https://commons.wikimedia.org/wiki/Special:FilePath/Movistar_Deportes_logo.svg',
     mutv:     'https://commons.wikimedia.org/wiki/Special:FilePath/Manchester_United_FC_crest.svg',
-    novasport1:'https://commons.wikimedia.org/wiki/Special:FilePath/Nova_Sport_1.svg',
-    novasport2:'https://commons.wikimedia.org/wiki/Special:FilePath/Nova_Sport_2.svg',
-    rtvs:     'https://commons.wikimedia.org/wiki/Special:FilePath/RTVS_logo.svg',
-    jojsport: 'https://commons.wikimedia.org/wiki/Special:FilePath/JOJ_Sport.svg',
+    novasport1:'https://upload.wikimedia.org/wikipedia/commons/c/c9/Nova_Sport_1_2024.png',
+    novasport2:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Nova_Sport_1_2024.png/200px-Nova_Sport_1_2024.png',
+    rtvs:     'https://upload.wikimedia.org/wikipedia/commons/9/95/Rozhlas_a_telev%C3%ADzia_Slovenska_Logo_%282011-present%29.svg',
+    jojsport: 'https://upload.wikimedia.org/wikipedia/commons/6/64/Jojsport.png',
     itvdep:   'https://commons.wikimedia.org/wiki/Special:FilePath/ITV_logo.svg',
     fastwomen:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Tubi_logo_2024.svg/200px-Tubi_logo_2024.svg.png',
     cartoon:  'https://commons.wikimedia.org/wiki/Special:FilePath/Cartoon_Network_2010_logo.svg',
-    disney:   'https://commons.wikimedia.org/wiki/Special:FilePath/Disney_Channel_2014.svg',
-    nick:     'https://commons.wikimedia.org/wiki/Special:FilePath/Nickelodeon_logo.svg',
-    star:     'https://commons.wikimedia.org/wiki/Special:FilePath/Star_Channel_logo.svg',
-    comedy:   'https://commons.wikimedia.org/wiki/Special:FilePath/Comedy_Central_2011_logo.svg',
-    nbatv:    'https://commons.wikimedia.org/wiki/Special:FilePath/NBA_TV.svg',
-    deportv:  'https://commons.wikimedia.org/wiki/Special:FilePath/DeporTV_logo.svg',
-    ln:       'https://commons.wikimedia.org/wiki/Special:FilePath/La_Nacion_Plus_logo.svg',
-    canal26:  'https://commons.wikimedia.org/wiki/Special:FilePath/Canal_26_Argentina_logo.svg',
-    a24:      'https://commons.wikimedia.org/wiki/Special:FilePath/A24_canal_logo.svg',
-    c5n:      'https://commons.wikimedia.org/wiki/Special:FilePath/C5N_logo.svg',
-    cronica:  'https://commons.wikimedia.org/wiki/Special:FilePath/Crónica_TV_(Argentina)_logo.svg',
-    america:  'https://commons.wikimedia.org/wiki/Special:FilePath/América_TV_(Argentina)_logo.svg',
-    nueve:    'https://commons.wikimedia.org/wiki/Special:FilePath/El_Nueve_logo.svg',
+    disney:   'https://upload.wikimedia.org/wikipedia/commons/f/ff/2024_Disney_Channel_text_logo.svg',
+    nick:     'https://commons.wikimedia.org/wiki/Special:FilePath/Nickelodeon_2009_logo.svg',
+    star:     'https://upload.wikimedia.org/wikipedia/commons/c/cd/Star_Channel_2023.svg',
+    comedy:   'https://upload.wikimedia.org/wikipedia/commons/a/aa/Comedy_Central_2018.svg',
+    nbatv:    'https://upload.wikimedia.org/wikipedia/en/d/d2/NBA_TV.svg',
+    deportv:  'https://commons.wikimedia.org/wiki/Special:FilePath/Deportv.svg',
+    ln:       'https://upload.wikimedia.org/wikipedia/commons/a/ae/La-Nacion-Mas-Logo.svg',
+    canal26:  'https://upload.wikimedia.org/wikipedia/commons/c/c5/Canal_26_logo_%282022%29.svg',
+    a24:      'https://commons.wikimedia.org/wiki/Special:FilePath/A24_%282025%29.svg',
+    c5n:      'https://upload.wikimedia.org/wikipedia/commons/0/07/C5N_logo.svg',
+    cronica:  'https://commons.wikimedia.org/wiki/Special:FilePath/Cr%C3%B3nica_TV_logotipo_%282016%29.png',
+    america:  'https://upload.wikimedia.org/wikipedia/commons/9/99/Logotipo_de_America_TV.svg',
+    nueve:    'https://commons.wikimedia.org/wiki/Special:FilePath/Canal_9_2015.png',
+    adultswim:'https://commons.wikimedia.org/wiki/Special:FilePath/Adult_Swim_2003_logo.svg',
+    hbo:      'https://commons.wikimedia.org/wiki/Special:FilePath/HBO_logo.svg',
+    sony:     'https://commons.wikimedia.org/wiki/Special:FilePath/Sony_Channel_logo.svg',
+    axn:      'https://commons.wikimedia.org/wiki/Special:FilePath/AXN_logo.svg',
+    amc:      'https://commons.wikimedia.org/wiki/Special:FilePath/AMC_logo_2016.svg',
+    space:    'https://upload.wikimedia.org/wikipedia/commons/1/1a/SpaceLogo.svg',
+    cinemax:  'https://commons.wikimedia.org/wiki/Special:FilePath/Cinemax.svg',
+    fx:       'https://upload.wikimedia.org/wikipedia/commons/4/4d/FX_International_logo.svg',
+    tnt_ent:  'https://commons.wikimedia.org/wiki/Special:FilePath/TNT_logo.svg',
+    history:  'https://upload.wikimedia.org/wikipedia/commons/0/01/History_%282021%29.svg',
+    dischyh:  'https://upload.wikimedia.org/wikipedia/commons/a/a3/Discovery_Home_%26_Health_logo.svg',
+    discovery:'https://upload.wikimedia.org/wikipedia/commons/2/27/Discovery_Channel_-_Logo_2019.svg',
   };
 
   const channels = [
@@ -1735,64 +1737,130 @@
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=TkJBX1RW&lang=1', type: 'iframe' },
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=TkJBX1RW&lang=1', type: 'iframe' },
       ]},
-    // Argentina — Entretenimiento
-    { id:'cartoon_network', name:'Cartoon Network',   icon:'CN', color:'#c05621', region:'arg',    logo: LOGOS.cartoon,
+    // Entretenimiento & Noticias
+    { id:'cartoon_network', name:'Cartoon Network',   icon:'CN', color:'#c05621', region:'ent',    logo: LOGOS.cartoon,
       customSources: [
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=Q2FydG9vbk5ldHdvcms=&lang=1', type: 'iframe' },
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=Q2FydG9vbk5ldHdvcms=&lang=1', type: 'iframe' },
       ]},
-    { id:'disney_channel',  name:'Disney Channel',    icon:'DC', color:'#2b6cb0', region:'arg',    logo: LOGOS.disney,
+    { id:'disney_channel',  name:'Disney Channel',    icon:'DC', color:'#2b6cb0', region:'ent',    logo: LOGOS.disney,
       customSources: [
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=RGlzbmV5Q2hhbm5lbEhE&lang=1', type: 'iframe' },
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=RGlzbmV5Q2hhbm5lbEhE&lang=1', type: 'iframe' },
       ]},
-    { id:'nickelodeon',     name:'Nickelodeon',       icon:'NK', color:'#c05621', region:'arg',    logo: LOGOS.nick,
+    { id:'nickelodeon',     name:'Nickelodeon',       icon:'NK', color:'#c05621', region:'ent',    logo: LOGOS.nick,
       customSources: [
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=RGlzY292ZXJ5X0tpZHM=&lang=1', type: 'iframe' },
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=RGlzY292ZXJ5X0tpZHM=&lang=1', type: 'iframe' },
       ]},
-    { id:'star_channel',    name:'Star Channel',      icon:'ST', color:'#1a365d', region:'arg',    logo: LOGOS.star,
+    { id:'star_channel',    name:'Star Channel',      icon:'ST', color:'#1a365d', region:'ent',    logo: LOGOS.star,
       customSources: [
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=Rk9YSEQ=&lang=1', type: 'iframe' },
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=Rk9YSEQ=&lang=1', type: 'iframe' },
       ]},
-    { id:'comedy_central',  name:'Comedy Central',    icon:'CC', color:'#d69e2e', region:'arg',    logo: LOGOS.comedy,
+    { id:'comedy_central',  name:'Comedy Central',    icon:'CC', color:'#d69e2e', region:'ent',    logo: LOGOS.comedy,
       customSources: [
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=Q29tZWR5Q2VudHJhbA&lang=1', type: 'iframe' },
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=Q29tZWR5Q2VudHJhbA&lang=1', type: 'iframe' },
       ]},
-    // Argentina — Noticias
-    { id:'ln_plus',         name:'LN+',               icon:'LN', color:'#1a365d', region:'arg',    logo: LOGOS.ln,
+    // Entretenimiento — canales de cable internacionales
+    { id:'flow_music',      name:'Flow Music',        icon:'FM', color:'#553c9a', region:'ent',    logo: null,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Rmxvd19NdXNpY19YUA==&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Rmxvd19NdXNpY19YUA==&lang=1', type: 'iframe' },
+      ]},
+    { id:'adult_swim',      name:'Adult Swim',        icon:'AS', color:'#1a1a1a', region:'ent',    logo: LOGOS.adultswim,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=QWR1bHRfU3dpbQ==&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=QWR1bHRfU3dpbQ==&lang=1', type: 'iframe' },
+      ]},
+    { id:'hbo',             name:'HBO',               icon:'HB', color:'#1a1a1a', region:'ent',    logo: LOGOS.hbo,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=SEJPSEQ=&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=SEJPSEQ=&lang=1', type: 'iframe' },
+      ]},
+    { id:'sony_channel',    name:'Sony Channel',      icon:'SC', color:'#1a2744', region:'ent',    logo: LOGOS.sony,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=U29ueUhE&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=U29ueUhE&lang=1', type: 'iframe' },
+      ]},
+    { id:'axn',             name:'AXN',               icon:'AX', color:'#c53030', region:'ent',    logo: LOGOS.axn,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=QVhOSEQ=&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=QVhOSEQ=&lang=1', type: 'iframe' },
+      ]},
+    { id:'amc',             name:'AMC',               icon:'AM', color:'#1a1a1a', region:'ent',    logo: LOGOS.amc,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=QU1D&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=QU1D&lang=1', type: 'iframe' },
+      ]},
+    { id:'space',           name:'Space',             icon:'SP', color:'#1a365d', region:'ent',    logo: LOGOS.space,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=U3BhY2U=&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=U3BhY2U=&lang=1', type: 'iframe' },
+      ]},
+    { id:'cinemax',         name:'Cinemax',           icon:'CX', color:'#c53030', region:'ent',    logo: LOGOS.cinemax,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Q2luZW1heA==&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=Q2luZW1heA==&lang=1', type: 'iframe' },
+      ]},
+    { id:'fx',              name:'FX',                icon:'FX', color:'#1a1a1a', region:'ent',    logo: LOGOS.fx,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RlhIRA==&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RlhIRA==&lang=1', type: 'iframe' },
+      ]},
+    { id:'tnt_ent',         name:'TNT',               icon:'TT', color:'#c53030', region:'ent',    logo: LOGOS.tnt_ent,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=VE5UX0hEX0FyZw==&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=VE5UX0hEX0FyZw==&lang=1', type: 'iframe' },
+      ]},
+    { id:'history',         name:'History',           icon:'HI', color:'#744210', region:'ent',    logo: LOGOS.history,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=SGlzdG9yeUhE&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=SGlzdG9yeUhE&lang=1', type: 'iframe' },
+      ]},
+    { id:'disc_hyh',        name:'Discovery H&H',     icon:'DH', color:'#276749', region:'ent',    logo: LOGOS.dischyh,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RGlzY292ZXJ5SG9tZUhlYWx0aEhE&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RGlzY292ZXJ5SG9tZUhlYWx0aEhE&lang=1', type: 'iframe' },
+      ]},
+    { id:'discovery',       name:'Discovery Channel', icon:'DC', color:'#2b6cb0', region:'ent',    logo: LOGOS.discovery,
+      customSources: [
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RGlzY292ZXJ5SEQ=&lang=1', type: 'iframe' },
+        { url: 'https://pcn.nebunexa.life/cvatt.html?get=RGlzY292ZXJ5SEQ=&lang=1', type: 'iframe' },
+      ]},
+    // Noticias
+    { id:'ln_plus',         name:'LN+',               icon:'LN', color:'#1a365d', region:'ent',    logo: LOGOS.ln,
       customSources: [
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=TGFfTmFjaW9u&lang=1', type: 'iframe' },
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=TGFfTmFjaW9u&lang=1', type: 'iframe' },
       ]},
-    { id:'canal26',         name:'Canal 26',          icon:'26', color:'#c53030', region:'arg',    logo: LOGOS.canal26,
+    { id:'canal26',         name:'Canal 26',          icon:'26', color:'#c53030', region:'ent',    logo: LOGOS.canal26,
       customSources: [
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=MjZfVFZfSEQ&lang=1', type: 'iframe' },
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=MjZfVFZfSEQ&lang=1', type: 'iframe' },
       ]},
-    { id:'a24',             name:'A24',               icon:'A2', color:'#2b6cb0', region:'arg',    logo: LOGOS.a24,
+    { id:'a24',             name:'A24',               icon:'A2', color:'#2b6cb0', region:'ent',    logo: LOGOS.a24,
       customSources: [
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=QW1lcmljYTI0&lang=1', type: 'iframe' },
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=QW1lcmljYTI0&lang=1', type: 'iframe' },
       ]},
-    { id:'c5n',             name:'C5N',               icon:'C5', color:'#1a2744', region:'arg',    logo: LOGOS.c5n,
+    { id:'c5n',             name:'C5N',               icon:'C5', color:'#1a2744', region:'ent',    logo: LOGOS.c5n,
       customSources: [
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=QzVO&lang=1', type: 'iframe' },
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=QzVO&lang=1', type: 'iframe' },
       ]},
-    { id:'cronica_tv',      name:'Crónica TV',        icon:'CR', color:'#c53030', region:'arg',    logo: LOGOS.cronica,
+    { id:'cronica_tv',      name:'Crónica TV',        icon:'CR', color:'#c53030', region:'ent',    logo: LOGOS.cronica,
       customSources: [
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=Q3JvbmljYVRW&lang=1', type: 'iframe' },
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=Q3JvbmljYVRW&lang=1', type: 'iframe' },
       ]},
-    { id:'america_tv',      name:'América TV',        icon:'AM', color:'#744210', region:'arg',    logo: LOGOS.america,
+    { id:'america_tv',      name:'América TV',        icon:'AM', color:'#744210', region:'ent',    logo: LOGOS.america,
       customSources: [
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=QW1lcmljYVRW&lang=1', type: 'iframe' },
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=QW1lcmljYVRW&lang=1', type: 'iframe' },
       ]},
-    { id:'el_nueve',        name:'El Nueve',          icon:'N9', color:'#553c9a', region:'arg',    logo: LOGOS.nueve,
+    { id:'el_nueve',        name:'El Nueve',          icon:'N9', color:'#553c9a', region:'ent',    logo: LOGOS.nueve,
       customSources: [
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=Q2FuYWw5&lang=1', type: 'iframe' },
         { url: 'https://pcn.nebunexa.life/cvatt.html?get=Q2FuYWw5&lang=1', type: 'iframe' },
@@ -1938,18 +2006,6 @@
         { url: 'https://stream.ads.ottera.tv/playlist.m3u8?network_id=3010', type: 'hls' },
       ]
     },
-    { id:'telemundo_pr',    name:'Telemundo Puerto Rico', icon:'TM', color:'#c53030', region:'usa', logo: LOGOS.telemundo,
-      customSources: [
-        { url: 'https://nbculocallive.akamaized.net/hls/live/2037499/puertorico/stream1/master.m3u8', type: 'hls' },
-        { url: 'https://nbculocallive.akamaized.net/hls/live/2037499/puertorico/stream1/master.m3u8', type: 'hls' },
-      ]
-    },
-    { id:'fast_womens',     name:"Fast Studios Women's", icon:'FW', color:'#d53f8c', region:'int', logo: LOGOS.fastwomen,
-      customSources: [
-        { url: 'https://csm-e-eb.csm.tubi.video/csm/extlive/tubiprd01,Fast-Studios-Womens-Sports.m3u8', type: 'hls' },
-        { url: 'https://csm-e-eb.csm.tubi.video/csm/extlive/tubiprd01,Fast-Studios-Womens-Sports.m3u8', type: 'hls' },
-      ]
-    },
   ];
 
   let currentStream = null;
@@ -2021,7 +2077,7 @@
   }
 
   function buildGrids() {
-    const regions = ['all','arg','usa','mx','br','int','events'];
+    const regions = ['all','arg','usa','mx','br','int','events','ent'];
     regions.forEach(r => {
       const list = r === 'all' ? channels : channels.filter(c => c.region === r);
       document.getElementById('grid-' + r).innerHTML = list.map(buildChannelCard).join('');
