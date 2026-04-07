@@ -77,42 +77,42 @@ const channels = [
   { id:'espn',            name:'ESPN 1',            icon:'E1', color:'#e53e3e', region:'arg', logo: LOGOS.espn,
     customSources: [
       { url: 'https://streamtp10.com/global1.php?stream=espn', type: 'iframe' },
-      { url: 'https://pcn.nebunexa.life/cvatt.html?get=RVNQTjJIRA&lang=1', type: 'iframe' },
+      { url: 'https://embed.ksdjugfsddeports.com/embed/espn.html', type: 'iframe' },
     ]},
   { id:'espn2',           name:'ESPN 2',            icon:'E2', color:'#e53e3e', region:'arg', logo: LOGOS.espn,
     customSources: [
       { url: 'https://streamtp10.com/global1.php?stream=espn2', type: 'iframe' },
-      { url: 'https://pcn.nebunexa.life/cvatt.html?get=RVNQTjJfQXJn&lang=1', type: 'iframe' },
+      { url: 'https://embed.ksdjugfsddeports.com/embed/espn2.html', type: 'iframe' },
     ]},
   { id:'espn3',           name:'ESPN 3',            icon:'E3', color:'#e53e3e', region:'arg', logo: LOGOS.espn,
     customSources: [
       { url: 'https://streamtp10.com/global1.php?stream=espn3', type: 'iframe' },
-      { url: 'https://pcn.nebunexa.life/cvatt.html?get=RVNQTjM&lang=1', type: 'iframe' },
+      { url: 'https://embed.ksdjugfsddeports.com/embed/espn3.html', type: 'iframe' },
     ]},
   { id:'espn4',           name:'ESPN 4',            icon:'E4', color:'#e53e3e', region:'arg', logo: LOGOS.espn,
     customSources: [
       { url: 'https://streamtp10.com/global1.php?stream=espn4', type: 'iframe' },
-      { url: 'https://pcn.nebunexa.life/cvatt.html?get=RVNQTkhE&lang=1', type: 'iframe' },
+      { url: 'https://embed.ksdjugfsddeports.com/embed/espn4.html', type: 'iframe' },
     ]},
   { id:'espn5',           name:'ESPN 5',            icon:'E5', color:'#e53e3e', region:'arg', logo: LOGOS.espn,
     customSources: [
       { url: 'https://streamtp10.com/global1.php?stream=espn5', type: 'iframe' },
-      { url: 'https://pcn.nebunexa.life/cvatt.html?get=RVNQTjQ=&lang=1', type: 'iframe' },
+      { url: 'https://embed.ksdjugfsddeports.com/embed/espn5.html', type: 'iframe' },
     ]},
   { id:'espn6',           name:'ESPN 6',            icon:'E6', color:'#e53e3e', region:'arg', logo: LOGOS.espn,
     customSources: [
       { url: 'https://streamtp10.com/global1.php?stream=espn6', type: 'iframe' },
-      { url: 'https://pcn.nebunexa.life/cvatt.html?get=Rm94U3BvcnRzM19VWQ==&lang=1', type: 'iframe' },
+      { url: 'https://embed.ksdjugfsddeports.com/embed/espn6.html', type: 'iframe' },
     ]},
   { id:'espn7',           name:'ESPN 7',            icon:'E7', color:'#e53e3e', region:'arg', logo: LOGOS.espn,
     customSources: [
       { url: 'https://streamtp10.com/global1.php?stream=espn7', type: 'iframe' },
-      { url: 'https://pcn.nebunexa.life/cvatt.html?get=Rm94U3BvcnRzMl9VWQ==&lang=1', type: 'iframe' },
+      { url: 'https://embed.ksdjugfsddeports.com/embed/espn7.html', type: 'iframe' },
     ]},
   { id:'espnpremium',     name:'ESPN Premium',      icon:'EP', color:'#c53030', region:'arg', logo: LOGOS.espn,
     customSources: [
       { url: 'https://streamtp10.com/global1.php?stream=espnpremium', type: 'iframe' },
-      { url: 'https://pcn.nebunexa.life/cvatt.html?get=Rm94X1Nwb3J0c19QcmVtaXVuX0hE&lang=1', type: 'iframe' },
+      { url: 'https://embed.ksdjugfsddeports.com/embed/espnpremium.html', type: 'iframe' },
     ]},
   { id:'fox1ar',          name:'Fox Sports 1',      icon:'F1', color:'#2b6cb0', region:'arg', logo: LOGOS.fox },
   { id:'fox2ar',          name:'Fox Sports 2',      icon:'F2', color:'#2b6cb0', region:'arg', logo: LOGOS.fox },
@@ -127,12 +127,12 @@ const channels = [
   { id:'tntsports',       name:'TNT Sports AR',     icon:'TN', color:'#d69e2e', region:'arg', logo: LOGOS.tnt,
     customSources: [
       { url: 'https://streamtp10.com/global1.php?stream=tntsports', type: 'iframe' },
-      { url: 'https://pcn.nebunexa.life/cvatt.html?get=VE5UX1Nwb3J0c19IRA&lang=1', type: 'iframe' },
+      { url: 'https://embed.ksdjugfsddeports.com/embed/tntsports.html', type: 'iframe' },
     ]},
   { id:'tycsports',       name:'TyC Sports',        icon:'TY', color:'#2d6a4f', region:'arg', logo: LOGOS.tyc,
     customSources: [
       { url: 'https://streamtp10.com/global1.php?stream=tycsports', type: 'iframe' },
-      { url: 'https://pcn.nebunexa.life/cvatt.html?get=VHlDU3BvcnQ&lang=1', type: 'iframe' },
+      { url: 'https://embed.ksdjugfsddeports.com/embed/tycsports.html', type: 'iframe' },
     ]},
   { id:'tycinternacional', name:'TyC Internacional', icon:'TI', color:'#2d6a4f', region:'arg', logo: LOGOS.tyc,
     customSources: [
