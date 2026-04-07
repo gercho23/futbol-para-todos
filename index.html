@@ -431,6 +431,13 @@
     .load-more-wrap { text-align:center; padding:20px 0 8px; }
     .load-more-btn { background:transparent; border:1px solid var(--border); color:var(--text-muted); padding:10px 28px; border-radius:var(--radius); font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; }
     .load-more-btn:hover { border-color:var(--green); color:var(--green); }
+    @keyframes cardReveal {
+      from { opacity:0; filter:blur(10px); transform:translateY(6px); }
+      to   { opacity:1; filter:blur(0);   transform:translateY(0); }
+    }
+    .channel-card.revealing {
+      animation: cardReveal 0.45s ease both;
+    }
     .channel-card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -1785,7 +1792,7 @@
       </div>`;
   }
 
-  const GRID_PAGE_SIZE = 12;
+  const GRID_PAGE_SIZE = 14;
   const _gridShown = {};
 
   function buildGrids() {
@@ -1804,8 +1811,17 @@
     const list = r === 'all' ? channels : channels.filter(c => c.region === r);
     const prev = _gridShown[r] || GRID_PAGE_SIZE;
     const next = prev + GRID_PAGE_SIZE;
+    const grid = document.getElementById('grid-' + r);
     const newCards = list.slice(prev, next).map(buildChannelCard).join('');
-    document.getElementById('grid-' + r).insertAdjacentHTML('beforeend', newCards);
+    grid.insertAdjacentHTML('beforeend', newCards);
+    // Staggered blur-to-focus reveal on new cards
+    const allCards = grid.querySelectorAll('.channel-card');
+    const newOnes = Array.from(allCards).slice(prev);
+    newOnes.forEach((card, i) => {
+      card.classList.add('revealing');
+      card.style.animationDelay = (i * 40) + 'ms';
+      card.addEventListener('animationend', () => card.classList.remove('revealing'), { once: true });
+    });
     _gridShown[r] = next;
     const moreWrap = document.getElementById('more-' + r);
     if (moreWrap && next >= list.length) moreWrap.style.display = 'none';
