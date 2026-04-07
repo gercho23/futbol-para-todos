@@ -444,6 +444,20 @@
       gap: 6px;
     }
     .btn-sync:hover { background: rgba(250,204,21,0.25); }
+    .btn-pip {
+      background: rgba(99,102,241,0.15);
+      color: #a5b4fc;
+      border: 1px solid rgba(99,102,241,0.3);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      font-size: 13px; font-weight: 700;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+      white-space: nowrap;
+    }
+    .btn-pip:hover { background: rgba(99,102,241,0.25); }
+    .btn-pip.active { background: rgba(99,102,241,0.4); color: #c7d2fe; border-color: rgba(99,102,241,0.6); }
+    .btn-pip.pip-hidden { display: none; }
     /* ===== TABS ===== */
     .tabs-section {
       max-width: 1100px;
@@ -1285,6 +1299,14 @@
       display: none;
     }
     .agenda-match.live .agenda-match-live-dot { display: block; }
+    .agenda-match-live-label {
+      display: none;
+      font-size: 9px; font-weight: 800;
+      color: var(--red); letter-spacing: 0.8px;
+      text-transform: uppercase; white-space: nowrap;
+    }
+    .agenda-match.live .agenda-match-live-label { display: block; }
+    .agenda-match.live .agenda-match-time { color: var(--red); }
     .agenda-match-flag { font-size: 16px; flex-shrink: 0; }
     .agenda-match-title {
       flex: 1; font-size: 13px; font-weight: 700; line-height: 1.4;
@@ -1572,7 +1594,8 @@
       min-height: 48px;
     }
     body.tv-mode .btn-fullscreen,
-    body.tv-mode .btn-sync { font-size: 16px; padding: 10px 22px; }
+    body.tv-mode .btn-sync,
+    body.tv-mode .btn-pip { font-size: 16px; padding: 10px 22px; }
 
     /* Agenda */
     body.tv-mode #agenda-section { padding: 0 48px 40px; }
@@ -1769,6 +1792,7 @@
         <button class="ctrl-btn" id="src-4" onclick="switchSource('custom3')">4</button>
       </div>
       <div class="ctrl-divider"></div>
+      <button class="btn-pip pip-hidden" id="btn-pip" onclick="togglePiP()">⧉ Mini Player</button>
       <button class="btn-sync" onclick="syncLive()">⟳ Sincronizar</button>
       <button class="btn-fullscreen" onclick="goFullscreen()">⛶ Pantalla Completa</button>
     </div>
@@ -2489,6 +2513,52 @@
       showToast('⟳ Sincronizando con el vivo...');
     }
   }
+
+  // Show PiP button only if Document Picture-in-Picture API is available
+  if (window.documentPictureInPicture) {
+    document.getElementById('btn-pip').classList.remove('pip-hidden');
+  }
+
+  window._pipWindow = null;
+
+  async function togglePiP() {
+    if (!window.documentPictureInPicture) return;
+    const btn = document.getElementById('btn-pip');
+
+    if (window._pipWindow && !window._pipWindow.closed) {
+      window._pipWindow.close();
+      return;
+    }
+
+    const iframe = document.getElementById('stream-iframe');
+    if (!iframe || !iframe.src) { showToast('Primero abrí un canal'); return; }
+
+    try {
+      const pipWin = await window.documentPictureInPicture.requestWindow({ width: 480, height: 270 });
+
+      const s = pipWin.document.createElement('style');
+      s.textContent = 'body{margin:0;background:#000;overflow:hidden}iframe{width:100%;height:100%;border:none}';
+      pipWin.document.head.appendChild(s);
+
+      const pipIframe = pipWin.document.createElement('iframe');
+      pipIframe.src = iframe.src;
+      pipIframe.allowFullscreen = true;
+      pipIframe.setAttribute('allow', 'autoplay; fullscreen; encrypted-media');
+      pipWin.document.body.appendChild(pipIframe);
+
+      window._pipWindow = pipWin;
+      btn.classList.add('active');
+      showToast('📺 Mini Player activado');
+
+      pipWin.addEventListener('pagehide', () => {
+        window._pipWindow = null;
+        btn.classList.remove('active');
+      });
+    } catch(e) {
+      showToast('No se pudo abrir el Mini Player');
+    }
+  }
+  window.togglePiP = togglePiP;
 
   function goFullscreen() {
     const iframe = document.getElementById('stream-iframe');
@@ -3219,6 +3289,7 @@
               <div class="agenda-match-summary" onclick="window._agendaToggleMatch('${uid}')">
                 <div class="agenda-match-time">${matchTimeStr(m)}</div>
                 <div class="agenda-match-live-dot"></div>
+                <span class="agenda-match-live-label">EN VIVO</span>
                 <div class="agenda-match-flag">${flag}</div>
                 <div class="agenda-match-title">
                   <div>${matchTitle(m)}</div>
