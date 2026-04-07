@@ -438,6 +438,9 @@
     .channel-card.revealing {
       animation: cardReveal 0.45s ease both;
     }
+    /* Scroll-reveal: elements start invisible, JS adds .revealed */
+    .sr { opacity:0; filter:blur(8px); transform:translateY(8px); }
+    .sr.revealed { animation: cardReveal 0.5s ease both; }
     .channel-card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -3434,6 +3437,60 @@
       navigator.serviceWorker.register('/sw.js').catch(() => {});
     });
   }
+</script>
+
+<script>
+// ===== SCROLL REVEAL =====
+(function() {
+  const SELECTORS = [
+    '.featured-card',
+    '.faq-item',
+    '.agenda-match-row',
+  ];
+
+  function markElements() {
+    SELECTORS.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => {
+        if (!el.classList.contains('sr') && !el.classList.contains('revealed')) {
+          el.classList.add('sr');
+        }
+      });
+    });
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    // Group entries that become visible at the same time and stagger them
+    const visible = entries.filter(e => e.isIntersecting);
+    visible.forEach((entry, i) => {
+      const el = entry.target;
+      if (el.classList.contains('sr') && !el.classList.contains('revealed')) {
+        el.style.animationDelay = (i * 50) + 'ms';
+        el.classList.add('revealed');
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+
+  function observeElements() {
+    document.querySelectorAll('.sr:not(.revealed)').forEach(el => observer.observe(el));
+  }
+
+  // Initial mark + observe after DOM settles
+  function init() {
+    markElements();
+    observeElements();
+    // Re-run when agenda or standings inject new rows
+    const mo = new MutationObserver(() => {
+      markElements();
+      observeElements();
+    });
+    const targets = ['agenda-list', 'standings-body'].map(id => document.getElementById(id)).filter(Boolean);
+    targets.forEach(t => mo.observe(t, { childList: true, subtree: true }));
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
 </script>
 </body>
 </html>
