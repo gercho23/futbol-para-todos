@@ -444,20 +444,6 @@
       gap: 6px;
     }
     .btn-sync:hover { background: rgba(250,204,21,0.25); }
-    .btn-pip {
-      background: rgba(99,102,241,0.15);
-      color: #a5b4fc;
-      border: 1px solid rgba(99,102,241,0.3);
-      border-radius: var(--radius-sm);
-      padding: 8px 14px;
-      font-size: 13px; font-weight: 700;
-      cursor: pointer;
-      display: flex; align-items: center; gap: 6px;
-      white-space: nowrap;
-    }
-    .btn-pip:hover { background: rgba(99,102,241,0.25); }
-    .btn-pip.active { background: rgba(99,102,241,0.4); color: #c7d2fe; border-color: rgba(99,102,241,0.6); }
-    .btn-pip.pip-hidden { display: none; }
     /* ===== TABS ===== */
     .tabs-section {
       max-width: 1100px;
@@ -1495,7 +1481,7 @@
       .ctrl-group { padding: 4px 6px; }
       .ctrl-btn { padding: 7px 10px; font-size: 13px; min-height: 36px; }
       .ctrl-label { font-size: 10px; }
-      .btn-fullscreen, .btn-sync { padding: 8px 12px; font-size: 12px; }
+      .btn-fullscreen { padding: 8px 12px; font-size: 12px; }
       .player-topbar { padding: 8px 12px; }
 
       /* ── Agenda ── */
@@ -1593,9 +1579,7 @@
       min-width: 52px;
       min-height: 48px;
     }
-    body.tv-mode .btn-fullscreen,
-    body.tv-mode .btn-sync,
-    body.tv-mode .btn-pip { font-size: 16px; padding: 10px 22px; }
+    body.tv-mode .btn-fullscreen { font-size: 16px; padding: 10px 22px; }
 
     /* Agenda */
     body.tv-mode #agenda-section { padding: 0 48px 40px; }
@@ -1792,8 +1776,6 @@
         <button class="ctrl-btn" id="src-4" onclick="switchSource('custom3')">4</button>
       </div>
       <div class="ctrl-divider"></div>
-      <button class="btn-pip pip-hidden" id="btn-pip" onclick="togglePiP()">⧉ Mini Player</button>
-      <button class="btn-sync" onclick="syncLive()">⟳ Sincronizar</button>
       <button class="btn-fullscreen" onclick="goFullscreen()">⛶ Pantalla Completa</button>
     </div>
 
@@ -2502,63 +2484,7 @@
     if (currentStream) loadSource(getSource(currentStream, src));
   }
 
-  function syncLive() {
-    if (currentStream) {
-      const src = document.getElementById('stream-iframe').src;
-      // Reload iframe to sync with live
-      document.getElementById('stream-iframe').src = '';
-      setTimeout(() => {
-        loadSource(getSource(currentStream, currentSource));
-      }, 300);
-      showToast('⟳ Sincronizando con el vivo...');
-    }
-  }
 
-  // Show PiP button only if Document Picture-in-Picture API is available
-  if (window.documentPictureInPicture) {
-    document.getElementById('btn-pip').classList.remove('pip-hidden');
-  }
-
-  window._pipWindow = null;
-
-  async function togglePiP() {
-    if (!window.documentPictureInPicture) return;
-    const btn = document.getElementById('btn-pip');
-
-    if (window._pipWindow && !window._pipWindow.closed) {
-      window._pipWindow.close();
-      return;
-    }
-
-    const iframe = document.getElementById('stream-iframe');
-    if (!iframe || !iframe.src) { showToast('Primero abrí un canal'); return; }
-
-    try {
-      const pipWin = await window.documentPictureInPicture.requestWindow({ width: 480, height: 270 });
-
-      const s = pipWin.document.createElement('style');
-      s.textContent = 'body{margin:0;background:#000;overflow:hidden}iframe{width:100%;height:100%;border:none}';
-      pipWin.document.head.appendChild(s);
-
-      const pipIframe = pipWin.document.createElement('iframe');
-      pipIframe.src = iframe.src;
-      pipIframe.allowFullscreen = true;
-      pipIframe.setAttribute('allow', 'autoplay; fullscreen; encrypted-media');
-      pipWin.document.body.appendChild(pipIframe);
-
-      window._pipWindow = pipWin;
-      btn.classList.add('active');
-      showToast('📺 Mini Player activado');
-
-      pipWin.addEventListener('pagehide', () => {
-        window._pipWindow = null;
-        btn.classList.remove('active');
-      });
-    } catch(e) {
-      showToast('No se pudo abrir el Mini Player');
-    }
-  }
-  window.togglePiP = togglePiP;
 
   function goFullscreen() {
     const iframe = document.getElementById('stream-iframe');
