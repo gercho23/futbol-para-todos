@@ -428,6 +428,9 @@
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
       gap: 10px;
     }
+    .load-more-wrap { text-align:center; padding:20px 0 8px; }
+    .load-more-btn { background:transparent; border:1px solid var(--border); color:var(--text-muted); padding:10px 28px; border-radius:var(--radius); font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; }
+    .load-more-btn:hover { border-color:var(--green); color:var(--green); }
     .channel-card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -1410,34 +1413,42 @@
   <!-- Tab: ALL (search results + default grid) -->
   <div class="tab-content active" id="tab-all">
     <div class="channels-grid" id="grid-all"></div>
+    <div class="load-more-wrap" id="more-all"><button class="load-more-btn" onclick="loadMoreChannels('all')">Ver más canales</button></div>
   </div>
   <!-- Tab: Argentina -->
   <div class="tab-content" id="tab-arg">
     <div class="channels-grid" id="grid-arg"></div>
+    <div class="load-more-wrap" id="more-arg"><button class="load-more-btn" onclick="loadMoreChannels('arg')">Ver más canales</button></div>
   </div>
   <!-- Tab: USA -->
   <div class="tab-content" id="tab-usa">
     <div class="channels-grid" id="grid-usa"></div>
+    <div class="load-more-wrap" id="more-usa"><button class="load-more-btn" onclick="loadMoreChannels('usa')">Ver más canales</button></div>
   </div>
   <!-- Tab: Mexico -->
   <div class="tab-content" id="tab-mx">
     <div class="channels-grid" id="grid-mx"></div>
+    <div class="load-more-wrap" id="more-mx"><button class="load-more-btn" onclick="loadMoreChannels('mx')">Ver más canales</button></div>
   </div>
   <!-- Tab: Brasil -->
   <div class="tab-content" id="tab-br">
     <div class="channels-grid" id="grid-br"></div>
+    <div class="load-more-wrap" id="more-br"><button class="load-more-btn" onclick="loadMoreChannels('br')">Ver más canales</button></div>
   </div>
   <!-- Tab: Internacional -->
   <div class="tab-content" id="tab-int">
     <div class="channels-grid" id="grid-int"></div>
+    <div class="load-more-wrap" id="more-int"><button class="load-more-btn" onclick="loadMoreChannels('int')">Ver más canales</button></div>
   </div>
   <!-- Tab: Eventos -->
   <div class="tab-content" id="tab-events">
     <div class="channels-grid" id="grid-events"></div>
+    <div class="load-more-wrap" id="more-events"><button class="load-more-btn" onclick="loadMoreChannels('events')">Ver más canales</button></div>
   </div>
   <!-- Tab: Entretenimiento -->
   <div class="tab-content" id="tab-ent">
     <div class="channels-grid" id="grid-ent"></div>
+    <div class="load-more-wrap" id="more-ent"><button class="load-more-btn" onclick="loadMoreChannels('ent')">Ver más canales</button></div>
   </div>
 
 </div>
@@ -1774,12 +1785,30 @@
       </div>`;
   }
 
+  const GRID_PAGE_SIZE = 12;
+  const _gridShown = {};
+
   function buildGrids() {
     const regions = ['all','arg','usa','mx','br','int','events','ent'];
     regions.forEach(r => {
+      _gridShown[r] = GRID_PAGE_SIZE;
       const list = r === 'all' ? channels : channels.filter(c => c.region === r);
-      document.getElementById('grid-' + r).innerHTML = list.map(buildChannelCard).join('');
+      const slice = list.slice(0, GRID_PAGE_SIZE);
+      document.getElementById('grid-' + r).innerHTML = slice.map(buildChannelCard).join('');
+      const moreWrap = document.getElementById('more-' + r);
+      if (moreWrap) moreWrap.style.display = list.length > GRID_PAGE_SIZE ? '' : 'none';
     });
+  }
+
+  function loadMoreChannels(r) {
+    const list = r === 'all' ? channels : channels.filter(c => c.region === r);
+    const prev = _gridShown[r] || GRID_PAGE_SIZE;
+    const next = prev + GRID_PAGE_SIZE;
+    const newCards = list.slice(prev, next).map(buildChannelCard).join('');
+    document.getElementById('grid-' + r).insertAdjacentHTML('beforeend', newCards);
+    _gridShown[r] = next;
+    const moreWrap = document.getElementById('more-' + r);
+    if (moreWrap && next >= list.length) moreWrap.style.display = 'none';
   }
 
   buildGrids();
@@ -1802,7 +1831,16 @@
     document.querySelectorAll('.tab-content').forEach((t,i) => t.classList.toggle('active', i===0));
 
     const filtered = q ? channels.filter(c => c.name.toLowerCase().includes(q)) : channels;
-    document.getElementById('grid-all').innerHTML = filtered.map(buildChannelCard).join('');
+    if (q) {
+      document.getElementById('grid-all').innerHTML = filtered.map(buildChannelCard).join('');
+      const moreWrap = document.getElementById('more-all');
+      if (moreWrap) moreWrap.style.display = 'none';
+    } else {
+      _gridShown['all'] = GRID_PAGE_SIZE;
+      document.getElementById('grid-all').innerHTML = filtered.slice(0, GRID_PAGE_SIZE).map(buildChannelCard).join('');
+      const moreWrap = document.getElementById('more-all');
+      if (moreWrap) moreWrap.style.display = filtered.length > GRID_PAGE_SIZE ? '' : 'none';
+    }
   }
 
   let hlsInstance = null;
