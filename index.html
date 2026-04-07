@@ -1485,6 +1485,138 @@
       footer { padding: 28px 16px 36px; font-size: 12px; }
     }
 
+    /* =============================================
+       TV MODE (Android TV / SmartTV)
+       Activated via body.tv-mode (auto-detect UA or ?tv=1)
+       ============================================= */
+    body.tv-mode {
+      cursor: none;
+      font-size: 18px;
+    }
+    /* Global focus ring for D-pad nav */
+    body.tv-mode *:focus {
+      outline: 4px solid var(--green) !important;
+      outline-offset: 3px !important;
+    }
+    body.tv-mode *:focus:not(:focus-visible) { outline: none !important; }
+    body.tv-mode *:focus-visible {
+      outline: 4px solid var(--green) !important;
+      outline-offset: 3px !important;
+    }
+
+    /* Header */
+    body.tv-mode header {
+      height: 76px;
+      padding: 0 48px;
+      gap: 40px;
+    }
+    body.tv-mode .logo { font-size: 26px; gap: 14px; }
+    body.tv-mode .logo-ball { width: 40px; height: 40px; font-size: 22px; }
+    body.tv-mode .nav-link {
+      font-size: 17px;
+      padding: 12px 20px;
+    }
+    body.tv-mode .next-match { height: 56px; padding: 0 20px; }
+    body.tv-mode .next-match-teams { font-size: 16px; }
+    body.tv-mode .next-match-countdown { font-size: 16px; }
+
+    /* Hero */
+    body.tv-mode .hero { padding: 64px 48px 48px; }
+    body.tv-mode .hero h1 { font-size: clamp(48px, 5vw, 72px); }
+    body.tv-mode .hero p { font-size: 20px; }
+
+    /* Player */
+    body.tv-mode #player-section { padding: 0 48px 40px; }
+    body.tv-mode .player-topbar { padding: 14px 20px; }
+    body.tv-mode .player-title { font-size: 20px; }
+    body.tv-mode .player-controls { padding: 14px 20px; gap: 14px; }
+    body.tv-mode .ctrl-label { font-size: 14px; }
+    body.tv-mode .ctrl-btn {
+      font-size: 17px;
+      padding: 10px 18px;
+      min-width: 52px;
+      min-height: 48px;
+    }
+    body.tv-mode .btn-fullscreen,
+    body.tv-mode .btn-sync { font-size: 16px; padding: 10px 22px; }
+
+    /* Agenda */
+    body.tv-mode #agenda-section { padding: 0 48px 40px; }
+    body.tv-mode .agenda-section-title { font-size: 22px; }
+    body.tv-mode .agenda-match-summary { padding: 16px 20px; gap: 16px; }
+    body.tv-mode .agenda-match-time { font-size: 16px; min-width: 60px; }
+    body.tv-mode .agenda-match-title { font-size: 17px; }
+    body.tv-mode .agenda-match-score { font-size: 17px; padding: 4px 12px; }
+
+    /* Featured channels */
+    body.tv-mode .featured-section { padding: 0 48px 40px; }
+    body.tv-mode .featured-title { font-size: 22px; }
+    body.tv-mode .featured-card { padding: 28px 20px; }
+    body.tv-mode .featured-name { font-size: 20px; }
+    body.tv-mode .featured-desc { font-size: 14px; }
+    body.tv-mode .featured-card:focus {
+      transform: scale(1.04);
+      border-color: var(--green);
+      box-shadow: 0 0 0 4px rgba(34,197,94,0.3);
+    }
+
+    /* Tabs / Channels */
+    body.tv-mode .tabs-section { padding: 0 48px 40px; }
+    body.tv-mode .tab-btn { font-size: 16px; padding: 14px 24px; }
+    body.tv-mode .channel-card {
+      padding: 24px 16px;
+      min-height: 110px;
+    }
+    body.tv-mode .channel-card:focus {
+      transform: scale(1.06);
+      border-color: var(--green);
+      box-shadow: 0 0 0 4px rgba(34,197,94,0.3);
+      z-index: 2;
+    }
+    body.tv-mode .channel-logo { width: 60px; height: 60px; }
+    body.tv-mode .channel-name { font-size: 14px; margin-top: 10px; }
+    body.tv-mode .load-more-btn { font-size: 16px; padding: 16px 40px; }
+
+    /* Standings */
+    body.tv-mode .standings-section { padding: 40px 48px; }
+    body.tv-mode .standings-title { font-size: 26px; }
+    body.tv-mode .standings-tab { font-size: 15px; padding: 10px 20px; }
+    body.tv-mode .standings-table { font-size: 16px; }
+    body.tv-mode .standings-table th,
+    body.tv-mode .standings-table td { padding: 10px 12px; }
+
+    /* FAQ */
+    body.tv-mode .faq-section { padding: 0 48px 48px; }
+    body.tv-mode .faq-question { font-size: 18px; padding: 20px 18px; }
+    body.tv-mode .faq-answer p { font-size: 16px; }
+
+    /* Scroll-to-top & popup */
+    body.tv-mode #scroll-top { display: none; }
+    body.tv-mode #fav-next-card { bottom: 40px; right: 40px; width: 360px; }
+    body.tv-mode .fnc { padding: 20px 22px; gap: 14px; }
+    body.tv-mode .fnc-team-name { font-size: 17px; }
+    body.tv-mode .fnc-time { font-size: 15px; }
+
+    /* Footer */
+    body.tv-mode footer { font-size: 16px; padding: 48px 48px 56px; }
+
+    /* TV mode indicator badge */
+    #tv-badge {
+      display: none;
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      z-index: 300;
+      background: var(--green);
+      color: #000;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+    body.tv-mode #tv-badge { display: block; }
+
   </style>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
 </head>
@@ -1494,6 +1626,9 @@
 <canvas id="bg-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
 <!-- CURSOR GLOW -->
 <div id="cursor-glow" style="position:fixed;pointer-events:none;z-index:1;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(34,197,94,0.07) 0%,transparent 70%);transform:translate(-50%,-50%);transition:opacity 0.3s;opacity:0;"></div>
+
+<!-- TV MODE BADGE -->
+<div id="tv-badge">📺 Modo TV</div>
 
 <!-- SCROLL TO TOP -->
 <button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">
@@ -2064,7 +2199,9 @@
       : '';
     const fallbackDisplay = ch.logo ? '' : 'display:flex';
     return `
-      <div class="channel-card" id="card-${ch.id}" onclick="playChannel('${ch.id}', '${ch.name}')">
+      <div class="channel-card" id="card-${ch.id}" tabindex="0"
+           onclick="playChannel('${ch.id}', '${ch.name}')"
+           onkeydown="if(event.key==='Enter'||event.key===' ')playChannel('${ch.id}', '${ch.name}')">
         <div class="channel-icon">
           ${imgTag}
           <span class="icon-fallback" style="color:${ch.color};${fallbackDisplay}">${ch.icon}</span>
@@ -3905,6 +4042,94 @@
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
+})();
+
+// =============================================
+// TV MODE
+// Activates body.tv-mode via UA detection or ?tv=1
+// =============================================
+(function() {
+  const ua = navigator.userAgent.toLowerCase();
+  const tvKeywords = [
+    'android tv', 'androidtv', 'smart-tv', 'smarttv', 'googletv',
+    'bravia', 'hbbtv', 'netcast', 'viera', 'philipstv', 'tizen',
+    'webos', 'crkey', 'chromecast', 'firetv', 'fire tv'
+  ];
+  const forcedByParam = new URLSearchParams(location.search).get('tv') === '1';
+  const isTV = forcedByParam || tvKeywords.some(k => ua.includes(k));
+  if (!isTV) return;
+
+  document.body.classList.add('tv-mode');
+
+  // ---- D-pad / keyboard navigation ----
+  document.addEventListener('keydown', function(e) {
+    const key = e.key;
+    if (!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter',' ','Escape','Back','GoBack'].includes(key)) return;
+
+    const focused = document.activeElement;
+
+    // Escape / Back: close player or drawer
+    if (key === 'Escape' || key === 'Back' || key === 'GoBack') {
+      const playerSection = document.getElementById('player-section');
+      if (playerSection && playerSection.style.display !== 'none' && playerSection.style.display !== '') {
+        if (typeof closePlayer === 'function') closePlayer();
+        return;
+      }
+      if (typeof closeMenu === 'function') closeMenu();
+      return;
+    }
+
+    // Arrow navigation between focusable elements in the visible grid
+    if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(key)) {
+      e.preventDefault();
+
+      // Build ordered list of all focusable channel cards + nav links + tab buttons currently visible
+      const focusable = Array.from(document.querySelectorAll(
+        'button:not([disabled]), .channel-card, .featured-card, .nav-link, .drawer-link, .tab-btn, .ctrl-btn, .load-more-btn'
+      )).filter(el => {
+        const rect = el.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0 && !el.closest('[style*="display: none"]') && !el.closest('[style*="display:none"]');
+      });
+
+      if (!focusable.length) return;
+
+      const idx = focusable.indexOf(focused);
+
+      // For channel cards, try to navigate in grid direction
+      if (focused && focused.classList.contains('channel-card')) {
+        const cards = focusable.filter(el => el.classList.contains('channel-card'));
+        const ci = cards.indexOf(focused);
+        if (ci >= 0) {
+          // Estimate columns from card widths
+          const rect0 = cards[0].getBoundingClientRect();
+          const cols = Math.max(1, Math.round(cards[0].parentElement.getBoundingClientRect().width / rect0.width));
+
+          let next = null;
+          if (key === 'ArrowRight') next = cards[ci + 1] || null;
+          else if (key === 'ArrowLeft') next = cards[ci - 1] || null;
+          else if (key === 'ArrowDown') next = cards[ci + cols] || null;
+          else if (key === 'ArrowUp') next = cards[ci - cols] || null;
+
+          if (next) { next.focus(); next.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
+        }
+      }
+
+      // Fallback: linear prev/next
+      let next = null;
+      if (key === 'ArrowDown' || key === 'ArrowRight') next = focusable[idx + 1] || focusable[0];
+      else next = focusable[idx - 1] || focusable[focusable.length - 1];
+
+      if (next) { next.focus(); next.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+    }
+  });
+
+  // On load, focus the first channel card so D-pad works immediately
+  function focusFirstCard() {
+    const first = document.querySelector('.channel-card');
+    if (first) first.focus();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', focusFirstCard);
+  else setTimeout(focusFirstCard, 600); // wait for grids to render
 })();
 </script>
 </body>
