@@ -115,8 +115,8 @@
       color: var(--green);
       background: var(--green-glow);
     }
-    /* Hide old drawer elements */
-    .nav-overlay, .nav-drawer { display: none !important; }
+    /* Drawer hidden on desktop, shown via media query on mobile */
+    #nav-overlay, #nav-drawer { display: none; }
     .logo {
       display: flex;
       align-items: center;
@@ -1336,6 +1336,154 @@
       transform: translateY(-2px);
     }
     #scroll-top svg { display: block; }
+
+    /* =============================================
+       MOBILE STYLES (max-width: 768px)
+       ============================================= */
+    @media (max-width: 768px) {
+
+      /* ── Header ── */
+      header {
+        padding: 0 16px;
+        gap: 0;
+        height: 56px;
+        justify-content: space-between;
+      }
+      .nav-links { display: none; }
+      .next-match { display: none; }
+      .logo { font-size: 17px; gap: 8px; }
+      .logo-ball { width: 28px; height: 28px; font-size: 16px; }
+
+      /* ── Hamburger button ── */
+      #hamburger {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 10px 8px;
+        border-radius: 8px;
+        width: 44px;
+        height: 44px;
+        flex-shrink: 0;
+      }
+      #hamburger span {
+        display: block;
+        width: 22px;
+        height: 2px;
+        background: var(--text);
+        border-radius: 2px;
+        transition: transform 0.25s, opacity 0.25s;
+        transform-origin: center;
+      }
+      #hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+      #hamburger.open span:nth-child(2) { opacity: 0; }
+      #hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+      /* ── Nav overlay ── */
+      #nav-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 98;
+        background: rgba(0,0,0,0.55);
+      }
+      #nav-overlay.open { display: block; }
+
+      /* ── Nav drawer ── */
+      #nav-drawer {
+        position: fixed;
+        top: 56px;
+        right: 0;
+        bottom: 0;
+        width: 260px;
+        z-index: 99;
+        background: var(--surface);
+        border-left: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        padding: 12px 0;
+        transform: translateX(100%);
+        transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+      }
+      #nav-drawer.open { transform: translateX(0); }
+      .drawer-link {
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        font-size: 15px;
+        font-weight: 600;
+        text-align: left;
+        padding: 14px 24px;
+        cursor: pointer;
+        transition: color 0.15s, background 0.15s;
+        border-radius: 0;
+      }
+      .drawer-link:hover, .drawer-link:active { color: var(--green); background: var(--green-glow); }
+
+      /* ── Hero ── */
+      .hero { padding: 36px 20px 28px; }
+      .hero h1 { font-size: clamp(26px, 8vw, 40px); letter-spacing: -1px; }
+      .hero p { font-size: 14px; }
+
+      /* ── Player ── */
+      #player-section { padding: 0 12px 24px; }
+      .player-controls { gap: 6px; padding: 10px 10px; }
+      .ctrl-group { padding: 4px 6px; }
+      .ctrl-btn { padding: 7px 10px; font-size: 13px; min-height: 36px; }
+      .ctrl-label { font-size: 10px; }
+      .btn-fullscreen, .btn-sync { padding: 8px 12px; font-size: 12px; }
+      .player-topbar { padding: 8px 12px; }
+
+      /* ── Agenda ── */
+      #agenda-section { padding: 0 12px 24px; }
+      .agenda-match-summary { padding: 12px 12px; gap: 10px; }
+      .agenda-match-time { font-size: 12px; min-width: 44px; }
+      .agenda-match-title { font-size: 13px; }
+      .agenda-match-score { font-size: 13px; padding: 2px 6px; }
+
+      /* ── Featured channels ── */
+      .featured-section { padding: 0 12px 24px; }
+      .featured-grid { gap: 10px; }
+
+      /* ── Tabs / Channels ── */
+      .tabs-section { padding: 0 12px 24px; }
+      .tab-btn { padding: 10px 14px; font-size: 12px; }
+      .channels-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
+      .channel-card { padding: 14px 10px; }
+      .channel-name { font-size: 11px; }
+      .load-more-btn { padding: 12px 24px; }
+
+      /* ── Standings ── */
+      .standings-section { padding: 24px 12px; }
+      .standings-title { font-size: 18px; }
+      .standings-tab { padding: 7px 12px; font-size: 11px; }
+      .standings-body { overflow-x: auto; }
+      .standings-table { font-size: 12px; min-width: 480px; }
+      .standings-table th, .standings-table td { padding: 6px 5px; }
+      .standings-table td:nth-child(3) { min-width: 110px; }
+
+      /* ── FAQ ── */
+      .faq-section { padding: 0 12px 32px; }
+      .faq-question { font-size: 14px; padding: 16px 14px; }
+      .faq-answer p { font-size: 13px; }
+
+      /* ── Popup next match ── */
+      #fav-next-card { bottom: 80px; right: 12px; width: calc(100vw - 24px); max-width: 340px; }
+
+      /* ── Scroll to top btn ── */
+      #scroll-top { bottom: 24px; right: 12px; width: 40px; height: 40px; }
+
+      /* ── Footer ── */
+      footer { padding: 28px 16px 36px; font-size: 12px; }
+    }
+
+    /* Hide desktop-only hamburger placeholder */
+    #hamburger { display: none; }
+    #nav-overlay { display: none; }
+    #nav-drawer { display: none; }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
 </head>
@@ -1375,7 +1523,23 @@
     <div class="next-match-divider"></div>
     <div class="next-match-countdown" id="header-countdown">--d --h</div>
   </div>
+  <!-- Hamburger (mobile only) -->
+  <button id="hamburger" onclick="toggleMenu()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
 </header>
+
+<!-- Nav drawer + overlay (mobile only) -->
+<div id="nav-overlay" onclick="closeMenu()"></div>
+<nav id="nav-drawer">
+  <button class="drawer-link" onclick="scrollToSection('inicio');closeMenu()">🏠 Inicio</button>
+  <button class="drawer-link" onclick="scrollToSection('agenda-section');closeMenu()">📅 Agenda de partidos</button>
+  <button class="drawer-link" onclick="scrollToSection('featured-section');closeMenu()">⭐ Canales principales</button>
+  <button class="drawer-link" onclick="scrollToSection('tabs-section-anchor');closeMenu()">🔍 Buscar canales</button>
+  <button class="drawer-link" onclick="scrollToSection('standings-section');closeMenu()">📊 Tablas</button>
+  <button class="drawer-link" onclick="scrollToSection('faq-section');closeMenu()">❓ Preguntas frecuentes</button>
+  <button class="drawer-link" onclick="showArgPage();closeMenu()">🇦🇷 Selección Argentina</button>
+</nav>
 
 <!-- HERO -->
 <div class="hero" id="inicio">
