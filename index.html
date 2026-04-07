@@ -374,6 +374,39 @@
       transition: opacity 0.3s;
     }
     .popup-blocked-toast.show { opacity: 1; }
+
+    /* ===== STREAM ERROR OVERLAY ===== */
+    .stream-error {
+      display: none;
+      position: absolute;
+      inset: 0;
+      z-index: 12;
+      background: rgba(10,14,10,0.93);
+      backdrop-filter: blur(6px);
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 10px;
+      text-align: center;
+      padding: 24px;
+    }
+    .stream-error.visible { display: flex; }
+    .stream-error-icon { font-size: 44px; opacity: 0.5; margin-bottom: 4px; }
+    .stream-error-title { font-size: 18px; font-weight: 800; color: var(--text); }
+    .stream-error-msg { font-size: 13px; color: var(--text-muted); line-height: 1.6; max-width: 320px; }
+    .stream-error-btns { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; justify-content: center; }
+    .stream-error-next {
+      background: var(--green); color: #000;
+      border: none; border-radius: var(--radius-sm);
+      padding: 10px 22px; font-weight: 700; font-size: 14px; cursor: pointer;
+    }
+    .stream-error-next:hover { background: var(--green-dark); }
+    .stream-error-dismiss {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--text-muted); border-radius: var(--radius-sm);
+      padding: 10px 16px; font-size: 14px; cursor: pointer;
+    }
+    .stream-error-dismiss:hover { border-color: var(--text-muted); color: var(--text); }
     .player-controls {
       background: var(--card);
       border-top: 1px solid var(--border);
@@ -1750,6 +1783,15 @@
       <!-- Anti-popup shield: absorbs the first click on the iframe -->
       <div class="popup-shield armed" id="popup-shield" onclick="disarmShield(event)"></div>
       <div class="popup-blocked-toast" id="popup-toast">🛡️ Clic registrado — reproduciendo sin popup</div>
+      <div class="stream-error" id="stream-error">
+        <div class="stream-error-icon">📡</div>
+        <div class="stream-error-title">Canal no disponible</div>
+        <p class="stream-error-msg">Esta fuente no está respondiendo.<br>Probá con otra o volvé más tarde.</p>
+        <div class="stream-error-btns">
+          <button class="stream-error-next" onclick="tryNextSource()">Probar otra fuente →</button>
+          <button class="stream-error-dismiss" onclick="hideStreamError()">Ignorar</button>
+        </div>
+      </div>
       <iframe
         id="stream-iframe"
         src=""
@@ -2397,6 +2439,42 @@
     if (shield) { shield.classList.add('armed'); shield.classList.remove('disarmed'); }
   }
 
+  // ===== STREAM ERROR DETECTION =====
+  const ERROR_TIMEOUT_MS = 12000;
+  const SOURCE_ORDER = ['global1', 'global2', 'skylive', 'custom3'];
+  let _errorTimer = null;
+
+  function startErrorTimer() {
+    clearErrorTimer();
+    hideStreamError();
+    _errorTimer = setTimeout(showStreamError, ERROR_TIMEOUT_MS);
+  }
+  function clearErrorTimer() {
+    if (_errorTimer) { clearTimeout(_errorTimer); _errorTimer = null; }
+  }
+  function showStreamError() {
+    clearErrorTimer();
+    document.getElementById('stream-error').classList.add('visible');
+  }
+  function hideStreamError() {
+    document.getElementById('stream-error').classList.remove('visible');
+  }
+  function tryNextSource() {
+    hideStreamError();
+    const idx = SOURCE_ORDER.indexOf(currentSource);
+    const next = SOURCE_ORDER[(idx + 1) % SOURCE_ORDER.length];
+    switchSource(next);
+  }
+  window.hideStreamError = hideStreamError;
+  window.tryNextSource   = tryNextSource;
+
+  // Cancel error timer when iframe loads or user interacts with it
+  document.getElementById('stream-iframe').addEventListener('load', function() {
+    // onload fires even for blocked/error pages, but at least the network responded
+    if (this.src) clearErrorTimer();
+  });
+  document.getElementById('stream-iframe').addEventListener('focus', clearErrorTimer);
+
   function loadSource(source) {
     rearmShield();
     window._playerActive = true;
@@ -2412,15 +2490,18 @@
       iframe.src = '';
       video.style.display = 'block';
       if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+      startErrorTimer();
       if (Hls.isSupported()) {
         hlsInstance = new Hls({ liveSyncDurationCount: 3 });
         hlsInstance.loadSource(source.url);
         hlsInstance.attachMedia(video);
-        hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(() => {}));
+        hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => { clearErrorTimer(); video.play().catch(() => {}); });
+        hlsInstance.on(Hls.Events.ERROR, (_, data) => { if (data.fatal) showStreamError(); });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
         // Safari native HLS
         video.src = source.url;
         video.play().catch(() => {});
+        video.addEventListener('canplay', clearErrorTimer, { once: true });
       }
     } else {
       video.style.display = 'none';
@@ -2428,6 +2509,7 @@
       if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
       iframe.style.display = 'block';
       iframe.src = source.url;
+      startErrorTimer();
     }
   }
 
@@ -2460,6 +2542,8 @@
 
   function closePlayer() {
     window._playerActive = false;
+    clearErrorTimer();
+    hideStreamError();
     rearmShield();
     document.getElementById('player-section').classList.remove('visible');
     document.getElementById('stream-iframe').src = '';
