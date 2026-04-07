@@ -1,7 +1,7 @@
-const CACHE_NAME = 'fpt-v1';
+const CACHE_NAME = 'fpt-v2';
 
 // Archivos que NUNCA se cachean — siempre frescos desde red
-const NO_CACHE = ['/sw.js', '/channels.js', '/index.html', '/'];
+const NO_CACHE = ['/sw.js', '/channels.js', '/index.html', '/', '/icon-192.svg', '/icon-512.svg'];
 
 self.addEventListener('install', e => {
   // Activa el nuevo SW inmediatamente sin esperar que se cierren tabs
