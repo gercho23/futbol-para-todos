@@ -1596,6 +1596,7 @@
         <button class="ctrl-btn active" id="src-1" onclick="switchSource('global1')">1</button>
         <button class="ctrl-btn" id="src-2" onclick="switchSource('global2')">2</button>
         <button class="ctrl-btn" id="src-3" onclick="switchSource('skylive')">3</button>
+        <button class="ctrl-btn" id="src-4" onclick="switchSource('custom3')">4</button>
       </div>
       <div class="ctrl-divider"></div>
       <button class="btn-sync" onclick="syncLive()">⟳ Sincronizar</button>
@@ -2160,7 +2161,9 @@
     }
     const ch = channels.find(c => c.id === streamId);
     if (ch && ch.customSources) {
-      return sourceKey === 'global1' ? ch.customSources[0] : ch.customSources[1];
+      if (sourceKey === 'global1') return ch.customSources[0];
+      if (sourceKey === 'global2') return ch.customSources[1];
+      if (sourceKey === 'custom3') return ch.customSources[2] || ch.customSources[0];
     }
     return { url: `${BASE_URL}${sourceKey}.php?stream=${streamId}`, type: 'iframe' };
   }
@@ -2299,6 +2302,7 @@
     document.getElementById('src-1').classList.toggle('active', src === 'global1');
     document.getElementById('src-2').classList.toggle('active', src === 'global2');
     document.getElementById('src-3').classList.toggle('active', src === 'skylive');
+    document.getElementById('src-4').classList.toggle('active', src === 'custom3');
     if (currentStream) loadSource(getSource(currentStream, src));
   }
 
