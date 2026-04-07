@@ -1337,6 +1337,11 @@
     }
     #scroll-top svg { display: block; }
 
+    /* Hidden on desktop, shown via media query on mobile */
+    #hamburger { display: none; }
+    #nav-overlay { display: none; }
+    #nav-drawer { display: none; }
+
     /* =============================================
        MOBILE STYLES (max-width: 768px)
        ============================================= */
@@ -1480,10 +1485,6 @@
       footer { padding: 28px 16px 36px; font-size: 12px; }
     }
 
-    /* Hide desktop-only hamburger placeholder */
-    #hamburger { display: none; }
-    #nav-overlay { display: none; }
-    #nav-drawer { display: none; }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
 </head>
