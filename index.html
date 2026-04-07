@@ -1077,6 +1077,73 @@
       .cd-unit { min-width: 48px; padding: 8px 10px; }
     }
     /* ===== AGENDA DE PARTIDOS ===== */
+    /* ===== FAV NEXT MATCH CARD ===== */
+    #fav-next-card {
+      max-width: 1100px;
+      margin: 0 auto 8px;
+      padding: 0 24px;
+      position: relative;
+      z-index: 2;
+    }
+    .fnc {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      animation: cardReveal 0.5s ease both;
+    }
+    .fnc-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+    .fnc-teams {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+    }
+    .fnc-team {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+    .fnc-logo { width: 28px; height: 28px; object-fit: contain; flex-shrink: 0; }
+    .fnc-team-name { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .fnc-vs { font-size: 12px; color: var(--text-muted); font-weight: 600; flex-shrink: 0; }
+    .fnc-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+    .fnc-comp { font-size: 11px; color: var(--text-muted); }
+    .fnc-time { font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap; }
+    .fnc-countdown { color: var(--green); }
+    .fnc-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--red);
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 20px;
+      padding: 3px 10px;
+    }
+    .fnc-live::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--red); animation:livePulse 1.2s ease-in-out infinite; }
+    /* ===== END FAV NEXT MATCH CARD ===== */
     .agenda-section {
       max-width: 1100px;
       margin: 0 auto;
@@ -1354,6 +1421,9 @@
 
   </div>
 </div>
+
+<!-- FAV NEXT MATCH CARD -->
+<div id="fav-next-card" style="display:none" data-active="0"></div>
 
 <!-- AGENDA DE PARTIDOS -->
 <div class="agenda-section" id="agenda-section">
@@ -2142,6 +2212,7 @@
   // ===== ARGENTINA PAGE =====
   function showArgPage() {
     document.querySelector('.hero').style.display = 'none';
+    document.getElementById('fav-next-card').style.display = 'none';
     document.getElementById('player-section').style.display = 'none';
     document.querySelector('.tabs-section').style.display = 'none';
     document.querySelector('footer').style.display = 'none';
@@ -2161,6 +2232,8 @@
 
   function closeArgPage() {
     document.querySelector('.hero').style.display = '';
+    const fnc = document.getElementById('fav-next-card');
+    if (fnc && fnc.dataset.active === '1') fnc.style.display = '';
     document.getElementById('player-section').style.display = '';
     document.querySelector('.tabs-section').style.display = '';
     document.querySelector('footer').style.display = '';
@@ -3240,6 +3313,146 @@
 
 </script>
 <script>
+// ===== PRÓXIMO PARTIDO DEL CLUB FAVORITO =====
+(function() {
+  const COMPS = [
+    { slug:'arg.1',                 name:'Liga Profesional', flag:'🇦🇷' },
+    { slug:'conmebol.libertadores', name:'Copa Libertadores', flag:'🏆' },
+    { slug:'conmebol.sudamericana', name:'Copa Sudamericana', flag:'🏅' },
+    { slug:'uefa.champions',        name:'Champions League',  flag:'🏆' },
+    { slug:'eng.1',                 name:'Premier League',    flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+    { slug:'esp.1',                 name:'La Liga',           flag:'🇪🇸' },
+    { slug:'ita.1',                 name:'Serie A',           flag:'🇮🇹' },
+    { slug:'ger.1',                 name:'Bundesliga',        flag:'🇩🇪' },
+  ];
+
+  function argDateStr(offsetDays) {
+    const d = new Date(Date.now() + (offsetDays * 86400 - 3 * 3600) * 1000);
+    return d.toISOString().slice(0, 10).replace(/-/g, '');
+  }
+
+  function toArgTime(isoStr) {
+    // Returns { h, m, label } in UTC-3
+    const d = new Date(isoStr);
+    const arg = new Date(d.getTime() - 3 * 3600 * 1000);
+    const h = arg.getUTCHours().toString().padStart(2, '0');
+    const m = arg.getUTCMinutes().toString().padStart(2, '0');
+    return { h, m, label: `${h}:${m}`, ts: d.getTime() };
+  }
+
+  async function fetchEvents(slug, dateStr) {
+    const url = `https://site.api.espn.com/apis/site/v2/sports/soccer/${slug}/scoreboard?dates=${dateStr}`;
+    const data = await fetch(url).then(r => r.ok ? r.json() : null).catch(() => null);
+    return data?.events || [];
+  }
+
+  async function findNext(clubName) {
+    const q = clubName.toLowerCase();
+    for (let day = 0; day <= 3; day++) {
+      const dateStr = argDateStr(day);
+      const results = await Promise.all(COMPS.map(c =>
+        fetchEvents(c.slug, dateStr).then(evs => ({ comp: c, evs }))
+      ));
+      for (const { comp, evs } of results) {
+        for (const ev of evs) {
+          const state = ev.status?.type?.state;
+          if (state === 'post') continue; // finished
+          const competitors = ev.competitions?.[0]?.competitors || [];
+          const myTeam = competitors.find(t =>
+            (t.team?.displayName || '').toLowerCase().includes(q) ||
+            (t.team?.shortDisplayName || '').toLowerCase().includes(q) ||
+            (t.team?.name || '').toLowerCase().includes(q)
+          );
+          if (!myTeam) continue;
+          const rival = competitors.find(t => t.team?.id !== myTeam.team?.id);
+          return { ev, comp, myTeam, rival, day, state };
+        }
+      }
+    }
+    return null;
+  }
+
+  let _countdownTimer = null;
+
+  function renderCard(match) {
+    const card = document.getElementById('fav-next-card');
+    if (!card) return;
+
+    const { ev, comp, myTeam, rival, day, state } = match;
+    const isLive = state === 'in';
+    const { label, ts } = toArgTime(ev.date);
+    const dayLabel = day === 0 ? 'HOY' : day === 1 ? 'MAÑANA' : argDateStr(day).replace(/(\d{4})(\d{2})(\d{2})/, '$3/$2');
+
+    const myLogo  = myTeam.team?.logos?.[0]?.href || '';
+    const rivLogo = rival?.team?.logos?.[0]?.href || '';
+    const myName  = myTeam.team?.displayName || '';
+    const rivName = rival?.team?.displayName || '';
+
+    const isHome = myTeam.homeAway === 'home';
+    const leftTeam  = isHome ? { name: myName,  logo: myLogo  } : { name: rivName, logo: rivLogo  };
+    const rightTeam = isHome ? { name: rivName, logo: rivLogo  } : { name: myName,  logo: myLogo  };
+
+    card.innerHTML = `
+      <div class="fnc">
+        <div class="fnc-label">⭐ Tu próximo partido</div>
+        <div class="fnc-teams">
+          <div class="fnc-team">
+            ${leftTeam.logo ? `<img class="fnc-logo" src="${leftTeam.logo}" onerror="this.style.display='none'" loading="lazy">` : ''}
+            <span class="fnc-team-name">${leftTeam.name}</span>
+          </div>
+          <span class="fnc-vs">vs</span>
+          <div class="fnc-team">
+            ${rightTeam.logo ? `<img class="fnc-logo" src="${rightTeam.logo}" onerror="this.style.display='none'" loading="lazy">` : ''}
+            <span class="fnc-team-name">${rightTeam.name}</span>
+          </div>
+        </div>
+        <div class="fnc-meta">
+          <span class="fnc-comp">${comp.flag} ${comp.name}</span>
+          ${isLive
+            ? `<span class="fnc-live">EN VIVO</span>`
+            : `<span class="fnc-time">${dayLabel} · ${label} <span class="fnc-countdown" id="fnc-cd"></span></span>`
+          }
+        </div>
+      </div>`;
+
+    card.style.display = '';
+    card.dataset.active = '1';
+
+    // Countdown for today's matches
+    if (!isLive && day === 0) {
+      if (_countdownTimer) clearInterval(_countdownTimer);
+      function tick() {
+        const el = document.getElementById('fnc-cd');
+        if (!el) { clearInterval(_countdownTimer); return; }
+        const diff = ts - Date.now();
+        if (diff <= 0) { el.textContent = ''; return; }
+        const totalMin = Math.floor(diff / 60000);
+        const h = Math.floor(totalMin / 60);
+        const m = totalMin % 60;
+        const s = Math.floor((diff % 60000) / 1000);
+        el.textContent = h > 0
+          ? `· en ${h}h ${m}m`
+          : `· en ${m}m ${s.toString().padStart(2,'0')}s`;
+      }
+      tick();
+      _countdownTimer = setInterval(tick, 1000);
+    }
+  }
+
+  async function init() {
+    const fav = (() => { try { return JSON.parse(localStorage.getItem('fpt_favClub')); } catch(_) { return null; } })();
+    if (!fav?.name) return;
+    const match = await findNext(fav.name);
+    if (match) renderCard(match);
+  }
+
+  // Run on load, re-run when fav club changes
+  window._favNextInit = init;
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+<script>
 // ===== STANDINGS & FAVORITE CLUB =====
 (function() {
 
@@ -3266,12 +3479,18 @@
     updateFavClubUI();
     if (window._agendaData) renderDom(window._agendaData);
     renderCurrentStandings();
+    // Refresh next-match card
+    const card = document.getElementById('fav-next-card');
+    if (card) { card.innerHTML = ''; card.style.display = 'none'; card.dataset.active = '0'; }
+    if (window._favNextInit) window._favNextInit();
   }
   function clearFavClub() {
     localStorage.removeItem('fpt_favClub');
     updateFavClubUI();
     if (window._agendaData) renderDom(window._agendaData);
     renderCurrentStandings();
+    const card = document.getElementById('fav-next-card');
+    if (card) { card.innerHTML = ''; card.style.display = 'none'; card.dataset.active = '0'; }
     closeFavClubModal();
   }
   function updateFavClubUI() {
