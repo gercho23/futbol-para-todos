@@ -1088,7 +1088,7 @@
     }
     #fav-next-card {
       position: fixed;
-      bottom: 24px;
+      bottom: 88px;
       right: 20px;
       z-index: 200;
       width: 300px;
@@ -3399,8 +3399,8 @@
     const { label, ts } = toArgTime(ev.date);
     const dayLabel = day === 0 ? 'HOY' : day === 1 ? 'MAÑANA' : argDateStr(day).replace(/(\d{4})(\d{2})(\d{2})/, '$3/$2');
 
-    const myLogo  = myTeam.team?.logos?.[0]?.href || '';
-    const rivLogo = rival?.team?.logos?.[0]?.href || '';
+    const myLogo  = myTeam.team?.logo || myTeam.team?.logos?.[0]?.href || '';
+    const rivLogo = rival?.team?.logo  || rival?.team?.logos?.[0]?.href  || '';
     const myName  = myTeam.team?.displayName || '';
     const rivName = rival?.team?.displayName || '';
 
@@ -3713,50 +3713,25 @@
 <script>
 // ===== SCROLL REVEAL =====
 (function() {
-  const SELECTORS = [
-    '.featured-card',
-    '.faq-item',
-    '.agenda-match-row',
-  ];
-
-  function markElements() {
-    SELECTORS.forEach(sel => {
-      document.querySelectorAll(sel).forEach(el => {
-        if (!el.classList.contains('sr') && !el.classList.contains('revealed')) {
-          el.classList.add('sr');
-        }
-      });
-    });
-  }
+  // Only static elements that render once — NOT agenda rows (they update every 60s)
+  const SELECTORS = ['.featured-card', '.faq-item'];
 
   const observer = new IntersectionObserver((entries) => {
-    // Group entries that become visible at the same time and stagger them
-    const visible = entries.filter(e => e.isIntersecting);
-    visible.forEach((entry, i) => {
+    entries.filter(e => e.isIntersecting).forEach((entry, i) => {
       const el = entry.target;
-      if (el.classList.contains('sr') && !el.classList.contains('revealed')) {
-        el.style.animationDelay = (i * 50) + 'ms';
-        el.classList.add('revealed');
-        observer.unobserve(el);
-      }
+      el.style.animationDelay = (i * 50) + 'ms';
+      el.classList.add('revealed');
+      observer.unobserve(el);
     });
   }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
 
-  function observeElements() {
-    document.querySelectorAll('.sr:not(.revealed)').forEach(el => observer.observe(el));
-  }
-
-  // Initial mark + observe after DOM settles
   function init() {
-    markElements();
-    observeElements();
-    // Re-run when agenda or standings inject new rows
-    const mo = new MutationObserver(() => {
-      markElements();
-      observeElements();
+    SELECTORS.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => {
+        el.classList.add('sr');
+        observer.observe(el);
+      });
     });
-    const targets = ['agenda-list', 'standings-body'].map(id => document.getElementById(id)).filter(Boolean);
-    targets.forEach(t => mo.observe(t, { childList: true, subtree: true }));
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
