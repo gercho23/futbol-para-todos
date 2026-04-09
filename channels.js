@@ -128,7 +128,7 @@ const channels = [
   { id:'dsports',         name:'DSports',           icon:'DS', color:'#6b46c1', region:'arg', logo: LOGOS.dsports,
     customSources: [
       { url: 'https://streamtpnew.com/global1.php?stream=dsports', type: 'iframe' },
-      { url: 'https://deepcathink.com/e3696da4-2716-4880-9eba-e1bda0b21c1a', type: 'iframe' },
+      { url: 'https://embed.ksdjugfsddeports.com/embed/directvsports.html', type: 'iframe' },
       { url: 'https://embed.ksdjugfsddeports.com/embed2/directvsports.html', type: 'iframe' },
     ]},
   { id:'dsports2',        name:'DSports 2',         icon:'D2', color:'#6b46c1', region:'arg', logo: LOGOS.dsports },
