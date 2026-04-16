@@ -456,10 +456,8 @@ const channels = [
   // ── Eventos ────────────────────────────────────────────────
   { id:'disneyplus',      name:'Disney+',           icon:'D+', color:'#0163e0', region:'events', logo: LOGOS.disneyplus,
     customSources: [
-      { url: 'https://streamx550.com/636e2979-3cc6-40ac-b4ed-015372129d76', type: 'iframe' },
-      { url: 'https://streamx550.com/95031326-fb14-426f-9af6-d97246e7dca9', type: 'iframe' },
-      { url: 'https://capo7play.com/813757dd-38ea-4aef-8642-3a6f98fe4d22', type: 'iframe' },
-      { url: 'https://latamvidz1.com/8e398bc0-2a6d-4691-b0ca-aaea15de160f', type: 'iframe' },
+      { url: 'https://streamx550.com/global1.php?channel=disney7', type: 'iframe' },
+      { url: 'https://streamtpnew.com/global1.php?stream=disney7', type: 'iframe' },
     ]},
   { id:'futv',            name:'FUTV Eventos',      icon:'FU', color:'#276749', region:'events', logo: LOGOS.futv },
   { id:'laligahypermotion',name:'LaLiga Hypermotion',icon:'LL', color:'#e84393', region:'events', logo: LOGOS.laliga },
