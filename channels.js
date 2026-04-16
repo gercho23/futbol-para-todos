@@ -414,6 +414,7 @@ const channels = [
     customSources: [
       { url: 'https://streamtpnew.com/global1.php?stream=fanatiz7', type: 'iframe' },
       { url: 'https://esvideofy.com/ote.php?id=bs1', type: 'iframe' },
+      { url: 'https://esvideofy.com/pro.php?id=SPORTDIGITAL', type: 'iframe' },
     ]},
   { id:'realmadridtv',    name:'Real Madrid TV',    icon:'RM', color:'#c8a951', region:'int', logo: LOGOS.realmadridtv,
     customSources: [
