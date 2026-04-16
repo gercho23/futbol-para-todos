@@ -377,7 +377,7 @@ const channels = [
   // ── Internacional ──────────────────────────────────────────
   { id:'skyf1',           name:'Sky Sports F1',    icon:'F1', color:'#e30613', region:'int', logo: LOGOS.skyf1,
     customSources: [
-      { url: 'https://streamfree.app/embed/racing/skyf1', type: 'iframe' },
+      { url: 'https://streamfree.app/embed/racing/skyf1?quality=1080p', type: 'iframe' },
     ]},
   { id:'daznf1',          name:'DAZN F1',           icon:'F1', color:'#e60028', region:'int', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/06/DAZN_Logo_Master.svg',
     customSources: [
