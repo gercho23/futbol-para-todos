@@ -40,6 +40,7 @@ const LOGOS = {
   fastwomen:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Tubi_logo_2024.svg/200px-Tubi_logo_2024.svg.png',
   cartoon:  'https://commons.wikimedia.org/wiki/Special:FilePath/Cartoon_Network_2010_logo.svg',
   disney:   'https://upload.wikimedia.org/wikipedia/commons/f/ff/2024_Disney_Channel_text_logo.svg',
+  disneyplus:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Disney%2B_logo.svg/200px-Disney%2B_logo.svg.png',
   nick:     'https://commons.wikimedia.org/wiki/Special:FilePath/Nickelodeon_2009_logo.svg',
   star:     'https://upload.wikimedia.org/wikipedia/commons/c/cd/Star_Channel_2023.svg',
   comedy:   'https://upload.wikimedia.org/wikipedia/commons/a/aa/Comedy_Central_2018.svg',
@@ -453,6 +454,12 @@ const channels = [
     ]},
 
   // ── Eventos ────────────────────────────────────────────────
+  { id:'disneyplus',      name:'Disney+',           icon:'D+', color:'#0163e0', region:'events', logo: LOGOS.disneyplus,
+    customSources: [
+      { url: 'https://streamx550.com/636e2979-3cc6-40ac-b4ed-015372129d76', type: 'iframe' },
+      { url: 'https://streamx550.com/95031326-fb14-426f-9af6-d97246e7dca9', type: 'iframe' },
+      { url: 'https://capo7play.com/813757dd-38ea-4aef-8642-3a6f98fe4d22', type: 'iframe' },
+    ]},
   { id:'futv',            name:'FUTV Eventos',      icon:'FU', color:'#276749', region:'events', logo: LOGOS.futv },
   { id:'laligahypermotion',name:'LaLiga Hypermotion',icon:'LL', color:'#e84393', region:'events', logo: LOGOS.laliga },
   { id:'tigosportsparaguay',name:'Tigo Sports PY',  icon:'TP', color:'#2b6cb0', region:'events', logo: LOGOS.tigo },
