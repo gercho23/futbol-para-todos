@@ -27,6 +27,7 @@ const LOGOS = {
   bein:     'https://commons.wikimedia.org/wiki/Special:FilePath/BeIN_Sports_logo_(horizontal_version).svg',
   redbull:  'https://commons.wikimedia.org/wiki/Special:FilePath/Logo_of_Red_bull.svg',
   skyf1:    'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Sky_Sports_F1_-_Logo_2025.svg/500px-Sky_Sports_F1_-_Logo_2025.svg.png',
+  skytennis:'https://upload.wikimedia.org/wikipedia/commons/d/dd/Sky_Sports_Tennis_-_Logo_2025.svg',
   realmadridtv: 'https://commons.wikimedia.org/wiki/Special:FilePath/Realmadrid_Television_Logo.svg',
   rta:      'https://upload.wikimedia.org/wikipedia/commons/a/a1/RTA_Afghanistan_Logo_%282021%E2%80%93%29_blue.svg',
   telemundo:'https://commons.wikimedia.org/wiki/Special:FilePath/Telemundo_Logo.svg',
@@ -375,6 +376,10 @@ const channels = [
     ]},
 
   // ── Internacional ──────────────────────────────────────────
+  { id:'skytennis',       name:'Sky Sports Tennis', icon:'ST', color:'#0077b6', region:'int', logo: LOGOS.skytennis,
+    customSources: [
+      { url: 'https://streamfree.app/embed/tennis/skytennis?quality=1080p', type: 'iframe' },
+    ]},
   { id:'skyf1',           name:'Sky Sports F1',    icon:'F1', color:'#e30613', region:'int', logo: LOGOS.skyf1,
     customSources: [
       { url: 'https://streamfree.app/embed/racing/skyf1?quality=1080p', type: 'iframe' },
