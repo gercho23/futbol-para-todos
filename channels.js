@@ -410,6 +410,11 @@ const channels = [
       { url: 'https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bein-sports-xtra-en-espanol/playlist.m3u8', type: 'hls' },
       { url: 'https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bein-sports-xtra-en-espanol/playlist.m3u8', type: 'hls' },
     ]},
+  { id:'bein_n',          name:'beIN Sports Ñ',     icon:'BÑ', color:'#1a365d', region:'int', logo: LOGOS.bein,
+    customSources: [
+      { url: 'https://streamtpnew.com/global1.php?stream=fanatiz7', type: 'iframe' },
+      { url: 'https://esvideofy.com/ote.php?id=bs1', type: 'iframe' },
+    ]},
   { id:'realmadridtv',    name:'Real Madrid TV',    icon:'RM', color:'#c8a951', region:'int', logo: LOGOS.realmadridtv,
     customSources: [
       { url: 'https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/bitrate_3.m3u8', type: 'hls' },
