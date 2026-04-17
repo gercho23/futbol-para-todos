@@ -500,6 +500,7 @@ const channels = [
     customSources: [
       { url: 'https://streamx550.com/global1.php?channel=disney7', type: 'iframe' },
       { url: 'https://streamtpnew.com/global1.php?stream=disney7', type: 'iframe' },
+      { url: 'https://streamtpnew.com/global1.php?stream=disney1', type: 'iframe' },
     ]},
   { id:'futv',            name:'FUTV Eventos',      icon:'FU', color:'#276749', region:'events', logo: LOGOS.futv },
   { id:'laligahypermotion',name:'LaLiga Hypermotion',icon:'LL', color:'#e84393', region:'events', logo: LOGOS.laliga },
