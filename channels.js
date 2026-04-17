@@ -423,7 +423,7 @@ const channels = [
     ]},
   { id:'bein3',           name:'beIN Sports 3',    icon:'B3', color:'#1a365d', region:'int', logo: LOGOS.bein,
     customSources: [
-      { url: 'https://embedsports.top/embed/admin/ppv-lan-s-vs-always-ready/1', type: 'iframe' },
+      { url: 'https://pooembed.eu/embed-noads/conmebol-libertadores/2026-04-17/lan-car', type: 'iframe' },
     ]},
   { id:'bein_n',          name:'beIN Sports Ñ',     icon:'BÑ', color:'#1a365d', region:'int', logo: LOGOS.bein,
     customSources: [
