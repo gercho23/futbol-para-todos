@@ -420,6 +420,7 @@ const channels = [
     customSources: [
       { url: 'https://bein-esp-xumo.amagi.tv/playlistR720P.m3u8', type: 'hls' },
       { url: 'https://embedsports.top/embed/admin/ppv-tigre-vs-macar/1', type: 'iframe' },
+      { url: 'https://embedsports.top/embed/echo/rb-bragantino-vs-blooming-football-1535156/2', type: 'iframe' },
     ]},
   { id:'bein_xtra_es',    name:'beIN Sports Xtra ES',icon:'BE', color:'#1a365d', region:'int', logo: LOGOS.bein_xtra_logo,
     customSources: [
