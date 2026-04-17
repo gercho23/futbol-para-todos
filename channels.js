@@ -28,6 +28,7 @@ const LOGOS = {
   bein_es:  'https://upload.wikimedia.org/wikipedia/commons/0/04/BeIN_Sports_En_Espa%C3%B1ol.png',
   bein_xtra_logo:'https://mma.prnewswire.com/media/1610429/beIN_SPORTS_XTRA_Logo.jpg',
   bein1logo:'https://upload.wikimedia.org/wikipedia/commons/d/d4/BeIN_Sports_logo_%28horizontal_version%29.svg',
+  bein2logo:'https://upload.wikimedia.org/wikipedia/commons/1/14/BeIN_SPORTS_HD2_logo.png',
   bein3logo:'https://upload.wikimedia.org/wikipedia/commons/5/51/BeIN_Sports_3.png',
   bein4logo:'https://upload.wikimedia.org/wikipedia/commons/9/96/Logo_bein_sports_4.png',
   redbull:  'https://commons.wikimedia.org/wiki/Special:FilePath/Logo_of_Red_bull.svg',
@@ -426,6 +427,10 @@ const channels = [
     customSources: [
       { url: 'https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bein-sports-xtra-en-espanol/playlist.m3u8', type: 'hls' },
       { url: 'https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bein-sports-xtra-en-espanol/playlist.m3u8', type: 'hls' },
+    ]},
+  { id:'bein2',           name:'beIN Sports 2',    icon:'B2', color:'#1a365d', region:'int', logo: LOGOS.bein2logo,
+    customSources: [
+      { url: 'https://esvideofy.com/ote.php?id=bs2', type: 'iframe' },
     ]},
   { id:'bein1',           name:'beIN Sports 1',    icon:'B1', color:'#1a365d', region:'int', logo: LOGOS.bein1logo,
     customSources: [
