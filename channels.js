@@ -421,6 +421,11 @@ const channels = [
       { url: 'https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bein-sports-xtra-en-espanol/playlist.m3u8', type: 'hls' },
       { url: 'https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bein-sports-xtra-en-espanol/playlist.m3u8', type: 'hls' },
     ]},
+  { id:'bein4',           name:'beIN Sports 4',    icon:'B4', color:'#1a365d', region:'int', logo: LOGOS.bein,
+    customSources: [
+      { url: 'https://pooembed.eu/embed-noads/conmebol-sudamericana/2026-04-17/cam-juv', type: 'iframe' },
+      { url: 'https://embedsports.top/embed/admin/ppv-atl-tico-mg-vs-juventud/2', type: 'iframe' },
+    ]},
   { id:'bein3',           name:'beIN Sports 3',    icon:'B3', color:'#1a365d', region:'int', logo: LOGOS.bein,
     customSources: [
       { url: 'https://pooembed.eu/embed-noads/conmebol-libertadores/2026-04-17/lan-car', type: 'iframe' },
