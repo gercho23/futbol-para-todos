@@ -428,6 +428,7 @@ const channels = [
   { id:'bein1',           name:'beIN Sports 1',    icon:'B1', color:'#1a365d', region:'int', logo: LOGOS.bein1logo,
     customSources: [
       { url: 'https://embedsports.top/embed/admin/ppv-palmeiras-vs-sporting-cristal/1', type: 'iframe' },
+      { url: 'https://embedsports.top/embed/admin/ppv-palmeiras-vs-sporting-cristal/2', type: 'iframe' },
     ]},
   { id:'bein4',           name:'beIN Sports 4',    icon:'B4', color:'#1a365d', region:'int', logo: LOGOS.bein4logo,
     customSources: [
