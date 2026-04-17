@@ -26,6 +26,7 @@ const LOGOS = {
   trece:    'https://commons.wikimedia.org/wiki/Special:FilePath/Isotipo_eltrece_2016.png',
   bein:     'https://commons.wikimedia.org/wiki/Special:FilePath/BeIN_Sports_logo_(horizontal_version).svg',
   bein_es:  'https://upload.wikimedia.org/wikipedia/commons/c/c5/BeIN_SPORTS_En_Espa%C3%B1ol_logo_2017.jpg',
+  bein1logo:'https://upload.wikimedia.org/wikipedia/commons/4/42/BeIN_SPORTS_HD1_logo.png',
   bein3logo:'https://upload.wikimedia.org/wikipedia/commons/5/51/BeIN_Sports_3.png',
   bein4logo:'https://upload.wikimedia.org/wikipedia/commons/9/96/Logo_bein_sports_4.png',
   redbull:  'https://commons.wikimedia.org/wiki/Special:FilePath/Logo_of_Red_bull.svg',
@@ -423,6 +424,10 @@ const channels = [
     customSources: [
       { url: 'https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bein-sports-xtra-en-espanol/playlist.m3u8', type: 'hls' },
       { url: 'https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bein-sports-xtra-en-espanol/playlist.m3u8', type: 'hls' },
+    ]},
+  { id:'bein1',           name:'beIN Sports 1',    icon:'B1', color:'#1a365d', region:'int', logo: LOGOS.bein1logo,
+    customSources: [
+      { url: 'https://embedsports.top/embed/admin/ppv-palmeiras-vs-sporting-cristal/1', type: 'iframe' },
     ]},
   { id:'bein4',           name:'beIN Sports 4',    icon:'B4', color:'#1a365d', region:'int', logo: LOGOS.bein4logo,
     customSources: [
