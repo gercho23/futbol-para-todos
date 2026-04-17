@@ -3,6 +3,7 @@
 // ============================================================
 const LOGOS = {
   espn:     'https://upload.wikimedia.org/wikipedia/commons/2/2f/ESPN_wordmark.svg',
+  espnpremium: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/ESPN_Premium_logo.svg/3840px-ESPN_Premium_logo.svg.png',
   fox:      'https://upload.wikimedia.org/wikipedia/commons/0/0c/FOX_Sports_logo.svg',
   dsports:  'https://upload.wikimedia.org/wikipedia/commons/4/4c/DSports_logo_2022.svg',
   tnt:      'https://upload.wikimedia.org/wikipedia/commons/7/7e/TNT_Sports_Logo.svg',
@@ -126,7 +127,7 @@ const channels = [
       { url: 'https://embed.ksdjugfsddeports.com/embed/espn7.html', type: 'iframe' },
       { url: 'https://pcn.nebunexa.life/cvatt.html?get=Rm94U3BvcnRzMl9VWQ==&lang=1', type: 'iframe' },
     ]},
-  { id:'espnpremium',     name:'ESPN Premium',      icon:'EP', color:'#c53030', region:'arg', logo: LOGOS.espn,
+  { id:'espnpremium',     name:'ESPN Premium',      icon:'EP', color:'#c53030', region:'arg', logo: LOGOS.espnpremium,
     customSources: [
       { url: 'https://streamtp10.com/global1.php?stream=espnpremium', type: 'iframe' },
       { url: 'https://embed.ksdjugfsddeports.com/embed/espnpremium.html', type: 'iframe' },
