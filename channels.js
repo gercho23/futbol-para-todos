@@ -421,6 +421,10 @@ const channels = [
       { url: 'https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bein-sports-xtra-en-espanol/playlist.m3u8', type: 'hls' },
       { url: 'https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bein-sports-xtra-en-espanol/playlist.m3u8', type: 'hls' },
     ]},
+  { id:'bein3',           name:'beIN Sports 3',    icon:'B3', color:'#1a365d', region:'int', logo: LOGOS.bein,
+    customSources: [
+      { url: 'https://embedsports.top/embed/admin/ppv-lan-s-vs-always-ready/1', type: 'iframe' },
+    ]},
   { id:'bein_n',          name:'beIN Sports Ñ',     icon:'BÑ', color:'#1a365d', region:'int', logo: LOGOS.bein,
     customSources: [
       { url: 'https://streamtpnew.com/global1.php?stream=fanatiz7', type: 'iframe' },
