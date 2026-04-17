@@ -436,6 +436,7 @@ const channels = [
     customSources: [
       { url: 'https://embedsports.top/embed/admin/ppv-atl-tico-mg-vs-juventud/1', type: 'iframe' },
       { url: 'https://embedsports.top/embed/admin/ppv-atl-tico-mg-vs-juventud/2', type: 'iframe' },
+      { url: 'https://streamtpnew.com/global1.php?stream=fanatiz8', type: 'iframe' },
     ]},
   { id:'bein3',           name:'beIN Sports 3',    icon:'B3', color:'#1a365d', region:'int', logo: LOGOS.bein3logo,
     customSources: [
