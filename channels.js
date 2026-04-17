@@ -426,12 +426,12 @@ const channels = [
     ]},
   { id:'bein4',           name:'beIN Sports 4',    icon:'B4', color:'#1a365d', region:'int', logo: LOGOS.bein4logo,
     customSources: [
-      { url: 'https://pooembed.eu/embed-noads/conmebol-sudamericana/2026-04-17/cam-juv', type: 'iframe' },
+      { url: 'https://embedsports.top/embed/admin/ppv-atl-tico-mg-vs-juventud/1', type: 'iframe' },
       { url: 'https://embedsports.top/embed/admin/ppv-atl-tico-mg-vs-juventud/2', type: 'iframe' },
     ]},
   { id:'bein3',           name:'beIN Sports 3',    icon:'B3', color:'#1a365d', region:'int', logo: LOGOS.bein3logo,
     customSources: [
-      { url: 'https://pooembed.eu/embed-noads/conmebol-libertadores/2026-04-17/lan-car', type: 'iframe' },
+      { url: 'https://embedsports.top/embed/admin/ppv-lan-s-vs-always-ready/1', type: 'iframe' },
     ]},
   { id:'bein_n',          name:'beIN Sports Ñ',     icon:'BÑ', color:'#1a365d', region:'int', logo: LOGOS.bein_es,
     customSources: [
