@@ -417,7 +417,7 @@ const channels = [
   { id:'bein_xtra',       name:'beIN Sports Xtra',  icon:'BN', color:'#1a365d', region:'int', logo: LOGOS.bein,
     customSources: [
       { url: 'https://bein-esp-xumo.amagi.tv/playlistR720P.m3u8', type: 'hls' },
-      { url: 'https://bein-esp-xumo.amagi.tv/playlistR720P.m3u8', type: 'hls' },
+      { url: 'https://embedsports.top/embed/admin/ppv-tigre-vs-macar/1', type: 'iframe' },
     ]},
   { id:'bein_xtra_es',    name:'beIN Sports Xtra ES',icon:'BE', color:'#1a365d', region:'int', logo: LOGOS.bein_es,
     customSources: [
