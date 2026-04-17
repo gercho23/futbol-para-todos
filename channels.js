@@ -4,7 +4,7 @@
 const LOGOS = {
   espn:     'https://upload.wikimedia.org/wikipedia/commons/2/2f/ESPN_wordmark.svg',
   espnpremium: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/ESPN_Premium_logo.svg/3840px-ESPN_Premium_logo.svg.png',
-  fox:      'https://upload.wikimedia.org/wikipedia/commons/0/0c/FOX_Sports_logo.svg',
+  fox:      'https://upload.wikimedia.org/wikipedia/commons/5/54/Fox_Sports_Argentina_2026.webp',
   dsports:  'https://upload.wikimedia.org/wikipedia/commons/4/4c/DSports_logo_2022.svg',
   tnt:      'https://upload.wikimedia.org/wikipedia/commons/7/7e/TNT_Sports_Logo.svg',
   tyc:      'https://upload.wikimedia.org/wikipedia/commons/5/54/TyC_Sports_logo.svg',
