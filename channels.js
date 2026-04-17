@@ -446,6 +446,7 @@ const channels = [
       { url: 'https://streamtpnew.com/global1.php?stream=fanatiz7', type: 'iframe' },
       { url: 'https://esvideofy.com/ote.php?id=bs1', type: 'iframe' },
       { url: 'https://esvideofy.com/pro.php?id=SPORTDIGITAL', type: 'iframe' },
+      { url: 'https://embedsports.top/embed/echo/flamengo-vs-independiente-medellin-football-1535256/2', type: 'iframe' },
     ]},
   { id:'realmadridtv',    name:'Real Madrid TV',    icon:'RM', color:'#c8a951', region:'int', logo: LOGOS.realmadridtv,
     customSources: [
