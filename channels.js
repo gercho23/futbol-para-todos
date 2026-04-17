@@ -440,6 +440,7 @@ const channels = [
     ]},
   { id:'bein3',           name:'beIN Sports 3',    icon:'B3', color:'#1a365d', region:'int', logo: LOGOS.bein3logo,
     customSources: [
+      { url: 'https://esvideofy.com/ote.php?id=bs3', type: 'iframe' },
       { url: 'https://embedsports.top/embed/admin/ppv-lan-s-vs-always-ready/1', type: 'iframe' },
       { url: 'https://streamtpnew.com/global1.php?stream=fanatiz2', type: 'iframe' },
     ]},
