@@ -3,7 +3,7 @@
 // ============================================================
 const LOGOS = {
   espn:     'https://upload.wikimedia.org/wikipedia/commons/2/2f/ESPN_wordmark.svg',
-  espnpremium: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/ESPN_Premium_logo.svg/3840px-ESPN_Premium_logo.svg.png',
+  espnpremium: 'https://upload.wikimedia.org/wikipedia/commons/a/a1/ESPN_Premium_logo.svg',
   fox:      'https://upload.wikimedia.org/wikipedia/commons/5/54/Fox_Sports_Argentina_2026.webp',
   dsports:  'https://upload.wikimedia.org/wikipedia/commons/4/4c/DSports_logo_2022.svg',
   tnt:      'https://upload.wikimedia.org/wikipedia/commons/7/7e/TNT_Sports_Logo.svg',
@@ -33,7 +33,7 @@ const LOGOS = {
   bein3logo:'https://upload.wikimedia.org/wikipedia/commons/5/51/BeIN_Sports_3.png',
   bein4logo:'https://upload.wikimedia.org/wikipedia/commons/9/96/Logo_bein_sports_4.png',
   redbull:  'https://upload.wikimedia.org/wikipedia/commons/9/91/Logo_of_Red_bull.svg',
-  skyf1:    'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Sky_Sports_F1_-_Logo_2025.svg/500px-Sky_Sports_F1_-_Logo_2025.svg.png',
+  skyf1:    'https://upload.wikimedia.org/wikipedia/commons/f/fa/Sky_Sports_F1_-_Logo_2025.svg',
   skytennis:'https://upload.wikimedia.org/wikipedia/commons/d/dd/Sky_Sports_Tennis_-_Logo_2025.svg',
   realmadridtv: 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Realmadrid_Television_Logo.svg',
   rta:      'https://upload.wikimedia.org/wikipedia/commons/a/a1/RTA_Afghanistan_Logo_%282021%E2%80%93%29_blue.svg',

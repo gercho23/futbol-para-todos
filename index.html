@@ -1845,7 +1845,7 @@
   <div class="featured-grid">
     <div class="featured-card" onclick="playChannel('espnpremium','ESPN Premium')">
       <div class="featured-icon">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/200px-ESPN_wordmark.svg.png" alt="ESPN Premium">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/ESPN_wordmark.svg" alt="ESPN Premium">
       </div>
       <div class="featured-name">ESPN Premium</div>
       <div class="featured-desc">No te pierdas los encuentros más importantes de fútbol, análisis en vivo y cobertura especial en ESPN Premium.</div>
@@ -1853,7 +1853,7 @@
     </div>
     <div class="featured-card" onclick="playChannel('tntsports','TNT Sports AR')">
       <div class="featured-icon">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/TNT_Sports_Logo.svg" alt="TNT Sports">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/TNT_Sports_Logo.svg" alt="TNT Sports">
       </div>
       <div class="featured-name">TNT Sports AR</div>
       <div class="featured-desc">Mirá partidos de ligas locales y regionales con TNT Sports, disponible gratis en nuestra plataforma.</div>
@@ -1861,7 +1861,7 @@
     </div>
     <div class="featured-card" onclick="playChannel('fox1ar','Fox Sports Premium')">
       <div class="featured-icon">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/FOX_Sports_logo.svg/200px-FOX_Sports_logo.svg.png" alt="Fox Sports Premium">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/0c/FOX_Sports_logo.svg" alt="Fox Sports Premium">
       </div>
       <div class="featured-name">Fox Sports Premium</div>
       <div class="featured-desc">Disfrutá de competencias globales, entrevistas exclusivas y más a través de Fox Sports en alta definición.</div>
@@ -1869,7 +1869,7 @@
     </div>
     <div class="featured-card" onclick="playChannel('tycsports','TyC Sports')">
       <div class="featured-icon">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/TyC_Sports_logo.svg/200px-TyC_Sports_logo.svg.png" alt="TyC Sports">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/54/TyC_Sports_logo.svg" alt="TyC Sports">
       </div>
       <div class="featured-name">TyC Sports</div>
       <div class="featured-desc">Disfrutá de los mejores partidos de fútbol argentino y otros deportes a través de TyC Sports con señal en vivo y gratuita.</div>
@@ -1877,7 +1877,7 @@
     </div>
     <div class="featured-card" onclick="playChannel('dsports','DSports')">
       <div class="featured-icon">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/DSports_logo_2022.svg" alt="DSports">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/DSports_logo_2022.svg" alt="DSports">
       </div>
       <div class="featured-name">DSports</div>
       <div class="featured-desc">Accedé a transmisiones exclusivas de torneos internacionales y ligas de América Latina en DirecTV Sports.</div>
@@ -1885,7 +1885,7 @@
     </div>
     <div class="featured-card" onclick="playChannel('telefe','Telefe')">
       <div class="featured-icon">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Logo_telefe_argentina.svg" alt="Telefe">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/Logo_telefe_argentina.svg" alt="Telefe">
       </div>
       <div class="featured-name">Telefe</div>
       <div class="featured-desc">Seguí los partidos de la Selección Argentina en abierto y gratuito por Telefe, el canal de todos los argentinos.</div>
@@ -3133,35 +3133,35 @@
     // Mapa de escudos livianos (SVG/PNG desde fuentes públicas)
     const TEAM_BADGES = {
       // Liga Profesional Argentina
-      'River Plate':        'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/River_Plate_logo.svg/32px-River_Plate_logo.svg.png',
-      'Boca Juniors':       'https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Boca_Juniors_logo.svg/32px-Boca_Juniors_logo.svg.png',
-      'Racing Club':        'https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Racing_Club_de_Avellaneda_logo.svg/32px-Racing_Club_de_Avellaneda_logo.svg.png',
-      'Independiente':      'https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Club_Atlético_Independiente_logo.svg/32px-Club_Atlético_Independiente_logo.svg.png',
-      'San Lorenzo':        'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/San_Lorenzo_de_Almagro_logo.svg/32px-San_Lorenzo_de_Almagro_logo.svg.png',
-      'Huracán':            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Huracan_logo.svg/32px-Huracan_logo.svg.png',
-      'Vélez Sársfield':    'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Vélez_Sársfield_logo.svg/32px-Vélez_Sársfield_logo.svg.png',
-      'Estudiantes (LP)':   'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Estudiantes_de_la_plata_logo.svg/32px-Estudiantes_de_la_plata_logo.svg.png',
-      'Lanús':              'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Club_Atlético_Lanús_logo.svg/32px-Club_Atlético_Lanús_logo.svg.png',
-      'Rosario Central':    'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Rosario_Central_logo.svg/32px-Rosario_Central_logo.svg.png',
-      'Defensa y Justicia': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Defensa_y_Justicia.svg/32px-Defensa_y_Justicia.svg.png',
-      'Talleres (C)':       'https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Talleres_%28Córdoba%29_logo.svg/32px-Talleres_%28Córdoba%29_logo.svg.png',
-      'Tigre':              'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Club_Atletico_Tigre.svg/32px-Club_Atletico_Tigre.svg.png',
-      'Argentinos Jrs':     'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Argentinos_Juniors_logo.svg/32px-Argentinos_Juniors_logo.svg.png',
-      'Newells Old Boys':   'https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Newell%27s_Old_Boys_logo.svg/32px-Newell%27s_Old_Boys_logo.svg.png',
-      'Banfield':           'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Club_Atlético_Banfield_logo.svg/32px-Club_Atlético_Banfield_logo.svg.png',
-      'Platense':           'https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Club_Atletico_Platense.svg/32px-Club_Atletico_Platense.svg.png',
-      'Unión (SF)':         'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Unión_de_Santa_Fe_logo.svg/32px-Unión_de_Santa_Fe_logo.svg.png',
-      'Godoy Cruz':         'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Godoy_Cruz_Antonio_Tomba_logo.svg/32px-Godoy_Cruz_Antonio_Tomba_logo.svg.png',
-      'Barracas Central':   'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Barracas_Central_logo.svg/32px-Barracas_Central_logo.svg.png',
+      'River Plate':        'https://upload.wikimedia.org/wikipedia/commons/3/39/River_Plate_logo.svg',
+      'Boca Juniors':       'https://upload.wikimedia.org/wikipedia/commons/e/e3/Boca_Juniors_logo18.svg',
+      'Racing Club':        'https://upload.wikimedia.org/wikipedia/commons/e/e2/Escudo_del_Racing_Club_de_Avellaneda.svg',
+      'Independiente':      'https://upload.wikimedia.org/wikipedia/commons/3/38/Escudo_del_Club_Atl%C3%A9tico_Independiente_de_Avellaneda.svg',
+      'San Lorenzo':        'https://upload.wikimedia.org/wikipedia/commons/2/2a/San_Lorenzo_de_Almagro_logo.svg',
+      'Huracán':            'https://upload.wikimedia.org/wikipedia/commons/a/a5/Huracan_logo.svg',
+      'Vélez Sársfield':    'https://upload.wikimedia.org/wikipedia/commons/4/43/Vélez_Sársfield_logo.svg',
+      'Estudiantes (LP)':   'https://upload.wikimedia.org/wikipedia/commons/8/85/Estudiantes_de_la_plata_logo.svg',
+      'Lanús':              'https://upload.wikimedia.org/wikipedia/commons/e/e8/Club_Atlético_Lanús_logo.svg',
+      'Rosario Central':    'https://upload.wikimedia.org/wikipedia/commons/d/d9/Rosario_Central_logo.svg',
+      'Defensa y Justicia': 'https://upload.wikimedia.org/wikipedia/commons/a/a3/Defensa_y_Justicia.svg',
+      'Talleres (C)':       'https://upload.wikimedia.org/wikipedia/commons/4/45/Talleres_%28Córdoba%29_logo.svg',
+      'Tigre':              'https://upload.wikimedia.org/wikipedia/commons/b/b5/Club_Atletico_Tigre.svg',
+      'Argentinos Jrs':     'https://upload.wikimedia.org/wikipedia/commons/e/ef/Argentinos_Juniors_logo.svg',
+      'Newells Old Boys':   'https://upload.wikimedia.org/wikipedia/commons/8/81/Newell%27s_Old_Boys_logo.svg',
+      'Banfield':           'https://upload.wikimedia.org/wikipedia/commons/c/c1/Club_Atlético_Banfield_logo.svg',
+      'Platense':           'https://upload.wikimedia.org/wikipedia/commons/5/56/Club_Atletico_Platense.svg',
+      'Unión (SF)':         'https://upload.wikimedia.org/wikipedia/commons/9/9d/Unión_de_Santa_Fe_logo.svg',
+      'Godoy Cruz':         'https://upload.wikimedia.org/wikipedia/commons/3/30/Godoy_Cruz_Antonio_Tomba_logo.svg',
+      'Barracas Central':   'https://upload.wikimedia.org/wikipedia/commons/4/4b/Barracas_Central_logo.svg',
       // Selección
-      'Argentina':          'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Argentina_national_football_team_crest.svg/32px-Argentina_national_football_team_crest.svg.png',
-      'Argelia':            'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Flag_of_Algeria.svg/32px-Flag_of_Algeria.svg.png',
-      'Austria':            'https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Flag_of_Austria.svg/32px-Flag_of_Austria.svg.png',
-      'Jordania':           'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Flag_of_Jordan.svg/32px-Flag_of_Jordan.svg.png',
+      'Argentina':          'https://upload.wikimedia.org/wikipedia/en/1/1e/Asociaci%C3%B3n_del_F%C3%BAtbol_Argentino_%28crest%29.svg',
+      'Argelia':            'https://upload.wikimedia.org/wikipedia/commons/7/77/Flag_of_Algeria.svg',
+      'Austria':            'https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_Austria.svg',
+      'Jordania':           'https://upload.wikimedia.org/wikipedia/commons/c/c0/Flag_of_Jordan.svg',
       // Copa Libertadores / internacional
-      'Flamengo':           'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Flamengo_braz_logo.svg/32px-Flamengo_braz_logo.svg.png',
-      'Nacional (URU)':     'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Nacional_logo.svg/32px-Nacional_logo.svg.png',
-      'Atlético Mineiro':   'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Atletico_mineiro_galo.svg/32px-Atletico_mineiro_galo.svg.png',
+      'Flamengo':           'https://upload.wikimedia.org/wikipedia/commons/9/96/Clube_de_Regatas_do_Flamengo_logo.svg',
+      'Nacional (URU)':     'https://upload.wikimedia.org/wikipedia/commons/1/10/Nacional_logo.svg',
+      'Atlético Mineiro':   'https://upload.wikimedia.org/wikipedia/commons/2/27/Clube_Atl%C3%A9tico_Mineiro_logo.svg',
     };
 
     function teamBadge(m, side) {
