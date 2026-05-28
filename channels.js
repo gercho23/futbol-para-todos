@@ -148,6 +148,7 @@ const channels = [
   { id:'dsports',         name:'DSports',           icon:'DS', color:'#6b46c1', region:'arg', logo: LOGOS.dsports,
     customSources: [
       { url: 'https://streamtpnew.com/global1.php?stream=dsports', type: 'iframe' },
+      { url: 'https://streamhdx.com/live1.php?stream=dsports', type: 'iframe' },
       { url: 'https://embed.ksdjugfsddeports.com/embed/directvsports.html', type: 'iframe' },
       { url: 'https://embed.ksdjugfsddeports.com/embed2/directvsports.html', type: 'iframe' },
       { url: 'https://embed.ksdjugfsddeports.com/embed/directvsports.html', type: 'iframe' },
