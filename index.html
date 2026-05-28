@@ -57,13 +57,14 @@
       --radius: 12px;
       --radius-sm: 8px;
     }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
     body {
       background: #0a0e0a;
       color: var(--text);
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
+      touch-action: pan-y;
       position: relative;
     }
     /* Lift all direct content above canvas */
@@ -490,6 +491,7 @@
       margin-bottom: 24px;
       overflow-x: auto;
       scrollbar-width: none;
+      touch-action: pan-x;
     }
     .tabs-header::-webkit-scrollbar { display: none; }
     .tab-btn {
@@ -1075,6 +1077,7 @@
     .mundial-tabs {
       display: flex; gap: 4px;
       overflow-x: auto; scrollbar-width: none;
+      touch-action: pan-x;
       border-bottom: 1px solid var(--border);
       margin-bottom: 20px;
     }
@@ -1690,6 +1693,14 @@
       letter-spacing: 0.5px;
     }
     body.tv-mode #tv-badge { display: block; }
+
+    /* TV mode: disable canvas + heavy animations for performance */
+    body.tv-mode #bg-canvas { display: none; }
+    body.tv-mode #cursor-glow { display: none; }
+    body.tv-mode .logo-ball { animation: none !important; }
+    body.tv-mode .logo-text { animation: none !important; }
+    body.tv-mode .hero h1 { animation: none !important; background: none !important; -webkit-text-fill-color: var(--text) !important; }
+    body.tv-mode .hero h1 span { animation: none !important; -webkit-text-fill-color: var(--green) !important; }
 
   </style>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
@@ -3742,6 +3753,7 @@
       rafId = requestAnimationFrame(draw);
     }
     draw();
+    window._stopBgCanvas = function() { cancelAnimationFrame(rafId); };
   })();
 
 </script>
@@ -4171,6 +4183,14 @@
   if (!isTV) return;
 
   document.body.classList.add('tv-mode');
+
+  // Stop canvas animation loop — saves significant CPU on TV hardware
+  if (window._stopBgCanvas) window._stopBgCanvas();
+
+  // Block horizontal scroll from pointer/wheel events
+  document.addEventListener('wheel', function(e) {
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) e.preventDefault();
+  }, { passive: false });
 
   // ---- D-pad / keyboard navigation ----
   document.addEventListener('keydown', function(e) {
