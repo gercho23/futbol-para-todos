@@ -515,6 +515,7 @@ const channels = [
   { id:'disneyplus',      name:'Disney+',           icon:'D+', color:'#0163e0', region:'events', logo: LOGOS.disneyplus,
     customSources: [
       { url: 'https://streamx550.com/global1.php?channel=disney7', type: 'iframe' },
+      { url: 'https://streamhdx.com/live1.php?stream=disney9', type: 'iframe' },
       { url: 'https://streamtpnew.com/global1.php?stream=disney7', type: 'iframe' },
       { url: 'https://streamtpnew.com/global1.php?stream=disney2', type: 'iframe' },
       { url: 'https://streamtpnew.com/global1.php?stream=disney1', type: 'iframe' },
