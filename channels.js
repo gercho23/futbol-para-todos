@@ -144,7 +144,10 @@ const channels = [
       { url: 'https://pcn.nebunexa.life/cvatt.html?get=Rm94X1Nwb3J0c19QcmVtaXVuX0hE&lang=1', type: 'iframe' },
       { url: 'https://embed.ksdjugfsddeports.com/embed/espnpremium.html', type: 'iframe' },
     ]},
-  { id:'fox1ar',          name:'Fox Sports 1',      icon:'F1', color:'#2b6cb0', region:'arg', logo: LOGOS.fox  },
+  { id:'fox1ar',          name:'Fox Sports 1',      icon:'F1', color:'#2b6cb0', region:'arg', logo: LOGOS.fox,
+    customSources: [
+      { url: 'https://streamhdx.com/live1.php?stream=fox1ar', type: 'iframe' },
+    ]},
   { id:'fox2ar',          name:'Fox Sports 2',      icon:'F2', color:'#2b6cb0', region:'arg', logo: LOGOS.fox  },
   { id:'fox3ar',          name:'Fox Sports 3',      icon:'F3', color:'#2b6cb0', region:'arg', logo: LOGOS.fox  },
   { id:'dsports',         name:'DSports',           icon:'DS', color:'#6b46c1', region:'arg', logo: LOGOS.dsports,
