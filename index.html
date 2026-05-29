@@ -1704,7 +1704,7 @@
 
   </style>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
-  <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/shaka-player@4/dist/shaka-player.compiled.js"></script>
 </head>
 <body>
 
@@ -2503,46 +2503,34 @@
       iframe.style.display = 'none';
       iframe.src = '';
       video.style.display = 'block';
+      video.muted = true;
       if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-      if (dashInstance) { dashInstance.reset(); dashInstance = null; }
+      if (dashInstance) { dashInstance.destroy(); dashInstance = null; }
       startErrorTimer();
       try {
-        const h2b = hex => btoa(String.fromCharCode(...new Uint8Array(hex.match(/.{2}/g).map(b => parseInt(b,16))))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-        dashInstance = dashjs.MediaPlayer().create();
-        dashInstance.updateSettings({
-          streaming: {
-            delay: { liveDelay: 4 },
-            liveCatchup: { enabled: true }
-          }
-        });
-        // Strip Widevine ContentProtection from MPD so dash.js uses ClearKey
-        dashInstance.addResponseInterceptor(function(response) {
-          try {
-            const url = response.url || '';
-            if (url.includes('.mpd') || url.includes('Manifest') || url.includes('manifest')) {
-              const txt = new TextDecoder().decode(new Uint8Array(response.data));
+        shaka.polyfill.installAll();
+        if (!shaka.Player.isBrowserSupported()) { showStreamError(); return; }
+        dashInstance = new shaka.Player();
+        dashInstance.attach(video).then(() => {
+          // Filtrar Widevine del MPD para forzar ClearKey
+          dashInstance.getNetworkingEngine().registerResponseFilter((type, response) => {
+            if (type === shaka.net.NetworkingEngine.RequestType.MANIFEST) {
+              const txt = new TextDecoder('utf-8').decode(response.data);
               if (txt.includes('edef8ba9')) {
-                const cleaned = txt.replace(/<ContentProtection schemeIdUri="urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21ed"[\s\S]*?<\/ContentProtection>/gi, '');
+                const cleaned = txt.replace(/<ContentProtection[^>]*edef8ba9[^"]*"[\s\S]*?<\/ContentProtection>/gi, '');
                 response.data = new TextEncoder().encode(cleaned).buffer;
               }
             }
-          } catch(ex) {}
-          return Promise.resolve(response);
-        });
-        dashInstance.on(dashjs.MediaPlayer.events.ERROR, () => showStreamError());
-        dashInstance.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, () => {
-          clearErrorTimer();
-          try { dashInstance.seekToOriginalLive(); } catch(e) {}
-          video.muted = false;
-          video.play().catch(() => {});
-        });
-        if (source.keyId && source.keyValue) {
-          dashInstance.setProtectionData({
-            'org.w3.clearkey': { clearkeys: { [h2b(source.keyId)]: h2b(source.keyValue) } }
           });
-        }
-        video.muted = true;
-        dashInstance.initialize(video, source.url, true);
+          if (source.keyId && source.keyValue) {
+            dashInstance.configure({ drm: { clearKeys: { [source.keyId]: source.keyValue } } });
+          }
+          return dashInstance.load(source.url);
+        }).then(() => {
+          clearErrorTimer();
+          video.play().then(() => { video.muted = false; }).catch(() => {});
+        }).catch(() => showStreamError());
+        dashInstance.addEventListener('error', () => showStreamError());
       } catch(e) { showStreamError(); }
     } else if (source.type === 'hls') {
       iframe.style.display = 'none';
@@ -2550,7 +2538,7 @@
       video.style.display = 'block';
       video.muted = false;
       if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-      if (dashInstance) { dashInstance.reset(); dashInstance = null; }
+      if (dashInstance) { dashInstance.destroy(); dashInstance = null; }
       startErrorTimer();
       if (Hls.isSupported()) {
         hlsInstance = new Hls({ liveSyncDurationCount: 3 });
@@ -2567,7 +2555,7 @@
       video.style.display = 'none';
       video.pause();
       if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-      if (dashInstance) { dashInstance.reset(); dashInstance = null; }
+      if (dashInstance) { dashInstance.destroy(); dashInstance = null; }
       iframe.style.display = 'block';
       iframe.referrerPolicy = source.url.includes('deepcathink.com') ? 'no-referrer' : 'no-referrer-when-downgrade';
       iframe.src = source.url;
@@ -2615,7 +2603,7 @@
     video.style.display = 'none';
     document.getElementById('stream-iframe').style.display = 'block';
     if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-    if (dashInstance) { dashInstance.reset(); dashInstance = null; }
+    if (dashInstance) { dashInstance.destroy(); dashInstance = null; }
     document.querySelectorAll('.channel-card').forEach(c => c.classList.remove('playing'));
     currentStream = null;
     document.getElementById('nav-playing').style.display = 'none';
