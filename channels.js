@@ -96,7 +96,7 @@ const channels = [
   { id:'espn2',           name:'ESPN 2',            icon:'E2', color:'#e53e3e', region:'arg', logo: LOGOS.espn,
     customSources: [
       { url: 'https://streamtp10.com/global1.php?stream=espn2', type: 'iframe' },
-      { url: 'https://streamhdx.com/live1.php?stream=espn2', type: 'iframe' },
+      { url: 'https://streamhdx.com/channels/2/?id=espn2bo', type: 'iframe' },
       { url: 'https://pcn.nebunexa.life/cvatt.html?get=RVNQTjJfQXJn&lang=1', type: 'iframe' },
       { url: 'https://embed.ksdjugfsddeports.com/embed/espn2.html', type: 'iframe' },
     ]},
