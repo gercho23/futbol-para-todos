@@ -2507,8 +2507,17 @@
       startErrorTimer();
       try {
         dashInstance = dashjs.MediaPlayer().create();
+        dashInstance.updateSettings({
+          streaming: {
+            delay: { liveDelay: 4 },
+            liveCatchup: { enabled: true }
+          }
+        });
         dashInstance.on(dashjs.MediaPlayer.events.ERROR, () => showStreamError());
-        dashInstance.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, () => clearErrorTimer());
+        dashInstance.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, () => {
+          clearErrorTimer();
+          try { dashInstance.seekToOriginalLive(); } catch(e) {}
+        });
         if (source.keyId && source.keyValue) {
           const h2b = hex => btoa(String.fromCharCode(...new Uint8Array(hex.match(/.{2}/g).map(b => parseInt(b,16))))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
           dashInstance.setProtectionData({
