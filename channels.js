@@ -96,7 +96,7 @@ const channels = [
   { id:'espn2',           name:'ESPN 2',            icon:'E2', color:'#e53e3e', region:'arg', logo: LOGOS.espn,
     customSources: [
       { url: 'https://streamtp10.com/global1.php?stream=espn2', type: 'iframe' },
-      { url: 'https://streamhdx.com/channels/2/?id=espn2bo', type: 'iframe' },
+      { url: 'https://vcdn.mn10.entel.bo/Content/DASH/Live/Channel(62567d5c-295c-4ffd-ac7e-c9749e874884)/master.mpd', type: 'dash', keyId: 'a81ee4a694fecd6aa8a682e5024b313c', keyValue: '6d15568e1dab59e7202ae12e71505185' },
       { url: 'https://pcn.nebunexa.life/cvatt.html?get=RVNQTjJfQXJn&lang=1', type: 'iframe' },
       { url: 'https://deepcathink.com/deportivo.php?player=desktop&live=espn22', type: 'iframe' },
     ]},

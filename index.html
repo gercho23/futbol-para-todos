@@ -1704,6 +1704,7 @@
 
   </style>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/shaka-player@4/dist/shaka-player.compiled.js"></script>
 </head>
 <body>
 
@@ -2371,6 +2372,7 @@
   }
 
   let hlsInstance = null;
+  let dashInstance = null;
 
   const SKYLIVE_IDS = new Set([
     'canal5mx','dsports','dsports2','dsportsplus',
@@ -2496,11 +2498,35 @@
       // Abre en nueva pestaña (ej: YouTube con embedding bloqueado)
       window.open(source.url, '_blank', 'noopener');
       return;
+    } else if (source.type === 'dash') {
+      iframe.style.display = 'none';
+      iframe.src = '';
+      video.style.display = 'block';
+      if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+      if (dashInstance) { dashInstance.destroy(); dashInstance = null; }
+      startErrorTimer();
+      shaka.polyfill.installAll();
+      if (shaka.Player.isBrowserSupported()) {
+        dashInstance = new shaka.Player();
+        dashInstance.attach(video).then(() => {
+          if (source.keyId && source.keyValue) {
+            dashInstance.configure({ drm: { clearKeys: { [source.keyId]: source.keyValue } } });
+          }
+          return dashInstance.load(source.url);
+        }).then(() => {
+          clearErrorTimer();
+          video.play().catch(() => {});
+        }).catch(() => showStreamError());
+        dashInstance.addEventListener('error', () => showStreamError());
+      } else {
+        showStreamError();
+      }
     } else if (source.type === 'hls') {
       iframe.style.display = 'none';
       iframe.src = '';
       video.style.display = 'block';
       if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+      if (dashInstance) { dashInstance.destroy(); dashInstance = null; }
       startErrorTimer();
       if (Hls.isSupported()) {
         hlsInstance = new Hls({ liveSyncDurationCount: 3 });
@@ -2509,7 +2535,6 @@
         hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => { clearErrorTimer(); video.play().catch(() => {}); });
         hlsInstance.on(Hls.Events.ERROR, (_, data) => { if (data.fatal) showStreamError(); });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        // Safari native HLS
         video.src = source.url;
         video.play().catch(() => {});
         video.addEventListener('canplay', clearErrorTimer, { once: true });
@@ -2565,6 +2590,7 @@
     video.style.display = 'none';
     document.getElementById('stream-iframe').style.display = 'block';
     if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+    if (dashInstance) { dashInstance.destroy(); dashInstance = null; }
     document.querySelectorAll('.channel-card').forEach(c => c.classList.remove('playing'));
     currentStream = null;
     document.getElementById('nav-playing').style.display = 'none';
