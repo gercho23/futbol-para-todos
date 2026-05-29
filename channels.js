@@ -98,7 +98,7 @@ const channels = [
       { url: 'https://streamtp10.com/global1.php?stream=espn2', type: 'iframe' },
       { url: 'https://streamhdx.com/channels/2/?id=espn2bo', type: 'iframe' },
       { url: 'https://pcn.nebunexa.life/cvatt.html?get=RVNQTjJfQXJn&lang=1', type: 'iframe' },
-      { url: 'https://deepcathink.com/deportivo.php?player=desktop&live=espn22', type: 'iframe' },
+      { url: 'https://canalesdeportivos.net/espn2hd.php', type: 'iframe' },
     ]},
   { id:'espn3',           name:'ESPN 3',            icon:'E3', color:'#e53e3e', region:'arg', logo: LOGOS.espn,
     customSources: [
