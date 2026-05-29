@@ -2519,6 +2519,7 @@
       video.pause();
       if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
       iframe.style.display = 'block';
+      iframe.referrerPolicy = source.url.includes('deepcathink.com') ? 'no-referrer' : 'no-referrer-when-downgrade';
       iframe.src = source.url;
       startErrorTimer();
     }
