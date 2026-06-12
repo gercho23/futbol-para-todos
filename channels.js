@@ -152,6 +152,7 @@ const channels = [
   { id:'fox3ar',          name:'Fox Sports 3',      icon:'F3', color:'#2b6cb0', region:'arg', logo: LOGOS.fox  },
   { id:'dsports',         name:'DSports',           icon:'DS', color:'#6b46c1', region:'arg', logo: LOGOS.dsports,
     customSources: [
+      { url: 'https://sudamericaplay2.com/canal_8112/cza_dsports.html', type: 'iframe' },
       { url: 'https://streamtpnew.com/global1.php?stream=dsports', type: 'iframe' },
       { url: 'https://streamhdx.com/live1.php?stream=dsports', type: 'iframe' },
       { url: 'https://embed.ksdjugfsddeports.com/embed/directvsports.html', type: 'iframe' },
