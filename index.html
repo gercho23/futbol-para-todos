@@ -2865,19 +2865,90 @@
 
   // Partidos destacados del Mundial (fase de grupos, semana inaugural + ARG)
   const MUNDIAL_MATCHES_DATA = [
-    // Apertura
-    { date:'11 Jun', home:'🇲🇽 México',    away:'🇪🇨 Ecuador',   group:'Grupo B', time:'22:00', venue:'Estadio Azteca', arg:false },
-    { date:'12 Jun', home:'🇺🇸 EE.UU',     away:'🇸🇦 Arabia S.', group:'Grupo A', time:'21:00', venue:'SoFi Stadium',   arg:false },
-    { date:'13 Jun', home:'🇧🇷 Brasil',     away:'🇵🇦 Panamá',    group:'Grupo F', time:'20:00', venue:'Rose Bowl',      arg:false },
-    { date:'13 Jun', home:'🇩🇪 Alemania',   away:'🇯🇵 Japón',     group:'Grupo E', time:'22:00', venue:'MetLife Stadium',arg:false },
-    { date:'14 Jun', home:'🇫🇷 Francia',    away:'🇩🇰 Dinamarca', group:'Grupo D', time:'19:00', venue:'Cowboys Stadium',arg:false },
-    { date:'14 Jun', home:'🇪🇸 España',     away:'🇨🇦 Canadá',    group:'Grupo I', time:'22:00', venue:'Hard Rock',      arg:false },
-    // ARG
-    { date:'16 Jun', home:'🇦🇷 Argentina',  away:'🇩🇿 Argelia',   group:'Grupo J', time:'22:00', venue:'Arrowhead, KC',  arg:true  },
-    { date:'17 Jun', home:'🇵🇹 Portugal',   away:'🇧🇪 Bélgica',   group:'Grupo H', time:'20:00', venue:'Levi\'s Stadium', arg:false },
-    { date:'18 Jun', home:'🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra', away:'🇳🇱 Holanda',  group:'Grupo G', time:'22:00', venue:'Lincoln Financial',arg:false },
-    { date:'22 Jun', home:'🇦🇷 Argentina',  away:'🇦🇹 Austria',   group:'Grupo J', time:'14:00', venue:'AT&T, Dallas',    arg:true  },
-    { date:'28 Jun', home:'🇦🇷 Argentina',  away:'🇯🇴 Jordania',  group:'Grupo J', time:'23:00', venue:'AT&T, Dallas',    arg:true  },
+    // ── GRUPO A ─────────────────────────────────────────────────
+    { date:'11 Jun', home:'🇲🇽 México',          away:'🇿🇦 Sudáfrica',       group:'Grupo A', time:'20:30', venue:'Estadio Azteca, CDMX',          arg:false },
+    { date:'11 Jun', home:'🇰🇷 Corea del Sur',   away:'🇨🇿 Rep. Checa',      group:'Grupo A', time:'23:00', venue:'',                               arg:false },
+    { date:'18 Jun', home:'🇨🇿 Rep. Checa',      away:'🇿🇦 Sudáfrica',       group:'Grupo A', time:'13:00', venue:'Mercedes-Benz, Atlanta',         arg:false },
+    { date:'18 Jun', home:'🇲🇽 México',          away:'🇰🇷 Corea del Sur',   group:'Grupo A', time:'22:00', venue:'Estadio Akron, Guadalajara',     arg:false },
+    { date:'24 Jun', home:'🇿🇦 Sudáfrica',       away:'🇰🇷 Corea del Sur',   group:'Grupo A', time:'22:00', venue:'Estadio BBVA, Monterrey',        arg:false },
+    { date:'24 Jun', home:'🇨🇿 Rep. Checa',      away:'🇲🇽 México',          group:'Grupo A', time:'22:00', venue:'Estadio Azteca, CDMX',           arg:false },
+    // ── GRUPO B ─────────────────────────────────────────────────
+    { date:'12 Jun', home:'🇨🇦 Canadá',          away:'🇧🇦 Bosnia y Herz.',  group:'Grupo B', time:'—',     venue:'BMO Field, Toronto',             arg:false },
+    { date:'12 Jun', home:'🇶🇦 Qatar',           away:'🇨🇭 Suiza',           group:'Grupo B', time:'—',     venue:'Levi\'s Stadium, Santa Clara',   arg:false },
+    { date:'18 Jun', home:'🇨🇭 Suiza',           away:'🇧🇦 Bosnia y Herz.',  group:'Grupo B', time:'16:00', venue:'SoFi Stadium, Los Ángeles',      arg:false },
+    { date:'18 Jun', home:'🇨🇦 Canadá',          away:'🇶🇦 Qatar',           group:'Grupo B', time:'19:00', venue:'BC Place, Vancouver',            arg:false },
+    { date:'24 Jun', home:'🇨🇭 Suiza',           away:'🇨🇦 Canadá',          group:'Grupo B', time:'16:00', venue:'BC Place, Vancouver',            arg:false },
+    { date:'24 Jun', home:'🇧🇦 Bosnia y Herz.',  away:'🇶🇦 Qatar',           group:'Grupo B', time:'16:00', venue:'Lumen Field, Seattle',           arg:false },
+    // ── GRUPO C ─────────────────────────────────────────────────
+    { date:'13 Jun', home:'🇧🇷 Brasil',          away:'🇲🇦 Marruecos',       group:'Grupo C', time:'—',     venue:'MetLife, Nueva Jersey',          arg:false },
+    { date:'13 Jun', home:'🇭🇹 Haití',           away:'🏴󠁧󠁢󠁳󠁣󠁴󠁿 Escocia',         group:'Grupo C', time:'—',     venue:'Gillette, Foxborough',           arg:false },
+    { date:'19 Jun', home:'🏴󠁧󠁢󠁳󠁣󠁴󠁿 Escocia',         away:'🇲🇦 Marruecos',       group:'Grupo C', time:'19:00', venue:'Gillette, Foxborough',           arg:false },
+    { date:'19 Jun', home:'🇧🇷 Brasil',          away:'🇭🇹 Haití',           group:'Grupo C', time:'21:30', venue:'Lincoln Financial, Philadelphia', arg:false },
+    { date:'24 Jun', home:'🇲🇦 Marruecos',       away:'🇭🇹 Haití',           group:'Grupo C', time:'19:00', venue:'Mercedes-Benz, Atlanta',         arg:false },
+    { date:'24 Jun', home:'🏴󠁧󠁢󠁳󠁣󠁴󠁿 Escocia',         away:'🇧🇷 Brasil',          group:'Grupo C', time:'19:00', venue:'Hard Rock, Miami',               arg:false },
+    // ── GRUPO D ─────────────────────────────────────────────────
+    { date:'12 Jun', home:'🇺🇸 EE.UU',          away:'🇵🇾 Paraguay',        group:'Grupo D', time:'—',     venue:'SoFi Stadium, Los Ángeles',      arg:false },
+    { date:'13 Jun', home:'🇦🇺 Australia',       away:'🇹🇷 Turquía',         group:'Grupo D', time:'—',     venue:'BC Place, Vancouver',            arg:false },
+    { date:'19 Jun', home:'🇺🇸 EE.UU',          away:'🇦🇺 Australia',       group:'Grupo D', time:'16:00', venue:'Lumen Field, Seattle',           arg:false },
+    { date:'19 Jun', home:'🇹🇷 Turquía',         away:'🇵🇾 Paraguay',        group:'Grupo D', time:'00:00', venue:'Levi\'s Stadium, Santa Clara',   arg:false },
+    { date:'25 Jun', home:'🇹🇷 Turquía',         away:'🇺🇸 EE.UU',          group:'Grupo D', time:'23:00', venue:'SoFi Stadium, Los Ángeles',      arg:false },
+    { date:'25 Jun', home:'🇵🇾 Paraguay',        away:'🇦🇺 Australia',       group:'Grupo D', time:'23:00', venue:'Levi\'s Stadium, Santa Clara',   arg:false },
+    // ── GRUPO E ─────────────────────────────────────────────────
+    { date:'14 Jun', home:'🇩🇪 Alemania',        away:'🇨🇼 Curazao',         group:'Grupo E', time:'—',     venue:'NRG Stadium, Houston',           arg:false },
+    { date:'14 Jun', home:'🇨🇮 Costa de Marfil', away:'🇪🇨 Ecuador',         group:'Grupo E', time:'—',     venue:'Lincoln Financial, Philadelphia', arg:false },
+    { date:'20 Jun', home:'🇩🇪 Alemania',        away:'🇨🇮 Costa de Marfil', group:'Grupo E', time:'17:00', venue:'BMO Field, Toronto',             arg:false },
+    { date:'20 Jun', home:'🇪🇨 Ecuador',         away:'🇨🇼 Curazao',         group:'Grupo E', time:'21:00', venue:'Arrowhead, Kansas City',         arg:false },
+    { date:'25 Jun', home:'🇨🇼 Curazao',         away:'🇨🇮 Costa de Marfil', group:'Grupo E', time:'17:00', venue:'Lincoln Financial, Philadelphia', arg:false },
+    { date:'25 Jun', home:'🇪🇨 Ecuador',         away:'🇩🇪 Alemania',        group:'Grupo E', time:'17:00', venue:'MetLife, Nueva Jersey',          arg:false },
+    // ── GRUPO F ─────────────────────────────────────────────────
+    { date:'14 Jun', home:'🇳🇱 Países Bajos',    away:'🇯🇵 Japón',           group:'Grupo F', time:'—',     venue:'AT&T Stadium, Dallas',           arg:false },
+    { date:'14 Jun', home:'🇸🇪 Suecia',          away:'🇹🇳 Túnez',           group:'Grupo F', time:'—',     venue:'Estadio BBVA, Monterrey',        arg:false },
+    { date:'20 Jun', home:'🇳🇱 Países Bajos',    away:'🇸🇪 Suecia',          group:'Grupo F', time:'14:00', venue:'NRG Stadium, Houston',           arg:false },
+    { date:'20 Jun', home:'🇹🇳 Túnez',           away:'🇯🇵 Japón',           group:'Grupo F', time:'01:00', venue:'Estadio BBVA, Monterrey',        arg:false },
+    { date:'25 Jun', home:'🇯🇵 Japón',           away:'🇸🇪 Suecia',          group:'Grupo F', time:'20:00', venue:'AT&T Stadium, Dallas',           arg:false },
+    { date:'25 Jun', home:'🇹🇳 Túnez',           away:'🇳🇱 Países Bajos',    group:'Grupo F', time:'20:00', venue:'Arrowhead, Kansas City',         arg:false },
+    // ── GRUPO G ─────────────────────────────────────────────────
+    { date:'15 Jun', home:'🇧🇪 Bélgica',         away:'🇪🇬 Egipto',          group:'Grupo G', time:'—',     venue:'Lumen Field, Seattle',           arg:false },
+    { date:'15 Jun', home:'🇮🇷 Irán',            away:'🇳🇿 Nueva Zelanda',   group:'Grupo G', time:'22:00', venue:'SoFi Stadium, Los Ángeles',      arg:false },
+    { date:'21 Jun', home:'🇧🇪 Bélgica',         away:'🇮🇷 Irán',            group:'Grupo G', time:'16:00', venue:'SoFi Stadium, Los Ángeles',      arg:false },
+    { date:'21 Jun', home:'🇳🇿 Nueva Zelanda',   away:'🇪🇬 Egipto',          group:'Grupo G', time:'22:00', venue:'BC Place, Vancouver',            arg:false },
+    { date:'26 Jun', home:'🇳🇿 Nueva Zelanda',   away:'🇧🇪 Bélgica',         group:'Grupo G', time:'00:00', venue:'BC Place, Vancouver',            arg:false },
+    { date:'26 Jun', home:'🇪🇬 Egipto',          away:'🇮🇷 Irán',            group:'Grupo G', time:'00:00', venue:'Lumen Field, Seattle',           arg:false },
+    // ── GRUPO H ─────────────────────────────────────────────────
+    { date:'15 Jun', home:'🇪🇸 España',          away:'🇨🇻 Cabo Verde',      group:'Grupo H', time:'—',     venue:'Mercedes-Benz, Atlanta',         arg:false },
+    { date:'15 Jun', home:'🇸🇦 Arabia Saudita',  away:'🇺🇾 Uruguay',         group:'Grupo H', time:'—',     venue:'Hard Rock, Miami',               arg:false },
+    { date:'21 Jun', home:'🇪🇸 España',          away:'🇸🇦 Arabia Saudita',  group:'Grupo H', time:'13:00', venue:'Mercedes-Benz, Atlanta',         arg:false },
+    { date:'21 Jun', home:'🇺🇾 Uruguay',         away:'🇨🇻 Cabo Verde',      group:'Grupo H', time:'19:00', venue:'Hard Rock, Miami',               arg:false },
+    { date:'26 Jun', home:'🇨🇻 Cabo Verde',      away:'🇸🇦 Arabia Saudita',  group:'Grupo H', time:'21:00', venue:'NRG Stadium, Houston',           arg:false },
+    { date:'26 Jun', home:'🇺🇾 Uruguay',         away:'🇪🇸 España',          group:'Grupo H', time:'21:00', venue:'Estadio Akron, Guadalajara',     arg:false },
+    // ── GRUPO I ─────────────────────────────────────────────────
+    { date:'16 Jun', home:'🇫🇷 Francia',         away:'🇸🇳 Senegal',         group:'Grupo I', time:'16:00', venue:'MetLife, Nueva Jersey',          arg:false },
+    { date:'16 Jun', home:'🇮🇶 Irak',            away:'🇳🇴 Noruega',         group:'Grupo I', time:'19:00', venue:'Gillette, Foxborough',           arg:false },
+    { date:'22 Jun', home:'🇫🇷 Francia',         away:'🇮🇶 Irak',            group:'Grupo I', time:'18:00', venue:'Lincoln Financial, Philadelphia', arg:false },
+    { date:'22 Jun', home:'🇳🇴 Noruega',         away:'🇸🇳 Senegal',         group:'Grupo I', time:'21:00', venue:'MetLife, Nueva Jersey',          arg:false },
+    { date:'26 Jun', home:'🇳🇴 Noruega',         away:'🇫🇷 Francia',         group:'Grupo I', time:'16:00', venue:'Gillette, Foxborough',           arg:false },
+    { date:'26 Jun', home:'🇸🇳 Senegal',         away:'🇮🇶 Irak',            group:'Grupo I', time:'16:00', venue:'BMO Field, Toronto',             arg:false },
+    // ── GRUPO J — Argentina 🇦🇷 ──────────────────────────────────
+    { date:'16 Jun', home:'🇦🇷 Argentina',       away:'🇩🇿 Argelia',         group:'Grupo J', time:'22:00', venue:'Arrowhead, Kansas City',         arg:true  },
+    { date:'16 Jun', home:'🇦🇹 Austria',         away:'🇯🇴 Jordania',        group:'Grupo J', time:'01:00', venue:'Levi\'s Stadium, Santa Clara',   arg:false },
+    { date:'22 Jun', home:'🇦🇷 Argentina',       away:'🇦🇹 Austria',         group:'Grupo J', time:'14:00', venue:'AT&T Stadium, Dallas',           arg:true  },
+    { date:'22 Jun', home:'🇯🇴 Jordania',        away:'🇩🇿 Argelia',         group:'Grupo J', time:'00:00', venue:'Levi\'s Stadium, Santa Clara',   arg:false },
+    { date:'27 Jun', home:'🇩🇿 Argelia',         away:'🇦🇹 Austria',         group:'Grupo J', time:'23:00', venue:'Arrowhead, Kansas City',         arg:false },
+    { date:'27 Jun', home:'🇯🇴 Jordania',        away:'🇦🇷 Argentina',       group:'Grupo J', time:'23:00', venue:'AT&T Stadium, Dallas',           arg:true  },
+    // ── GRUPO K ─────────────────────────────────────────────────
+    { date:'17 Jun', home:'🇵🇹 Portugal',        away:'🇨🇩 RD Congo',        group:'Grupo K', time:'14:00', venue:'NRG Stadium, Houston',           arg:false },
+    { date:'17 Jun', home:'🇺🇿 Uzbekistán',      away:'🇨🇴 Colombia',        group:'Grupo K', time:'23:00', venue:'Estadio Azteca, CDMX',           arg:false },
+    { date:'23 Jun', home:'🇵🇹 Portugal',        away:'🇺🇿 Uzbekistán',      group:'Grupo K', time:'14:00', venue:'NRG Stadium, Houston',           arg:false },
+    { date:'23 Jun', home:'🇨🇴 Colombia',        away:'🇨🇩 RD Congo',        group:'Grupo K', time:'23:00', venue:'Estadio Akron, Guadalajara',     arg:false },
+    { date:'27 Jun', home:'🇨🇴 Colombia',        away:'🇵🇹 Portugal',        group:'Grupo K', time:'20:30', venue:'Hard Rock, Miami',               arg:false },
+    { date:'27 Jun', home:'🇨🇩 RD Congo',        away:'🇺🇿 Uzbekistán',      group:'Grupo K', time:'20:30', venue:'Mercedes-Benz, Atlanta',         arg:false },
+    // ── GRUPO L ─────────────────────────────────────────────────
+    { date:'17 Jun', home:'🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra',     away:'🇭🇷 Croacia',          group:'Grupo L', time:'17:00', venue:'AT&T Stadium, Dallas',           arg:false },
+    { date:'17 Jun', home:'🇬🇭 Ghana',           away:'🇵🇦 Panamá',          group:'Grupo L', time:'20:00', venue:'BMO Field, Toronto',             arg:false },
+    { date:'23 Jun', home:'🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra',     away:'🇬🇭 Ghana',            group:'Grupo L', time:'17:00', venue:'Gillette, Foxborough',           arg:false },
+    { date:'23 Jun', home:'🇵🇦 Panamá',          away:'🇭🇷 Croacia',         group:'Grupo L', time:'20:00', venue:'BMO Field, Toronto',             arg:false },
+    { date:'27 Jun', home:'🇭🇷 Croacia',         away:'🇬🇭 Ghana',           group:'Grupo L', time:'18:00', venue:'Lincoln Financial, Philadelphia', arg:false },
+    { date:'27 Jun', home:'🇵🇦 Panamá',          away:'🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra',     group:'Grupo L', time:'18:00', venue:'MetLife, Nueva Jersey',          arg:false },
   ];
 
   function renderMundialGroups() {
