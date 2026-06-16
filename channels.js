@@ -376,6 +376,7 @@ const channels = [
   { id:'telemundo',       name:'Telemundo',         icon:'TM', color:'#cc0000', region:'usa', logo: LOGOS.telemundo,
     customSources: [
       { url: 'https://tvtveshd.com/player.php?id=telemundo', type: 'iframe' },
+      { url: 'https://sudamericaplay2.com/canal_8112/74telemundo.html', type: 'iframe' },
     ]},
   { id:'univision_usa',   name:'Univision USA',     icon:'UV', color:'#2b6cb0', region:'usa', logo: LOGOS.univision },
   { id:'fox_deportes_usa',name:'Fox Deportes',      icon:'FD', color:'#2b6cb0', region:'usa', logo: LOGOS.fox },
