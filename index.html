@@ -3557,7 +3557,7 @@
           const score = matchScore(m);
           const clock = matchClock(m);
           const compName = matchCompName(m);
-          const channels = getChannels(compName);
+          const channels = getChannels(compName, m);
           const isMatchOpen = openMatches.has(uid);
           const flag = matchFlag(m, COMPETITIONS);
 
