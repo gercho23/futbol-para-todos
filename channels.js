@@ -205,7 +205,7 @@ const channels = [
     ]},
   { id:'telefe',          name:'Telefe',            icon:'TF', color:'#744210', region:'arg', logo: LOGOS.telefe,
     customSources: [
-      { url: 'https://pelisjuanita.com/tv/telefe.html', type: 'iframe' },
+      { url: 'https://telefeappmitelefe1.akamaized.net/hls/live/2037985/appmitelefe/TOK/master.m3u8', type: 'hls' },
       { url: 'https://pelisjuanita.com/tv/telefe.html', type: 'iframe' },
       { url: 'https://pelisjuanita.com/tv/telefe.html', type: 'iframe' },
     ]},
