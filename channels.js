@@ -13,6 +13,7 @@ const LOGOS = {
   tvpublica:'https://upload.wikimedia.org/wikipedia/commons/a/a5/TVP_-_Televisi%C3%B3n_P%C3%BAblica_%282021%29.svg',
   liga1:    'https://upload.wikimedia.org/wikipedia/commons/3/38/L1MAX-LOGO.svg',
   tudn:     'https://upload.wikimedia.org/wikipedia/commons/6/6c/TUDN_Logo.svg',
+  telemundo:'https://upload.wikimedia.org/wikipedia/commons/6/68/Telemundo_logo_2018.svg',
   univision:'https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_Univision_2013.svg',
   universo: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/NBC_Universo_logo.svg',
   usa_net:  'https://upload.wikimedia.org/wikipedia/commons/d/d7/USA_Network_logo_%282016%29.svg',
