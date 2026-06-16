@@ -373,6 +373,10 @@ const channels = [
   { id:'fox_1_usa',       name:'Fox Sports 1',      icon:'F1', color:'#2b6cb0', region:'usa', logo: LOGOS.fox },
   { id:'fox_2_usa',       name:'Fox Sports 2',      icon:'F2', color:'#2b6cb0', region:'usa', logo: LOGOS.fox },
   { id:'universo_usa',    name:'Universo USA',      icon:'UN', color:'#553c9a', region:'usa', logo: LOGOS.universo },
+  { id:'telemundo',       name:'Telemundo',         icon:'TM', color:'#cc0000', region:'usa', logo: LOGOS.telemundo,
+    customSources: [
+      { url: 'https://tvtveshd.com/player.php?id=telemundo', type: 'iframe' },
+    ]},
   { id:'univision_usa',   name:'Univision USA',     icon:'UV', color:'#2b6cb0', region:'usa', logo: LOGOS.univision },
   { id:'fox_deportes_usa',name:'Fox Deportes',      icon:'FD', color:'#2b6cb0', region:'usa', logo: LOGOS.fox },
   { id:'usa_network',     name:'USA Network',       icon:'US', color:'#1a365d', region:'usa', logo: LOGOS.usa_net },
