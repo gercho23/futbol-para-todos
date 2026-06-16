@@ -3719,11 +3719,11 @@
         }
       } catch(_) {}
 
-      // --- Static Argentine data (Mundial 2026, filtered to window) ---
-      const argFiltered = ARG_MATCHES.filter(m => m.date >= dateFrom && m.date <= dateTo);
+      // --- Mundial 2026 estático (filtrado a la ventana de 20 días) ---
+      const mundialFiltered = MUNDIAL_MATCHES.filter(m => m.date >= dateFrom && m.date <= dateTo);
 
       // Merge all sources
-      const allMatches = [...apiMatches, ...lpfMatches, ...copaArgMatches, ...argFiltered];
+      const allMatches = [...apiMatches, ...lpfMatches, ...copaArgMatches, ...mundialFiltered];
 
       // Sort: live first, then chronologically
       allMatches.sort((a, b) => {
