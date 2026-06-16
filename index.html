@@ -3188,7 +3188,37 @@
       ],
     };
 
-    function getChannels(compName) {
+    // Canales específicos por partido (home vs away, orden no importa)
+    const MATCH_CHANNELS = {
+      'Francia|Senegal': [
+        { id:'dsports',   name:'DSports',   q:'1080p' },
+        { id:'telemundo', name:'Telemundo', q:'1080p' },
+      ],
+      'Irak|Noruega': [
+        { id:'dsports',   name:'DSports',   q:'1080p' },
+        { id:'tycsports', name:'TyC Sports',q:'1080p' },
+        { id:'telemundo', name:'Telemundo', q:'1080p' },
+      ],
+      'Argentina|Argelia': [
+        { id:'dsports',   name:'DSports',   q:'1080p' },
+        { id:'tycsports', name:'TyC Sports',q:'1080p' },
+        { id:'telefe',    name:'Telefe',    q:'1080p' },
+        { id:'telemundo', name:'Telemundo', q:'1080p' },
+      ],
+    };
+
+    function getChannels(compName, m) {
+      // Primero buscar override por partido específico
+      if (m) {
+        const home = (m.home || m.homeTeam?.name || '').trim();
+        const away = (m.away || m.awayTeam?.name || '').trim();
+        for (const key of Object.keys(MATCH_CHANNELS)) {
+          const [a, b] = key.split('|');
+          if ((home.includes(a) && away.includes(b)) || (home.includes(b) && away.includes(a)))
+            return MATCH_CHANNELS[key];
+        }
+      }
+      // Luego buscar por competición
       for (const key of Object.keys(COMP_CHANNELS)) {
         if (key !== 'default' && compName && compName.toLowerCase().includes(key.toLowerCase()))
           return COMP_CHANNELS[key];
