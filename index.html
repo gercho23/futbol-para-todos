@@ -3849,7 +3849,7 @@
       });
 
       window._agendaData = allMatches;
-      if (typeof updateWCWidget === 'function') updateWCWidget();
+      try { if (typeof updateWCWidget === 'function') updateWCWidget(); } catch(_) {}
       if (!window._agendaFirstRender) {
         renderDom(allMatches);
         window._agendaFirstRender = true;
