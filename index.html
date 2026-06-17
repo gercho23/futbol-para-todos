@@ -1737,13 +1737,13 @@
     <button class="nav-link" id="navbtn-faq" onclick="scrollToSection('faq-section')">❓ Preguntas Frecuentes</button>
     <button class="nav-link" id="navbtn-tablas" onclick="scrollToSection('standings-section')">📊 Tablas</button>
   </nav>
-  <div class="next-match" onclick="showArgPage()">
+  <div class="next-match" id="wc-widget" onclick="playDSportsSource2()">
     <div class="next-match-inner">
-      <div class="next-match-label">🏆 Mundial 2026</div>
-      <div class="next-match-teams">🇦🇷 ARG vs DZA 🇩🇿</div>
+      <div class="next-match-label" id="wc-label">⏳ Mundial 2026</div>
+      <div class="next-match-teams" id="wc-teams">Cargando...</div>
     </div>
     <div class="next-match-divider"></div>
-    <div class="next-match-countdown" id="header-countdown">--d --h</div>
+    <div class="next-match-countdown" id="header-countdown">--</div>
   </div>
   <!-- Hamburger (mobile only) -->
   <button id="hamburger" onclick="toggleMenu()" aria-label="Menú">
