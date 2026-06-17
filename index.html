@@ -3795,11 +3795,12 @@
         }
       } catch(_) {}
 
-      // --- Mundial 2026 estático (filtrado a la ventana de 20 días) ---
-      const mundialFiltered = MUNDIAL_MATCHES.filter(m => m.date >= dateFrom && m.date <= dateTo);
+      // --- Mundial 2026: ESPN es la fuente principal; estático solo como fallback ---
+      const espnTieneMundial = lpfMatches.some(m => m.comp === 'Mundial 2026');
+      const mundialFallback = espnTieneMundial ? [] : MUNDIAL_MATCHES.filter(m => m.date >= dateFrom && m.date <= dateTo);
 
       // Merge all sources
-      const allMatches = [...apiMatches, ...lpfMatches, ...copaArgMatches, ...mundialFiltered];
+      const allMatches = [...apiMatches, ...lpfMatches, ...copaArgMatches, ...mundialFallback];
 
       // Sort: live first, then chronologically
       allMatches.sort((a, b) => {
