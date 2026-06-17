@@ -2737,47 +2737,89 @@
 
   // ===== COUNTDOWN (shared) =====
   // Argentina vs Argelia — 16 junio 2026, 22:00 ARG = UTC-3 → 01:00 UTC 17/6
-  const MATCH_DATE = new Date('2026-06-17T01:00:00Z');
+  function playDSportsSource2() {
+    playChannel('dsports', 'DSports');
+    setTimeout(() => switchSource('global2'), 120);
+  }
 
-  function updateCountdowns() {
-    const now  = new Date();
-    const diff = MATCH_DATE - now;
+  function getNextWCMatch() {
+    const now = new Date();
+    // Preferir datos en vivo de ESPN si están disponibles
+    const agendaWC = (window._agendaData || []).filter(m => m.comp === 'Mundial 2026');
+    const live = agendaWC.find(m => m.status === 'IN_PLAY' || m.status === 'PAUSED');
+    if (live) return { ...live, isLive: true };
 
-    // --- Header badge ---
-    const hEl = document.getElementById('header-countdown');
-    if (hEl) {
-      if (diff <= 0) {
-        hEl.textContent = '¡En juego!';
-        hEl.classList.add('soon');
-      } else {
-        const hd = Math.floor(diff / 864e5);
-        const hh = Math.floor((diff % 864e5) / 36e5);
-        const hm = Math.floor((diff % 36e5) / 6e4);
-        const hs = Math.floor((diff % 6e4) / 1e3);
-        hEl.textContent = hd > 0 ? `${hd}d ${hh}h ${hm}m ${String(hs).padStart(2,'0')}s` : `${hh}h ${hm}m ${String(hs).padStart(2,'0')}s`;
-        if (hd === 0 && hh < 3) hEl.classList.add('soon');
-      }
+    // Combinar ESPN + estáticos; buscar el próximo no terminado
+    const all = agendaWC.length ? agendaWC : MUNDIAL_MATCHES;
+    const upcoming = all
+      .filter(m => m.status !== 'FINISHED' && m.status !== 'finished')
+      .map(m => {
+        const kickoff = new Date(`${m.date}T${(m.time || '00:00')}:00-03:00`);
+        return { ...m, kickoff };
+      })
+      .filter(m => m.kickoff > now)
+      .sort((a, b) => a.kickoff - b.kickoff);
+
+    return upcoming[0] || null;
+  }
+
+  function updateWCWidget() {
+    const hEl   = document.getElementById('header-countdown');
+    const teams = document.getElementById('wc-teams');
+    const label = document.getElementById('wc-label');
+    if (!hEl || !teams) return;
+
+    const m = getNextWCMatch();
+    if (!m) {
+      label.textContent  = '🏆 Mundial 2026';
+      teams.textContent  = 'Final completada';
+      hEl.textContent    = '';
+      return;
     }
 
-    // --- Big countdown units ---
-    const dEl = document.getElementById('cd-days');
-    const hEl2 = document.getElementById('cd-hours');
-    const mEl = document.getElementById('cd-mins');
-    const sEl = document.getElementById('cd-secs');
-    if (dEl) {
+    const home = m.homeTeam?.shortName || m.homeTeam?.name || m.home || '?';
+    const away = m.awayTeam?.shortName || m.awayTeam?.name || m.away || '?';
+    const homeBadge = m.home && TEAM_BADGES[m.home] ? `<img src="${TEAM_BADGES[m.home]}" width="14" height="14" style="object-fit:contain;vertical-align:middle;margin-right:3px">` : (m.flag || '');
+    const awayBadge = m.away && TEAM_BADGES[m.away] ? `<img src="${TEAM_BADGES[m.away]}" width="14" height="14" style="object-fit:contain;vertical-align:middle;margin-left:3px">` : '';
+    teams.innerHTML = `${homeBadge}${home} vs ${away}${awayBadge}`;
+
+    if (m.isLive) {
+      // Partido en vivo: mostrar tiempo transcurrido
+      const clockText = m.isHalfTime ? 'ET' : m.clockMins ? `${m.clockMins}'` : '🔴';
+      const period    = m.period === 2 ? '· 2T' : m.clockMins ? '· 1T' : '';
+      label.textContent = '🔴 EN VIVO';
+      hEl.textContent   = `${clockText} ${period}`.trim();
+      hEl.classList.add('soon');
+      const widget = document.getElementById('wc-widget');
+      if (widget) widget.style.borderColor = 'rgba(239,68,68,0.5)';
+    } else {
+      // Próximo partido: countdown
+      const now  = new Date();
+      const kickoff = m.kickoff || new Date(`${m.date}T${(m.time || '00:00')}:00-03:00`);
+      const diff = kickoff - now;
+      label.textContent = '⏳ Próximo partido';
+      hEl.classList.remove('soon');
+      const widget = document.getElementById('wc-widget');
+      if (widget) widget.style.borderColor = '';
+
       if (diff <= 0) {
-        dEl.textContent = hEl2.textContent = mEl.textContent = sEl.textContent = '0';
+        hEl.textContent = '¡Comenzando!';
+        hEl.classList.add('soon');
       } else {
-        dEl.textContent  = String(Math.floor(diff / 864e5)).padStart(2,'0');
-        hEl2.textContent = String(Math.floor((diff % 864e5) / 36e5)).padStart(2,'0');
-        mEl.textContent  = String(Math.floor((diff % 36e5) / 6e4)).padStart(2,'0');
-        sEl.textContent  = String(Math.floor((diff % 6e4) / 1e3)).padStart(2,'0');
+        const dd = Math.floor(diff / 864e5);
+        const hh = Math.floor((diff % 864e5) / 36e5);
+        const mm = Math.floor((diff % 36e5) / 6e4);
+        const ss = Math.floor((diff % 6e4) / 1e3);
+        hEl.textContent = dd > 0
+          ? `${dd}d ${hh}h ${mm}m`
+          : `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+        if (dd === 0 && hh < 3) hEl.classList.add('soon');
       }
     }
   }
 
-  updateCountdowns();
-  setInterval(updateCountdowns, 1000);
+  updateWCWidget();
+  setInterval(updateWCWidget, 1000);
 
   // ===== MUNDIAL 2026 =====
   function switchMundialTab(tab, btn) {
