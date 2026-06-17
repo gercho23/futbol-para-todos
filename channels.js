@@ -38,7 +38,7 @@ const LOGOS = {
   skytennis:'https://upload.wikimedia.org/wikipedia/commons/d/dd/Sky_Sports_Tennis_-_Logo_2025.svg',
   realmadridtv: 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Realmadrid_Television_Logo.svg',
   rta:      'https://upload.wikimedia.org/wikipedia/commons/a/a1/RTA_Afghanistan_Logo_%282021%E2%80%93%29_blue.svg',
-  telemundo:'https://upload.wikimedia.org/wikipedia/commons/e/ea/Telemundo_2018.svg',
+  telemundo:'https://upload.wikimedia.org/wikipedia/commons/6/68/Telemundo_logo_2018.svg',
   rtve:     'https://upload.wikimedia.org/wikipedia/commons/b/b1/TVE1_logo.svg',
   movistar: 'https://upload.wikimedia.org/wikipedia/commons/3/32/Movistar_Deportes.svg',
   mutv:     'https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg',
