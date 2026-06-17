@@ -3858,6 +3858,7 @@
       });
 
       window._agendaData = allMatches;
+      if (typeof updateWCWidget === 'function') updateWCWidget();
       if (!window._agendaFirstRender) {
         renderDom(allMatches);
         window._agendaFirstRender = true;
