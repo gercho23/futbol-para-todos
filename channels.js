@@ -208,6 +208,7 @@ const channels = [
       { url: '/telefe-player.html', type: 'iframe' },
       { url: 'https://mdstrm.com/live-stream/69e0fb650d9e3eb5340cdd5c?player=69f8d6e334a190b16647b23b', type: 'iframe' },
       { url: 'https://pelisjuanita.com/tv/telefe.html', type: 'iframe' },
+      { url: 'https://stream-xhd.com/live1.php?stream=telefe', type: 'iframe' },
     ]},
   { id:'tv_publica',      name:'TV Pública',        icon:'TV', color:'#2c5282', region:'arg', logo: LOGOS.tvpublica,
     customSources: [
