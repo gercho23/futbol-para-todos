@@ -169,6 +169,7 @@ const channels = [
   { id:'dsportsplus',     name:'DSports+',          icon:'D+', color:'#6b46c1', region:'arg', logo: LOGOS.dsports,
     customSources: [
       { url: 'https://stream-xhd.com/channel2/?id=dsportsplus', type: 'iframe' },
+      { url: 'https://stream-xhd.com/live1.php?stream=dsportsplus', type: 'iframe' },
     ]},
   { id:'tntsports',       name:'TNT Sports AR',     icon:'TN', color:'#d69e2e', region:'arg', logo: LOGOS.tnt,
     customSources: [
