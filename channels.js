@@ -166,7 +166,10 @@ const channels = [
       { url: 'https://streamtpnew.com/global1.php?stream=dsports2', type: 'iframe' },
       { url: 'https://streamhdx.com/live1.php?stream=dsports2', type: 'iframe' },
     ]},
-  { id:'dsportsplus',     name:'DSports+',          icon:'D+', color:'#6b46c1', region:'arg', logo: LOGOS.dsports  },
+  { id:'dsportsplus',     name:'DSports+',          icon:'D+', color:'#6b46c1', region:'arg', logo: LOGOS.dsports,
+    customSources: [
+      { url: 'https://stream-xhd.com/channel2/?id=dsportsplus', type: 'iframe' },
+    ]},
   { id:'tntsports',       name:'TNT Sports AR',     icon:'TN', color:'#d69e2e', region:'arg', logo: LOGOS.tnt,
     customSources: [
       { url: 'https://streamtp10.com/global1.php?stream=tntsports', type: 'iframe' },
