@@ -3347,7 +3347,10 @@
       return m.competition?.name || m.comp || '—';
     }
 
+    const WC26_LOGO = '<img src="https://upload.wikimedia.org/wikipedia/en/1/17/2026_FIFA_World_Cup_emblem.svg" alt="WC26" width="20" height="20" style="object-fit:contain;vertical-align:middle">';
     function matchFlag(m, apiComps) {
+      const comp = m.competition?.name || m.comp || '';
+      if (comp === 'Mundial 2026') return WC26_LOGO;
       if (m.flag) return m.flag;
       const c = apiComps?.find(c => c.id === m.competition?.id);
       return c?.flag || '⚽';
