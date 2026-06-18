@@ -170,6 +170,7 @@ const channels = [
     customSources: [
       { url: 'https://stream-xhd.com/channel2/?id=dsportsplus', type: 'iframe' },
       { url: 'https://stream-xhd.com/live1.php?stream=dsportsplus', type: 'iframe' },
+      { url: 'https://sudamericaplay2.com/canal_8112/1dzportsplus.html', type: 'iframe' },
     ]},
   { id:'tntsports',       name:'TNT Sports AR',     icon:'TN', color:'#d69e2e', region:'arg', logo: LOGOS.tnt,
     customSources: [
