@@ -156,7 +156,7 @@ const channels = [
       { url: 'https://stream-xhd.com/channel2/?id=dsports1', type: 'iframe' },
       { url: 'https://sudamericaplay2.com/canal_8112/cza_dsports.html', type: 'iframe' },
       { url: 'https://streamtpday1.xyz/global1.php?stream=dsports', type: 'iframe' },
-      { url: 'https://stream-xhd.com/live1.php?stream=dsports', type: 'iframe' },
+      { url: 'https://sudamericaplay2.com/canal_8112/dsports4541.html', type: 'iframe' },
       { url: 'https://embed.ksdjugfsddeports.com/embed/directvsports.html', type: 'iframe' },
       { url: 'https://embed.ksdjugfsddeports.com/embed2/directvsports.html', type: 'iframe' },
       { url: 'https://embed.ksdjugfsddeports.com/embed/directvsports.html', type: 'iframe' },
