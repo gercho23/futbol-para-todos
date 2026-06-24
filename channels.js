@@ -165,6 +165,7 @@ const channels = [
     customSources: [
       { url: 'https://stream-xhd.com/channel2/?id=dsports2', type: 'iframe' },
       { url: 'https://streamhdx.com/live1.php?stream=dsports2', type: 'iframe' },
+      { url: 'https://stream-xhd.com/live2.php?stream=dsports2', type: 'iframe' },
     ]},
   { id:'dsportsplus',     name:'DSports+',          icon:'D+', color:'#6b46c1', region:'arg', logo: LOGOS.dsports,
     customSources: [
