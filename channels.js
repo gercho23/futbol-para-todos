@@ -163,7 +163,7 @@ const channels = [
     ]},
   { id:'dsports2',        name:'DSports 2',         icon:'D2', color:'#6b46c1', region:'arg', logo: LOGOS.dsports,
     customSources: [
-      { url: 'https://streamtpnew.com/global1.php?stream=dsports2', type: 'iframe' },
+      { url: 'https://stream-xhd.com/channel2/?id=dsports2', type: 'iframe' },
       { url: 'https://streamhdx.com/live1.php?stream=dsports2', type: 'iframe' },
     ]},
   { id:'dsportsplus',     name:'DSports+',          icon:'D+', color:'#6b46c1', region:'arg', logo: LOGOS.dsports,
