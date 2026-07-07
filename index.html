@@ -2557,7 +2557,7 @@
       if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
       if (dashInstance) { dashInstance.destroy(); dashInstance = null; }
       iframe.style.display = 'block';
-      iframe.referrerPolicy = source.url.includes('deepcathink.com') ? 'no-referrer' : 'no-referrer-when-downgrade';
+      iframe.referrerPolicy = (source.url.includes('deepcathink.com') || source.url.includes('stream-xhd.com')) ? 'no-referrer' : 'no-referrer-when-downgrade';
       iframe.src = source.url;
       startErrorTimer();
     }
