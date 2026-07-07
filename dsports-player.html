@@ -37,8 +37,8 @@
         player.getNetworkingEngine().registerResponseFilter((type, response) => {
           if (type === shaka.net.NetworkingEngine.RequestType.MANIFEST) {
             const txt = new TextDecoder('utf-8').decode(response.data);
-            if (txt.includes('edef8ba9')) {
-              const cleaned = txt.replace(/<ContentProtection[^>]*edef8ba9[^"]*"[\s\S]*?<\/ContentProtection>/gi, '');
+            const cleaned = txt.replace(/<ContentProtection schemeIdUri="urn:uuid:[^"]*"[\s\S]*?<\/ContentProtection>/gi, '');
+            if (cleaned !== txt) {
               response.data = new TextEncoder().encode(cleaned).buffer;
             }
           }
