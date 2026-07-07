@@ -153,6 +153,7 @@ const channels = [
   { id:'fox3ar',          name:'Fox Sports 3',      icon:'F3', color:'#2b6cb0', region:'arg', logo: LOGOS.fox  },
   { id:'dsports',         name:'DSports',           icon:'DS', color:'#6b46c1', region:'arg', logo: LOGOS.dsports,
     customSources: [
+      { url: '/dsports-player.html?id=dsports1', type: 'iframe' },
       { url: 'https://stream-xhd.com/channel2/?id=dsports1', type: 'iframe' },
       { url: 'https://streamhdx.xyz/channel/?id=dsports1', type: 'iframe' },
       { url: 'https://streamtpday1.xyz/global1.php?stream=dsports', type: 'iframe' },
