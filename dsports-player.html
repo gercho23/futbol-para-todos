@@ -46,8 +46,17 @@
         if (data.keyId && data.keyValue) {
           player.configure({ drm: { clearKeys: { [data.keyId]: data.keyValue } } });
         }
+        player.configure({
+          abr: { enabled: false },
+          restrictions: { minHeight: 1080 }
+        });
         return player.load(data.channelUrl);
       }).then(() => {
+        const tracks = player.getVariantTracks().filter(t => t.height === 1080);
+        if (tracks.length) {
+          const best = tracks.reduce((a, b) => (b.bandwidth > a.bandwidth ? b : a));
+          player.selectVariantTrack(best, true);
+        }
         video.play().then(() => { video.muted = false; }).catch(() => {});
       }).catch(err => showError(err.message || err));
       player.addEventListener('error', e => showError(e.detail && e.detail.message));
