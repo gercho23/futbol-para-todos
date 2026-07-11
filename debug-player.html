@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>DSports Debug</title>
+<script src="https://cdn.jsdelivr.net/npm/shaka-player@4/dist/shaka-player.compiled.js"></script>
+<style>
+  html, body { width: 100%; height: 100%; background: #000; margin:0; }
+  video { width: 100%; height: 100%; background: #000; }
+</style>
+</head>
+<body>
+<video id="video" autoplay muted controls playsinline></video>
+<script>
+  window.LOG = [];
+  function log(...args) {
+    const line = args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' ');
+    window.LOG.push(line);
+    console.log(line);
+  }
+
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id') || 'dsports1';
+
+  fetch('/api/dsports-token?id=' + encodeURIComponent(id))
+    .then(r => r.json())
+    .then(data => {
+      log('token data', data);
+      shaka.polyfill.installAll();
+      const video = document.getElementById('video');
+      const player = new shaka.Player();
+      window.player = player;
+      player.attach(video).then(() => {
+        player.getNetworkingEngine().registerResponseFilter((type, response) => {
+          if (type === shaka.net.NetworkingEngine.RequestType.MANIFEST) {
+            const txt = new TextDecoder('utf-8').decode(response.data);
+            const cleaned = txt.replace(/<ContentProtection schemeIdUri="urn:uuid:[^"]*"[\s\S]*?<\/ContentProtection>/gi, '');
+            if (cleaned !== txt) response.data = new TextEncoder().encode(cleaned).buffer;
+          }
+        });
+        player.configure({ drm: { clearKeys: { [data.keyId]: data.keyValue } } });
+        player.configure({ abr: { enabled: false }, restrictions: { minHeight: 1080, maxHeight: 1080 } });
+
+        function dumpTracks(tag) {
+          const tracks = player.getVariantTracks();
+          log(tag, 'tracks=', tracks.map(t => ({id:t.id, h:t.height, bw:t.bandwidth, active:t.active})));
+        }
+
+        function selectBest1080() {
+          const tracks = player.getVariantTracks().filter(t => t.height === 1080);
+          if (!tracks.length) { log('NO 1080p TRACKS on trackschanged!'); return; }
+          const best = tracks.reduce((a, b) => (b.bandwidth > a.bandwidth ? b : a));
+          if (!best.active) {
+            log('RESELECTING because active track was not best', best.id);
+            player.selectVariantTrack(best, true);
+          }
+        }
+        player.addEventListener('trackschanged', () => { log('EVENT trackschanged'); dumpTracks('trackschanged'); selectBest1080(); });
+        player.addEventListener('adaptation', () => { log('EVENT adaptation'); dumpTracks('adaptation'); });
+        player.addEventListener('variantchanged', () => { log('EVENT variantchanged'); dumpTracks('variantchanged'); });
+        player.addEventListener('buffering', (e) => log('EVENT buffering', e.buffering));
+        player.addEventListener('error', (e) => log('EVENT error', e.detail && e.detail.message));
+
+        return player.load(data.channelUrl);
+      }).then(() => {
+        dumpTracks('after-load');
+        const tracks = player.getVariantTracks().filter(t => t.height === 1080);
+        if (tracks.length) {
+          const best = tracks.reduce((a, b) => (b.bandwidth > a.bandwidth ? b : a));
+          player.selectVariantTrack(best, true);
+        }
+        video.play().catch(() => {});
+
+        setInterval(() => {
+          const stats = player.getStats();
+          log('STATS', {
+            width: stats.width, height: stats.height,
+            streamBandwidth: stats.streamBandwidth,
+            estimatedBandwidth: stats.estimatedBandwidth,
+            bufferingTime: stats.bufferingTime,
+            switchHistory: stats.switchHistory && stats.switchHistory.slice(-3),
+          });
+        }, 5000);
+      }).catch(err => log('LOAD ERROR', err.message || String(err)));
+    })
+    .catch(err => log('FETCH ERROR', err.message));
+</script>
+</body>
+</html>
