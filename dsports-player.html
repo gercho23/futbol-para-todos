@@ -48,8 +48,17 @@
         }
         player.configure({
           abr: { enabled: false },
-          restrictions: { minHeight: 1080 }
+          restrictions: { minHeight: 1080, maxHeight: 1080 }
         });
+
+        function selectBest1080() {
+          const tracks = player.getVariantTracks().filter(t => t.height === 1080);
+          if (!tracks.length) return;
+          const best = tracks.reduce((a, b) => (b.bandwidth > a.bandwidth ? b : a));
+          if (!best.active) player.selectVariantTrack(best, true);
+        }
+        player.addEventListener('trackschanged', selectBest1080);
+
         return player.load(data.channelUrl);
       }).then(() => {
         const tracks = player.getVariantTracks().filter(t => t.height === 1080);
