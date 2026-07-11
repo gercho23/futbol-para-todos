@@ -30,6 +30,22 @@
       const video = document.getElementById('video');
       const player = new shaka.Player();
       window.player = player;
+
+      function dumpTracks(tag) {
+        const tracks = player.getVariantTracks();
+        log(tag, 'tracks=', tracks.map(t => ({id:t.id, h:t.height, bw:t.bandwidth, active:t.active})));
+      }
+
+      function selectBest1080() {
+        const tracks = player.getVariantTracks().filter(t => t.height === 1080);
+        if (!tracks.length) { log('NO 1080p TRACKS!'); return; }
+        const best = tracks.reduce((a, b) => (b.bandwidth > a.bandwidth ? b : a));
+        if (!best.active) {
+          log('RESELECTING because active track was not best', best.id);
+          player.selectVariantTrack(best, true);
+        }
+      }
+
       player.attach(video).then(() => {
         player.getNetworkingEngine().registerResponseFilter((type, response) => {
           if (type === shaka.net.NetworkingEngine.RequestType.MANIFEST) {
@@ -41,20 +57,6 @@
         player.configure({ drm: { clearKeys: { [data.keyId]: data.keyValue } } });
         player.configure({ abr: { enabled: false }, restrictions: { minHeight: 1080, maxHeight: 1080 } });
 
-        function dumpTracks(tag) {
-          const tracks = player.getVariantTracks();
-          log(tag, 'tracks=', tracks.map(t => ({id:t.id, h:t.height, bw:t.bandwidth, active:t.active})));
-        }
-
-        function selectBest1080() {
-          const tracks = player.getVariantTracks().filter(t => t.height === 1080);
-          if (!tracks.length) { log('NO 1080p TRACKS on trackschanged!'); return; }
-          const best = tracks.reduce((a, b) => (b.bandwidth > a.bandwidth ? b : a));
-          if (!best.active) {
-            log('RESELECTING because active track was not best', best.id);
-            player.selectVariantTrack(best, true);
-          }
-        }
         player.addEventListener('trackschanged', () => { log('EVENT trackschanged'); dumpTracks('trackschanged'); selectBest1080(); });
         player.addEventListener('adaptation', () => { log('EVENT adaptation'); dumpTracks('adaptation'); });
         player.addEventListener('variantchanged', () => { log('EVENT variantchanged'); dumpTracks('variantchanged'); });
