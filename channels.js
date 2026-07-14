@@ -185,7 +185,7 @@ const channels = [
     ]},
   { id:'tycsports',       name:'TyC Sports',        icon:'TY', color:'#2d6a4f', region:'arg', logo: LOGOS.tyc,
     customSources: [
-      { url: 'https://la18hd.com/vivo/canales.php?stream=tycsports', type: 'iframe' },
+      { url: 'https://streamx-hd.com/live1.php?stream=tycsports', type: 'iframe' },
       { url: 'https://embed.ksdjugfsddeports.com/embed/tycsports.html', type: 'iframe' },
       { url: 'https://pcn.nebunexa.life/cvatt.html?get=VHlDU3BvcnQ&lang=1', type: 'iframe' },
       { url: 'https://streamtp.sbs/global2.php?stream=tycsports', type: 'iframe' },
