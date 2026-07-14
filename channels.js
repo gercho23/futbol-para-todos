@@ -154,7 +154,7 @@ const channels = [
   { id:'dsports',         name:'DSports',           icon:'DS', color:'#6b46c1', region:'arg', logo: LOGOS.dsports,
     customSources: [
       { url: '/dsports-player.html?id=dsports1', type: 'iframe' },
-      { url: 'https://prope66bd35h.airspace-cdn.cbsivideo.com/out/v1/eb04c8bf15a94f14ad1d952659d422b7/manifest.mpd', type: 'dash', keyId: '9afc53e82bb24c20a5835a84138f6c13', keyValue: 'abdd52917474f2342ff04f0d4722123a' },
+      { url: 'https://otte-qw.live.pv-cdn.net/pdx-nitro/live/clients/dash/enc/3gg2jnixjn/out/v1/e1840e01f3f14563b66bbb944d5cc54c/cenc.mpd', type: 'dash', keyId: 'f8b207c10f3f76aeba32a360ec52b9e4', keyValue: 'afad49d20eb39670e93e371c1d669921' },
       { url: 'https://streamx-hd.com/live2.php?stream=dsports', type: 'iframe' },
       { url: 'https://streamhdx.xyz/channel/?id=dsports1', type: 'iframe' },
       { url: 'https://streamtpday1.xyz/global1.php?stream=dsports', type: 'iframe' },
