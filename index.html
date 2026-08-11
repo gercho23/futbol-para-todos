@@ -2521,6 +2521,7 @@
       iframe.src = '';
       video.style.display = 'block';
       video.muted = true;
+      hideQualityMenu();
       if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
       const prevDashDestroy = dashInstance ? dashInstance.destroy() : Promise.resolve();
       dashInstance = null;
@@ -2548,6 +2549,7 @@
           }).then(() => {
             clearErrorTimer();
             video.play().then(() => { video.muted = false; }).catch(() => {});
+            populateDashQuality();
           }).catch(() => showStreamError());
           dashInstance.addEventListener('error', () => showStreamError());
         } catch(e) { showStreamError(); }
@@ -2557,6 +2559,7 @@
       iframe.src = '';
       video.style.display = 'block';
       video.muted = false;
+      hideQualityMenu();
       if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
       if (dashInstance) { dashInstance.destroy(); dashInstance = null; }
       startErrorTimer();
@@ -2564,7 +2567,7 @@
         hlsInstance = new Hls({ liveSyncDurationCount: 3 });
         hlsInstance.loadSource(source.url);
         hlsInstance.attachMedia(video);
-        hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => { clearErrorTimer(); video.play().catch(() => {}); });
+        hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => { clearErrorTimer(); video.play().catch(() => {}); populateHlsQuality(); });
         hlsInstance.on(Hls.Events.ERROR, (_, data) => { if (data.fatal) showStreamError(); });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
         video.src = source.url;
@@ -2574,6 +2577,7 @@
     } else {
       video.style.display = 'none';
       video.pause();
+      hideQualityMenu();
       if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
       if (dashInstance) { dashInstance.destroy(); dashInstance = null; }
       iframe.style.display = 'block';
