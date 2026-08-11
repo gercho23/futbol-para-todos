@@ -2669,6 +2669,7 @@
     video.src = '';
     video.style.display = 'none';
     document.getElementById('stream-iframe').style.display = 'block';
+    hideQualityMenu();
     if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
     if (dashInstance) { dashInstance.destroy(); dashInstance = null; }
     document.querySelectorAll('.channel-card').forEach(c => c.classList.remove('playing'));
