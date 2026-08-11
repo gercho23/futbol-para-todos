@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     const varName = arrMatch[1];
     const pairs = JSON.parse(arrMatch[2]);
 
-    const sortMatch = html.match(new RegExp(`${varName}\\.sort\\([^)]*\\);\\s*var k=(\\w+)\\(\\)\\+(\\w+)\\(\\);`));
+    const sortMatch = html.match(new RegExp(`${varName}\\.sort\\([\\s\\S]*?\\);\\s*var k=(\\w+)\\(\\)\\+(\\w+)\\(\\);`));
     if (!sortMatch) throw new Error('No se encontraron las funciones de shift');
     const [, fn1, fn2] = sortMatch;
 
