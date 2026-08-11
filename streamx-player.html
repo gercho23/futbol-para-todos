@@ -28,15 +28,16 @@
     .then(data => {
       if (!data.url) throw new Error(data.error || 'Sin URL');
 
+      const proxiedUrl = '/api/hls-proxy?url=' + encodeURIComponent(data.url);
       const video = document.getElementById('video');
       if (Hls.isSupported()) {
         const hls = new Hls();
-        hls.loadSource(data.url);
+        hls.loadSource(proxiedUrl);
         hls.attachMedia(video);
         hls.on(Hls.Events.MANIFEST_PARSED, () => { video.play().then(() => { video.muted = false; }).catch(() => {}); });
         hls.on(Hls.Events.ERROR, (_, d) => { if (d.fatal) showError(d.details); });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = data.url;
+        video.src = proxiedUrl;
         video.addEventListener('loadedmetadata', () => { video.play().then(() => { video.muted = false; }).catch(() => {}); });
       } else {
         showError('navegador no soportado');
