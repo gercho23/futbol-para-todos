@@ -153,7 +153,7 @@ const channels = [
   { id:'fox3ar',          name:'Fox Sports 3',      icon:'F3', color:'#2b6cb0', region:'arg', logo: LOGOS.fox  },
   { id:'dsports',         name:'DSports',           icon:'DS', color:'#6b46c1', region:'arg', logo: LOGOS.dsports,
     customSources: [
-      { url: 'https://streamx-hd.com/live1.php?stream=dsports', type: 'iframe' },
+      { url: 'https://otte-qw.live.pv-cdn.net/pdx-nitro/live/clients/dash/enc/z5oyxzsxdk/out/v1/7695a0f64a0e424b973d5b09a2a3eb91/cenc.mpd', type: 'dash', keyId: 'f836853d8eac19446ed9535f5fc568b1', keyValue: 'b3bc5ef00602b29abac7e482d3d9fbf3' },
       { url: 'https://otte-qw.live.pv-cdn.net/pdx-nitro/live/clients/dash/enc/3gg2jnixjn/out/v1/e1840e01f3f14563b66bbb944d5cc54c/cenc.mpd', type: 'dash', keyId: 'f8b207c10f3f76aeba32a360ec52b9e4', keyValue: 'afad49d20eb39670e93e371c1d669921' },
       { url: 'https://streamx-hd.com/live1.php?stream=dsports', type: 'iframe' },
       { url: 'https://streamtp.sbs/global2.php?stream=dsports', type: 'iframe' },
