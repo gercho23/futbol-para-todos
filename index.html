@@ -2505,33 +2505,36 @@
       video.style.display = 'block';
       video.muted = true;
       if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-      if (dashInstance) { dashInstance.destroy(); dashInstance = null; }
+      const prevDashDestroy = dashInstance ? dashInstance.destroy() : Promise.resolve();
+      dashInstance = null;
       startErrorTimer();
-      try {
-        shaka.polyfill.installAll();
-        if (!shaka.Player.isBrowserSupported()) { showStreamError(); return; }
-        dashInstance = new shaka.Player();
-        dashInstance.attach(video).then(() => {
-          // Filtrar Widevine del MPD para forzar ClearKey
-          dashInstance.getNetworkingEngine().registerResponseFilter((type, response) => {
-            if (type === shaka.net.NetworkingEngine.RequestType.MANIFEST) {
-              const txt = new TextDecoder('utf-8').decode(response.data);
-              if (txt.includes('edef8ba9')) {
-                const cleaned = txt.replace(/<ContentProtection[^>]*edef8ba9[^"]*"[\s\S]*?<\/ContentProtection>/gi, '');
-                response.data = new TextEncoder().encode(cleaned).buffer;
+      prevDashDestroy.then(() => {
+        try {
+          shaka.polyfill.installAll();
+          if (!shaka.Player.isBrowserSupported()) { showStreamError(); return; }
+          dashInstance = new shaka.Player();
+          dashInstance.attach(video).then(() => {
+            // Filtrar Widevine del MPD para forzar ClearKey
+            dashInstance.getNetworkingEngine().registerResponseFilter((type, response) => {
+              if (type === shaka.net.NetworkingEngine.RequestType.MANIFEST) {
+                const txt = new TextDecoder('utf-8').decode(response.data);
+                if (txt.includes('edef8ba9')) {
+                  const cleaned = txt.replace(/<ContentProtection[^>]*edef8ba9[^"]*"[\s\S]*?<\/ContentProtection>/gi, '');
+                  response.data = new TextEncoder().encode(cleaned).buffer;
+                }
               }
+            });
+            if (source.keyId && source.keyValue) {
+              dashInstance.configure({ drm: { clearKeys: { [source.keyId]: source.keyValue } } });
             }
-          });
-          if (source.keyId && source.keyValue) {
-            dashInstance.configure({ drm: { clearKeys: { [source.keyId]: source.keyValue } } });
-          }
-          return dashInstance.load(source.url);
-        }).then(() => {
-          clearErrorTimer();
-          video.play().then(() => { video.muted = false; }).catch(() => {});
-        }).catch(() => showStreamError());
-        dashInstance.addEventListener('error', () => showStreamError());
-      } catch(e) { showStreamError(); }
+            return dashInstance.load(source.url);
+          }).then(() => {
+            clearErrorTimer();
+            video.play().then(() => { video.muted = false; }).catch(() => {});
+          }).catch(() => showStreamError());
+          dashInstance.addEventListener('error', () => showStreamError());
+        } catch(e) { showStreamError(); }
+      });
     } else if (source.type === 'hls') {
       iframe.style.display = 'none';
       iframe.src = '';
