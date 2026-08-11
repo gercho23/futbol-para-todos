@@ -1841,6 +1841,12 @@
         <button class="ctrl-btn" id="src-3" onclick="switchSource('skylive')">3</button>
         <button class="ctrl-btn" id="src-4" onclick="switchSource('custom3')">4</button>
       </div>
+      <div class="ctrl-group" id="quality-group" style="display:none">
+        <span class="ctrl-label">🎚️ Calidad</span>
+        <select class="ctrl-select" id="quality-select" onchange="setQuality(this.value)">
+          <option value="auto">Auto</option>
+        </select>
+      </div>
       <div class="ctrl-divider"></div>
       <button class="btn-fullscreen" onclick="goFullscreen()">⛶ Pantalla Completa</button>
     </div>
