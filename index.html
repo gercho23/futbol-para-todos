@@ -2587,6 +2587,49 @@
     }
   }
 
+  function hideQualityMenu() {
+    document.getElementById('quality-group').style.display = 'none';
+    document.getElementById('quality-select').innerHTML = '<option value="auto">Auto</option>';
+  }
+
+  function populateHlsQuality() {
+    const select = document.getElementById('quality-select');
+    const levels = hlsInstance && hlsInstance.levels;
+    if (!levels || levels.length < 2) { hideQualityMenu(); return; }
+    select.innerHTML = '<option value="auto">Auto</option>' +
+      levels.map((lvl, i) => `<option value="${i}">${lvl.height}p</option>`).join('');
+    document.getElementById('quality-group').style.display = 'flex';
+  }
+
+  function populateDashQuality() {
+    const select = document.getElementById('quality-select');
+    const tracks = dashInstance ? dashInstance.getVariantTracks() : [];
+    const heights = [...new Set(tracks.map(t => t.height).filter(Boolean))].sort((a, b) => b - a);
+    if (heights.length < 2) { hideQualityMenu(); return; }
+    select.innerHTML = '<option value="auto">Auto</option>' +
+      heights.map(h => `<option value="${h}">${h}p</option>`).join('');
+    document.getElementById('quality-group').style.display = 'flex';
+  }
+
+  function setQuality(value) {
+    if (hlsInstance) {
+      hlsInstance.currentLevel = value === 'auto' ? -1 : parseInt(value, 10);
+    } else if (dashInstance) {
+      if (value === 'auto') {
+        dashInstance.configure({ abr: { enabled: true } });
+      } else {
+        const height = parseInt(value, 10);
+        const tracks = dashInstance.getVariantTracks().filter(t => t.height === height);
+        if (tracks.length) {
+          const best = tracks.reduce((a, b) => (b.bandwidth > a.bandwidth ? b : a));
+          dashInstance.configure({ abr: { enabled: false } });
+          dashInstance.selectVariantTrack(best, true);
+        }
+      }
+    }
+  }
+  window.setQuality = setQuality;
+
   // ===== PLAYER =====
   function playChannel(streamId, name) {
     currentStream = streamId;
