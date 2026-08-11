@@ -153,7 +153,7 @@ const channels = [
   { id:'fox3ar',          name:'Fox Sports 3',      icon:'F3', color:'#2b6cb0', region:'arg', logo: LOGOS.fox  },
   { id:'dsports',         name:'DSports',           icon:'DS', color:'#6b46c1', region:'arg', logo: LOGOS.dsports,
     customSources: [
-      { url: 'https://khala.skylivehd.com/global/dsports/index.m3u8', type: 'hls' },
+      { url: '/streamx-player.html?stream=dsports', type: 'iframe' },
       { url: 'https://otte-qw.live.pv-cdn.net/pdx-nitro/live/clients/dash/enc/3gg2jnixjn/out/v1/e1840e01f3f14563b66bbb944d5cc54c/cenc.mpd', type: 'dash', keyId: 'f8b207c10f3f76aeba32a360ec52b9e4', keyValue: 'afad49d20eb39670e93e371c1d669921' },
       { url: 'https://streamx-hd.com/live1.php?stream=dsports', type: 'iframe' },
       { url: 'https://streamtp.sbs/global2.php?stream=dsports', type: 'iframe' },
