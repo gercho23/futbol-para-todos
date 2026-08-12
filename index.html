@@ -2416,6 +2416,7 @@
       if (sourceKey === 'global1') return ch.customSources[0];
       if (sourceKey === 'global2') return ch.customSources[1];
       if (sourceKey === 'custom3') return ch.customSources[2] || ch.customSources[0];
+      if (sourceKey === 'custom4') return ch.customSources[3] || ch.customSources[2] || ch.customSources[0];
     }
     return { url: `${BASE_URL}${sourceKey}.php?stream=${streamId}`, type: 'iframe' };
   }
