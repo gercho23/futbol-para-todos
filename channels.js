@@ -176,7 +176,7 @@ const channels = [
       { url: 'https://streamhdx.com/live1.php?stream=tntsports', type: 'iframe' },
       { url: 'https://stream-xhd.com/live1.php?stream=tntsports', type: 'iframe' },
       { url: 'https://pcn.nebunexa.life/cvatt.html?get=VE5UX1Nwb3J0c19IRA&lang=1', type: 'iframe' },
-      { url: 'https://embed.ksdjugfsddeports.com/embed/tntsports.html', type: 'iframe' },
+      { url: 'https://la18hd.su/vivo/canales.php?stream=tntsports', type: 'iframe' },
     ]},
   { id:'tycsports',       name:'TyC Sports',        icon:'TY', color:'#2d6a4f', region:'arg', logo: LOGOS.tyc,
     customSources: [
