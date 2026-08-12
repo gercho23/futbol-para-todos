@@ -141,9 +141,8 @@ const channels = [
       { url: 'https://streamhdx.com/live1.php?stream=espnpremium', type: 'iframe' },
       { url: 'https://stream-xhd.com/live1.php?stream=espnpremium', type: 'iframe' },
       { url: 'https://streamx488.sbs/global1.php?channel=espnpremium', type: 'iframe' },
-      { url: 'https://embed.ksdjugfsddeports.com/embed/espnpremium.html', type: 'iframe' },
+      { url: 'https://cdn.cvattv.com.ar/live/c7eds/Fox_Sports_Premiun_HD/SA_Live_dash_enc_C/Fox_Sports_Premiun_HD.mpd', type: 'dash', keyId: '4c230dbc7f6a4bfa6ad0aa73ff792374', keyValue: '4186a7c2a15f590a9399886feaec4257' },
       { url: 'https://pcn.nebunexa.life/cvatt.html?get=Rm94X1Nwb3J0c19QcmVtaXVuX0hE&lang=1', type: 'iframe' },
-      { url: 'https://embed.ksdjugfsddeports.com/embed/espnpremium.html', type: 'iframe' },
     ]},
   { id:'fox1ar',          name:'Fox Sports 1',      icon:'F1', color:'#2b6cb0', region:'arg', logo: LOGOS.fox,
     customSources: [
