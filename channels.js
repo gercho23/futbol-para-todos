@@ -173,7 +173,7 @@ const channels = [
     ]},
   { id:'tntsports',       name:'TNT Sports AR',     icon:'TN', color:'#d69e2e', region:'arg', logo: LOGOS.tnt,
     customSources: [
-      { url: 'https://streamtp10.com/global1.php?stream=tntsports', type: 'iframe' },
+      { url: 'https://streamhdx.com/live1.php?stream=tntsports', type: 'iframe' },
       { url: 'https://embed.ksdjugfsddeports.com/embed/tntsports.html', type: 'iframe' },
       { url: 'https://pcn.nebunexa.life/cvatt.html?get=VE5UX1Nwb3J0c19IRA&lang=1', type: 'iframe' },
       { url: 'https://embed.ksdjugfsddeports.com/embed/tntsports.html', type: 'iframe' },
