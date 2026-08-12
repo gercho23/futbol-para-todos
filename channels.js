@@ -138,9 +138,9 @@ const channels = [
     ]},
   { id:'espnpremium',     name:'ESPN Premium',      icon:'EP', color:'#c53030', region:'arg', logo: LOGOS.espnpremium,
     customSources: [
-      { url: 'https://bestleague.top/cvattc.html?get=Rm94X1Nwb3J0c19QcmVtaXVuX0hE&lang=1', type: 'iframe' },
-      { url: 'https://streamtp10.com/global1.php?stream=espnpremium', type: 'iframe' },
       { url: 'https://streamhdx.com/live1.php?stream=espnpremium', type: 'iframe' },
+      { url: 'https://stream-xhd.com/live1.php?stream=espnpremium', type: 'iframe' },
+      { url: 'https://streamx488.sbs/global1.php?channel=espnpremium', type: 'iframe' },
       { url: 'https://embed.ksdjugfsddeports.com/embed/espnpremium.html', type: 'iframe' },
       { url: 'https://pcn.nebunexa.life/cvatt.html?get=Rm94X1Nwb3J0c19QcmVtaXVuX0hE&lang=1', type: 'iframe' },
       { url: 'https://embed.ksdjugfsddeports.com/embed/espnpremium.html', type: 'iframe' },
