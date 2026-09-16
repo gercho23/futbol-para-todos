@@ -2525,6 +2525,7 @@
       window.open(source.url, '_blank', 'noopener');
       return;
     } else if (source.type === 'dash') {
+      if (source.keyId && isIOS()) { tryNextSource(); return; }
       iframe.style.display = 'none';
       iframe.src = '';
       video.style.display = 'block';
