@@ -2475,6 +2475,12 @@
   // ===== STREAM ERROR DETECTION =====
   const ERROR_TIMEOUT_MS = 12000;
   const SOURCE_ORDER = ['global1', 'global2', 'skylive', 'custom3', 'custom4'];
+
+  // iOS/iPadOS (WebKit) no soporta DRM ClearKey vía EME — solo FairPlay.
+  function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }
   let _errorTimer = null;
 
   function startErrorTimer() {
