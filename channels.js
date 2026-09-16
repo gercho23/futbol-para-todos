@@ -87,7 +87,7 @@ const channels = [
   // ── Argentina ──────────────────────────────────────────────
   { id:'espn',            name:'ESPN 1',            icon:'E1', color:'#e53e3e', region:'arg', logo: LOGOS.espn,
     customSources: [
-      { url: 'https://streamxhd.click/channel/?id=espn', type: 'iframe' },
+      { url: 'https://vcdn.mn10.entel.bo/Content/DASH/Live/Channel(8757cb0a-3584-40cd-901e-8937c7deba83)/master.mpd', type: 'dash', keyId: 'cb004fb100bd92f23793562891e3236b', keyValue: 'b3e4e74ae2080b137e68bbd0ef8a7e05' },
       { url: 'https://streamhdx.com/live1.php?stream=espnar', type: 'iframe' },
       { url: 'https://latamvidz1.com/canal.php?stream=espn', type: 'iframe' },
       { url: 'https://embed.ksdjugfsddeports.com/embed/espn.html', type: 'iframe' },
